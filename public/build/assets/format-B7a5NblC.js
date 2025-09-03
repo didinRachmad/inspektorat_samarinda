@@ -1,0 +1,1 @@
+function t(r){return new Intl.NumberFormat("id-ID").format(r)}function n(r){return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",minimumFractionDigits:0}).format(r)}export{t as a,n as f};

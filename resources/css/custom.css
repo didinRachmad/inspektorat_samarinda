@@ -1,0 +1,110 @@
+.pagination {
+    /* --bs-pagination-font-size: 1rem !important; */
+    --bs-pagination-padding-x: 0.55rem;
+    --bs-pagination-padding-y: 0.175rem;
+}
+
+div.dt-container div.dt-paging ul.pagination {
+    gap: 5px !important;
+}
+
+.active > .page-link,
+.page-link.active {
+    /* background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+    color: #fff !important; */
+}
+
+.page-link {
+    /* color: var(--bs-primary) !important; */
+    border-radius: 1rem !important;
+}
+
+/* Pastikan wadah pagination menggunakan flexbox dan meratakan konten ke kanan */
+div.dt-paging {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Atur margin dan fleksibilitas elemen pagination */
+div.dt-paging ul.pagination {
+    margin: 2px 0;
+    flex-wrap: wrap;
+}
+
+/* STYLE MENU */
+/* .hover\:text-gray-900:hover {
+    color: rgb(44 169 188) !important;
+    transform: scale(1.05) !important;
+}
+
+.hover\:bg-gray-100:hover {
+    color: rgb(44 169 188) !important;
+} */
+
+/* .active-menu {
+    color: rgb(44, 169, 188) !important;
+} */
+
+.swal2-success-circular-line-left,
+.swal2-success-fix,
+.swal2-success-circular-line-right {
+    background-color: transparent !important;
+}
+
+/* Select2 Small Size */
+/* .select2-container--bootstrap-5 .select2-selection {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    min-height: calc(1.5em + 0.5rem + 2px);
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+    padding: 0;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown {
+    font-size: 0.875rem;
+}
+
+.select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+} */
+
+/* SELECT2 COLOR */
+/* .select2-container--bootstrap-5 .select2-dropdown {
+    background-color: var(--bs-body-bg-2);
+}
+
+.select2-container--bootstrap-5 .select2-dropdown .select2-search .select2-search__field {
+    background-color: var(--bs-body-bg);
+}
+
+.select2-container--bootstrap-5 .select2-dropdown .select2-results {
+    color: var(--bs-body-color);
+}
+
+.select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+}
+
+.select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--selected, .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option[aria-selected=true]:not(.select2-results__option--highlighted) {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+} */
+
+.select2-container--bootstrap-5.select2-container--disabled .select2-selection,
+.select2-container--bootstrap-5.select2-container--disabled.select2-container--focus
+    .select2-selection {
+    cursor: not-allowed;
+    /* color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-border-color-translucent); */
+}
+
+input.numeric {
+    text-align: right;
+}

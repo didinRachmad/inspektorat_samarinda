@@ -1,0 +1,59 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
+@import 'datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css';
+@import 'select2/dist/css/select2.min.css';
+@import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
+@import 'sweetalert2/dist/sweetalert2.min.css';
+
+/* Pace (loader) */
+@import 'pace-js/themes/blue/pace-theme-minimal.css';
+
+/* Fancybox */
+@import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
+/* Plugin CSS */
+@import 'metismenu/dist/metisMenu.min.css';
+/* @import 'metismenu/dist/mm-vertical.css'; */
+@import 'simplebar/dist/simplebar.css';
+
+/* custom */
+@import 'bootstrap-extended.css';
+@import 'main.css';
+@import 'dark-theme.css';
+@import 'blue-theme.css';
+@import 'semi-dark.css';
+@import 'bordered-theme.css';
+@import 'responsive.css';
+
+@import 'custom.css';
+
+.search-popup {
+    position: absolute;
+    width: 100%;
+    max-width: 600px;
+    z-index: 1000;
+    top: 120%;
+}
+
+.search-loading:after {
+    content: " ";
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(0, 0, 0, .3);
+    border-radius: 50%;
+    border-top-color: #000;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.apexcharts-menu {
+    background-color: rgba(26, 27, 32, 0.9);
+    color: #fff;
+}

@@ -1,0 +1,163 @@
+{
+  "_format-B7a5NblC.js": {
+    "file": "assets/format-B7a5NblC.js",
+    "name": "format"
+  },
+  "_vendor-DcHDpzIg.js": {
+    "file": "assets/vendor-DcHDpzIg.js",
+    "name": "vendor"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
+    "file": "assets/bootstrap-icons-BeopsB42.woff",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-mSm7cUeB.woff2",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "public/images/bg-themes/body-background.webp": {
+    "file": "assets/body-background-DiXvsbEL.webp",
+    "src": "public/images/bg-themes/body-background.webp"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BdxFp74M.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/css/auth.css": {
+    "file": "assets/auth-CTwwiZMO.css",
+    "src": "resources/css/auth.css",
+    "isEntry": true
+  },
+  "resources/css/dashboard.css": {
+    "file": "assets/dashboard-BIB8r9yF.css",
+    "src": "resources/css/dashboard.css",
+    "isEntry": true
+  },
+  "resources/css/landing.css": {
+    "file": "assets/landing-DP2rzg_V.js",
+    "name": "landing",
+    "src": "resources/css/landing.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BdpEYyzv.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_vendor-DcHDpzIg.js"
+    ]
+  },
+  "resources/js/auth.js": {
+    "file": "assets/auth-Z4cGkPOY.js",
+    "name": "auth",
+    "src": "resources/js/auth.js",
+    "isEntry": true
+  },
+  "resources/js/dashboard.js": {
+    "file": "assets/dashboard-BRhlnPRH.js",
+    "name": "dashboard",
+    "src": "resources/js/dashboard.js",
+    "isEntry": true,
+    "imports": [
+      "_vendor-DcHDpzIg.js"
+    ],
+    "dynamicImports": [
+      "resources/js/pages/dashboard.js",
+      "resources/js/pages/master/customers.js",
+      "resources/js/pages/master/products.js",
+      "resources/js/pages/profile.js",
+      "resources/js/pages/setting/approval_routes.js",
+      "resources/js/pages/setting/menu.js",
+      "resources/js/pages/setting/permissions.js",
+      "resources/js/pages/setting/roles.js",
+      "resources/js/pages/setting/users.js",
+      "resources/js/pages/transaksi/delivery_orders.js",
+      "resources/js/pages/transaksi/sales_orders.js"
+    ],
+    "css": [
+      "assets/dashboard-DmDfXN9T.css"
+    ]
+  },
+  "resources/js/landing.js": {
+    "file": "assets/landing-l0sNRNKZ.js",
+    "name": "landing",
+    "src": "resources/js/landing.js",
+    "isEntry": true
+  },
+  "resources/js/pages/dashboard.js": {
+    "file": "assets/dashboard-BavSDrWp.js",
+    "name": "dashboard",
+    "src": "resources/js/pages/dashboard.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/master/customers.js": {
+    "file": "assets/customers-khW6VIwx.js",
+    "name": "customers",
+    "src": "resources/js/pages/master/customers.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/master/products.js": {
+    "file": "assets/products-S5zq_Kc6.js",
+    "name": "products",
+    "src": "resources/js/pages/master/products.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/profile.js": {
+    "file": "assets/profile-D__M0-Rm.js",
+    "name": "profile",
+    "src": "resources/js/pages/profile.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/setting/approval_routes.js": {
+    "file": "assets/approval_routes-BRpHSx0a.js",
+    "name": "approval_routes",
+    "src": "resources/js/pages/setting/approval_routes.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/setting/menu.js": {
+    "file": "assets/menu-Bhdx1xOS.js",
+    "name": "menu",
+    "src": "resources/js/pages/setting/menu.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/setting/permissions.js": {
+    "file": "assets/permissions-DMypEkuT.js",
+    "name": "permissions",
+    "src": "resources/js/pages/setting/permissions.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/setting/roles.js": {
+    "file": "assets/roles-C8X3VKnT.js",
+    "name": "roles",
+    "src": "resources/js/pages/setting/roles.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/setting/users.js": {
+    "file": "assets/users-ph0Me27y.js",
+    "name": "users",
+    "src": "resources/js/pages/setting/users.js",
+    "isDynamicEntry": true
+  },
+  "resources/js/pages/transaksi/delivery_orders.js": {
+    "file": "assets/delivery_orders-DZsV-HKe.js",
+    "name": "delivery_orders",
+    "src": "resources/js/pages/transaksi/delivery_orders.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_format-B7a5NblC.js"
+    ]
+  },
+  "resources/js/pages/transaksi/sales_orders.js": {
+    "file": "assets/sales_orders-NYim1KvH.js",
+    "name": "sales_orders",
+    "src": "resources/js/pages/transaksi/sales_orders.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/dashboard.js",
+      "_format-B7a5NblC.js",
+      "_vendor-DcHDpzIg.js"
+    ]
+  }
+}

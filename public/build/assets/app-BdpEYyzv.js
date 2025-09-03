@@ -1,0 +1,1 @@
+import{$ as e,b as a}from"./vendor-DcHDpzIg.js";window.appRoutes={getDesas:"/master_desas/getDesas",getDesasByKecamatan:s=>`/master_desas/getDesasByKecamatan/${s}`,getJenisSarpras:"/master_jenis_sarpras/getJenisSarpras",getRoles:"/roles/getRoles",getUsersByRole:s=>`/users/getUsersByRole/${s}`};window.$=window.jQuery=e;window.bootstrap=a;
