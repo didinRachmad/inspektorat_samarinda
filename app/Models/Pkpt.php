@@ -12,7 +12,7 @@ class Pkpt extends Model
         'tahun',
         'bulan',
         'no_pkpt',
-        'auditi',
+        'auditi_id',
         'ruang_lingkup',
         'sasaran',
         'jenis_pengawasan',
@@ -38,5 +38,10 @@ class Pkpt extends Model
     public function auditors()
     {
         return $this->hasMany(PkptAuditor::class);
+    }
+
+    public function auditi()
+    {
+        return $this->belongsTo(Auditi::class);
     }
 }

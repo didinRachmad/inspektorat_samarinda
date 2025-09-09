@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Admin\Setting;
 
 use App\Http\Controllers\Controller;
 
-use App\Models\Menu;
-use App\Models\Produksi;
 use App\Models\Role;
 use App\Models\User;
 use Auth;

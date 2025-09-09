@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Pkpt;
 use App\Models\PkptJabatan;
+use App\Models\Auditi;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
@@ -12,16 +13,22 @@ class PkptSeeder extends Seeder
     protected $jumlahData = 10;
 
     protected $jabatanList = ['PJ', 'WPJ', 'PT', 'KT', 'AT'];
-    protected $auditiList = ['PM', 'PA', 'PK'];
     protected $ruangLingkupList = ['PM', 'Administrasi', 'Teknis'];
     protected $sasaranList = ['Pendampingan LPPD', 'Evaluasi Kinerja', 'Audit Keuangan'];
     protected $jenisPengawasanList = ['REVIEW', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING'];
-    protected $irbanwilList = ['IRBAN I', 'IRBAN II', 'IRBAN III'];
+    protected $irbanwilList = ['SEMUA IRBAN', 'IRBAN I', 'IRBAN II', 'IRBAN III', 'IRBAN IV', 'IRBAN KHUSUS'];
 
     public function run(): void
     {
         $faker = Faker::create();
         $bulanTahun = now()->format('m-Y');
+
+        // Ambil data auditi
+        $auditiIds = Auditi::pluck('id')->toArray();
+        if (empty($auditiIds)) {
+            $this->command->warn('Seeder Pkpt dilewati karena belum ada data di tabel auditis.');
+            return;
+        }
 
         // Ambil nomor urut terakhir
         $lastPkpt = Pkpt::whereYear('created_at', now()->year)
@@ -38,7 +45,7 @@ class PkptSeeder extends Seeder
                 'tahun' => now()->year,
                 'bulan' => now()->month,
                 'no_pkpt' => $kodeUnik,
-                'auditi' => $faker->randomElement($this->auditiList),
+                'auditi_id' => $faker->randomElement($auditiIds),
                 'ruang_lingkup' => $faker->randomElement($this->ruangLingkupList),
                 'sasaran' => $faker->randomElement($this->sasaranList),
                 'jenis_pengawasan' => $faker->randomElement($this->jenisPengawasanList),
@@ -59,7 +66,7 @@ class PkptSeeder extends Seeder
                 ]);
             }
 
-            // Recalculate summary
+            // Hitung ulang summary
             $detail = $pkpt->jabatans()->get();
             $pkpt->jumlah_tenaga = $detail->sum('jumlah');
             $pkpt->anggaran_total = $detail->sum('anggaran');

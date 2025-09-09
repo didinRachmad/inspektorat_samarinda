@@ -5,10 +5,12 @@ use App\Http\Controllers\Admin\Setting\PermissionController;
 use App\Http\Controllers\Admin\Setting\UserManagementController;
 use App\Http\Controllers\Admin\Setting\MenuController;
 use App\Http\Controllers\Admin\Setting\ApprovalRouteController;
-use App\Http\Controllers\Admin\Master\CustomersController;
-use App\Http\Controllers\Admin\Master\ProductsController;
+use App\Http\Controllers\Admin\Master\AuditiController;
 use App\Http\Controllers\Admin\OngkirController;
-use App\Http\Controllers\Admin\PkptController;
+use App\Http\Controllers\Admin\Pelaksanaan\KkaController;
+use App\Http\Controllers\Admin\Pelaksanaan\LhaController;
+use App\Http\Controllers\Admin\Pelaksanaan\TemuanController;
+use App\Http\Controllers\Admin\Perencanaan\PkptController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\Transaksi\DeliveryOrdersController;
@@ -203,60 +205,32 @@ Route::prefix('menus')
             ->middleware('menu.permission:destroy');
     });
 
-Route::prefix('master_products')
+Route::prefix('auditi')
     ->middleware('auth')
     ->group(function () {
-        Route::get('/', [ProductsController::class, 'index'])
-            ->name('master_products.index')
+        Route::get('/', [AuditiController::class, 'index'])
+            ->name('auditi.index')
             ->middleware('menu.permission:index');
-        Route::get('/data', [ProductsController::class, 'data'])
-            ->name('master_products.data')
+        Route::get('/data', [AuditiController::class, 'data'])
+            ->name('auditi.data')
             ->middleware('menu.permission:index');
-        Route::get('/create', [ProductsController::class, 'create'])
-            ->name('master_products.create')
+        Route::get('/create', [AuditiController::class, 'create'])
+            ->name('auditi.create')
             ->middleware('menu.permission:create');
-        Route::post('/store', [ProductsController::class, 'store'])
-            ->name('master_products.store')
+        Route::post('/store', [AuditiController::class, 'store'])
+            ->name('auditi.store')
             ->middleware('menu.permission:store');
-        Route::get('/edit/{product}', [ProductsController::class, 'edit'])
-            ->name('master_products.edit')
+        Route::get('/edit/{auditi}', [AuditiController::class, 'edit'])
+            ->name('auditi.edit')
             ->middleware('menu.permission:edit');
-        Route::put('/update/{product}', [ProductsController::class, 'update'])
-            ->name('master_products.update')
+        Route::put('/update/{auditi}', [AuditiController::class, 'update'])
+            ->name('auditi.update')
             ->middleware('menu.permission:update');
-        Route::delete('/destroy/{product}', [ProductsController::class, 'destroy'])
-            ->name('master_products.destroy')
+        Route::delete('/destroy/{auditi}', [AuditiController::class, 'destroy'])
+            ->name('auditi.destroy')
             ->middleware('menu.permission:destroy');
-        Route::get('/getProducts', [ProductsController::class, 'getProducts'])
-            ->name('master_products.getProducts');
-    });
-
-Route::prefix('master_customers')
-    ->middleware('auth')
-    ->group(function () {
-        Route::get('/', [CustomersController::class, 'index'])
-            ->name('master_customers.index')
-            ->middleware('menu.permission:index');
-        Route::get('/data', [CustomersController::class, 'data'])
-            ->name('master_customers.data')
-            ->middleware('menu.permission:index');
-        Route::get('/create', [CustomersController::class, 'create'])
-            ->name('master_customers.create')
-            ->middleware('menu.permission:create');
-        Route::post('/store', [CustomersController::class, 'store'])
-            ->name('master_customers.store')
-            ->middleware('menu.permission:store');
-        Route::get('/edit/{customer}', [CustomersController::class, 'edit'])
-            ->name('master_customers.edit')
-            ->middleware('menu.permission:edit');
-        Route::put('/update/{customer}', [CustomersController::class, 'update'])
-            ->name('master_customers.update')
-            ->middleware('menu.permission:update');
-        Route::delete('/destroy/{customer}', [CustomersController::class, 'destroy'])
-            ->name('master_customers.destroy')
-            ->middleware('menu.permission:destroy');
-        Route::get('/getCustomers', [CustomersController::class, 'getCustomers'])
-            ->name('master_customers.getCustomers');
+        Route::get('/getAuditi', [AuditiController::class, 'getAuditi'])
+            ->name('auditi.getAuditi');
     });
 
 Route::prefix('transaksi_sales_orders')
@@ -368,6 +342,82 @@ Route::prefix('pkpt')
             ->middleware('menu.permission:update');
         Route::delete('/destroy/{pkpt}', [PkptController::class, 'destroy'])
             ->name('pkpt.destroy')
+            ->middleware('menu.permission:destroy');
+    });
+
+Route::prefix('lha')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [LhaController::class, 'index'])
+            ->name('lha.index')
+            ->middleware('menu.permission:index');
+        Route::get('/lha/{lha}', [LhaController::class, 'show'])
+            ->name('lha.show')
+            ->middleware('menu.permission:show');
+        Route::get('/data', [LhaController::class, 'data'])
+            ->name(name: 'lha.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [LhaController::class, 'create'])
+            ->name('lha.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [LhaController::class, 'store'])
+            ->name('lha.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{lha}', [LhaController::class, 'edit'])
+            ->name('lha.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{lha}', [LhaController::class, 'update'])
+            ->name('lha.update')
+            ->middleware('menu.permission:update');
+        Route::delete('/destroy/{lha}', [LhaController::class, 'destroy'])
+            ->name('lha.destroy')
+            ->middleware('menu.permission:destroy');
+    });
+
+Route::prefix('kka')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [KkaController::class, 'index'])
+            ->name('kka.index')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [KkaController::class, 'create'])
+            ->name('kka.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [KkaController::class, 'store'])
+            ->name('kka.store')
+            ->middleware('menu.permission:store');
+        Route::delete('/destroy/{kka}', [KkaController::class, 'destroy'])
+            ->name('kka.destroy')
+            ->middleware('menu.permission:destroy');
+    });
+
+
+Route::prefix('temuan')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [TemuanController::class, 'index'])
+            ->name('temuan.index')
+            ->middleware('menu.permission:index');
+        Route::get('/temuan/{temuan}', [TemuanController::class, 'show'])
+            ->name('temuan.show')
+            ->middleware('menu.permission:show');
+        Route::get('/data', [TemuanController::class, 'data'])
+            ->name(name: 'temuan.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [TemuanController::class, 'create'])
+            ->name('temuan.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [TemuanController::class, 'store'])
+            ->name('temuan.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{temuan}', [TemuanController::class, 'edit'])
+            ->name('temuan.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{temuan}', [TemuanController::class, 'update'])
+            ->name('temuan.update')
+            ->middleware('menu.permission:update');
+        Route::delete('/destroy/{temuan}', [TemuanController::class, 'destroy'])
+            ->name('temuan.destroy')
             ->middleware('menu.permission:destroy');
     });
 

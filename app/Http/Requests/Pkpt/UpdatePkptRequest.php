@@ -18,15 +18,15 @@ class UpdatePkptRequest extends FormRequest
             'bulan' => 'nullable|integer|min:1|max:12',
             'no_pkpt' => 'required|string|max:255',
 
-            'auditi' => 'required|string|max:255',
+            'auditi_id' => 'required|exists:auditis,id',
             'ruang_lingkup' => 'nullable|string|max:255',
             'sasaran' => 'required|string|max:255',
             'jenis_pengawasan' => 'required|in:REVIEW,AUDIT,PENGAWASAN,EVALUASI,MONITORING,PRA_REVIEW',
 
-            'jadwal_rmp_bulan' => 'nullable|string|max:50',
-            'jadwal_rsp_bulan' => 'nullable|string|max:50',
-            'jadwal_rpl_bulan' => 'nullable|string|max:50',
-            'jadwal_hp_hari' => 'nullable|integer|min:0',
+            'jadwal_rmp_bulan' => 'nullable|integer|between:1,12',
+            'jadwal_rsp_bulan' => 'nullable|integer|between:1,12',
+            'jadwal_rpl_bulan' => 'nullable|integer|between:1,12',
+            'jadwal_hp_hari'   => 'nullable|integer|min:1',
 
             'irbanwil' => 'nullable|string|max:255',
             'auditor_ringkas' => 'nullable|string|max:255',

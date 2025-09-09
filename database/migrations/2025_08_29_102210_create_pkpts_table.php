@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('no_pkpt')->unique();
 
             // Kolom utama
-            $table->string('auditi');                 // contoh: "PM" atau nama OPD (pakai teks bebas agar fleksibel)
+            $table->foreignId('auditi_id')->constrained('auditis')->cascadeOnDelete(); // contoh: "PM" atau nama OPD (pakai teks bebas agar fleksibel)
             $table->string('ruang_lingkup')->nullable(); // contoh: "PM"
             $table->string('sasaran');                // contoh: "Pendampingan LPPD"
             $table->enum('jenis_pengawasan', ['REVIEW', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING'])

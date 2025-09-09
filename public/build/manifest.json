@@ -68,7 +68,7 @@
     "isEntry": true
   },
   "resources/js/dashboard.js": {
-    "file": "assets/dashboard-BMLSQaUP.js",
+    "file": "assets/dashboard-CFF2H3vD.js",
     "name": "dashboard",
     "src": "resources/js/dashboard.js",
     "isEntry": true,
@@ -77,9 +77,10 @@
     ],
     "dynamicImports": [
       "resources/js/pages/dashboard.js",
-      "resources/js/pages/master/customers.js",
-      "resources/js/pages/master/products.js",
-      "resources/js/pages/pkpt.js",
+      "resources/js/pages/master/auditi.js",
+      "resources/js/pages/pelaksanaan/lha.js",
+      "resources/js/pages/pelaksanaan/temuan.js",
+      "resources/js/pages/perencanaan/pkpt.js",
       "resources/js/pages/profile.js",
       "resources/js/pages/setting/approval_routes.js",
       "resources/js/pages/setting/menu.js",
@@ -105,30 +106,40 @@
     "src": "resources/js/pages/dashboard.js",
     "isDynamicEntry": true
   },
-  "resources/js/pages/master/customers.js": {
-    "file": "assets/customers-C4KEJVwM.js",
-    "name": "customers",
-    "src": "resources/js/pages/master/customers.js",
+  "resources/js/pages/master/auditi.js": {
+    "file": "assets/auditi-hKlXVCze.js",
+    "name": "auditi",
+    "src": "resources/js/pages/master/auditi.js",
     "isDynamicEntry": true,
     "imports": [
       "_routes-D3ctfpXk.js",
       "_parse-B3pZ8sEA.js"
     ]
   },
-  "resources/js/pages/master/products.js": {
-    "file": "assets/products-D7Qsi5i7.js",
-    "name": "products",
-    "src": "resources/js/pages/master/products.js",
+  "resources/js/pages/pelaksanaan/lha.js": {
+    "file": "assets/lha-DVxcgh3Q.js",
+    "name": "lha",
+    "src": "resources/js/pages/pelaksanaan/lha.js",
     "isDynamicEntry": true,
     "imports": [
       "_routes-D3ctfpXk.js",
       "_parse-B3pZ8sEA.js"
     ]
   },
-  "resources/js/pages/pkpt.js": {
-    "file": "assets/pkpt-C5s3MJIi.js",
+  "resources/js/pages/pelaksanaan/temuan.js": {
+    "file": "assets/temuan-C3u_ZUOs.js",
+    "name": "temuan",
+    "src": "resources/js/pages/pelaksanaan/temuan.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_routes-D3ctfpXk.js",
+      "_parse-B3pZ8sEA.js"
+    ]
+  },
+  "resources/js/pages/perencanaan/pkpt.js": {
+    "file": "assets/pkpt-B-TkUtiE.js",
     "name": "pkpt",
-    "src": "resources/js/pages/pkpt.js",
+    "src": "resources/js/pages/perencanaan/pkpt.js",
     "isDynamicEntry": true,
     "imports": [
       "_routes-D3ctfpXk.js",
@@ -205,7 +216,7 @@
     ]
   },
   "resources/js/pages/transaksi/sales_orders.js": {
-    "file": "assets/sales_orders-DoP0RtEj.js",
+    "file": "assets/sales_orders-Ci5Jrrs8.js",
     "name": "sales_orders",
     "src": "resources/js/pages/transaksi/sales_orders.js",
     "isDynamicEntry": true,
