@@ -79,8 +79,8 @@ class MenuSeeder extends Seeder
                 'updated_at'  => Carbon::now(),
             ],
             [
-                'title'       => 'KKA',
-                'route'       => 'kka',
+                'title'       => 'Temuan',
+                'route'       => 'temuan',
                 'parent_id'   => '5',
                 'icon'        => null,
                 'order'       => 3,
