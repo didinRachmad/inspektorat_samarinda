@@ -42,6 +42,8 @@ return new class extends Migration
             $table->string('auditor_ringkas')->nullable();       // contoh tampilan singkat: "Daniel, Roby" (opsional)
             $table->text('keterangan')->nullable();
 
+            $table->integer('pkpt')->default(0);
+
             // Audit trail
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();

@@ -13,19 +13,13 @@ use Yajra\DataTables\DataTables;
 use Auth;
 use Carbon\Carbon;
 
-class PkptController extends Controller
+class NonPkptController extends Controller
 {
-    /**
-     * Tampilkan halaman index (list PKPT).
-     */
     public function index()
     {
-        return view('perencanaan.pkpt.index');
+        return view('perencanaan.non_pkpt.index');
     }
 
-    /**
-     * Endpoint DataTables (server-side).
-     */
     public function data()
     {
         $activeMenu = currentMenu();
@@ -66,7 +60,7 @@ class PkptController extends Controller
             ->leftJoin('auditis', 'auditis.id', '=', 'pkpts.auditi_id')
             ->leftJoinSub($subJabatans, 'jabatans', function ($join) {
                 $join->on('pkpts.id', '=', 'jabatans.pkpt_id');
-            })->where('pkpts.pkpt', 1);
+            })->where('pkpts.pkpt', 0);
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -123,7 +117,7 @@ class PkptController extends Controller
     public function create()
     {
         $auditis = Auditi::orderBy('nama_auditi')->get();
-        return view('perencanaan.pkpt.create', compact('auditis'));
+        return view('perencanaan.non_pkpt.create', compact('auditis'));
     }
 
     /**
@@ -178,7 +172,7 @@ class PkptController extends Controller
         $pkpt->load('jabatans', 'auditi');
         $auditis = Auditi::orderBy('nama_auditi')->get();
 
-        return view('perencanaan.pkpt.edit', compact('pkpt', 'auditis'));
+        return view('perencanaan.non_pkpt.edit', compact('pkpt', 'auditis'));
     }
 
     /**

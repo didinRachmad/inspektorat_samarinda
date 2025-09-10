@@ -8,9 +8,15 @@ use App\Models\Menu;
 if (!function_exists('currentMenu')) {
     function currentMenu()
     {
-        $route = Str::before(Route::currentRouteName(), '.');
-        return Cache::rememberForever("menu_{$route}", function () use ($route) {
-            return Menu::where('route', $route)->first();
+        $routeName = Route::currentRouteName();
+        if (!$routeName) {
+            return null;
+        }
+
+        $cacheKey = "menu_{$routeName}";
+
+        return Cache::remember($cacheKey, now()->addHour(), function () use ($routeName) {
+            return Menu::where('route', Str::before($routeName, '.'))->first();
         });
     }
 }

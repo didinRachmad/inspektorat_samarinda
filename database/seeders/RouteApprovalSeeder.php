@@ -17,7 +17,7 @@ class RouteApprovalSeeder extends Seeder
         $superAdmin = Role::where('name', 'super_admin')->firstOrFail();
 
         // Daftar module yang butuh approval route
-        $modules = ['pkpt'];
+        $modules = ['temuan'];
 
         foreach ($modules as $module) {
             // Assign super_admin sebagai sequence 1 dan 2 (atau sesuai kebutuhan)

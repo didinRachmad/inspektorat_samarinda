@@ -2,12 +2,12 @@ import route from "@/routes";
 import AutoNumeric from "autonumeric";
 
 const routes = {
-    datatable: () => route("pkpt.data"),
+    datatable: () => route("non_pkpt.data"),
 };
 
-class PkptPage {
+class NonPkptPage {
     constructor() {
-        this.pageName = "PKPT";
+        this.pageName = "Non PKPT";
         this.datatableEl = $("#datatables");
     }
 
@@ -175,4 +175,4 @@ class PkptPage {
     }
 }
 
-export default new PkptPage();
+export default new NonPkptPage();

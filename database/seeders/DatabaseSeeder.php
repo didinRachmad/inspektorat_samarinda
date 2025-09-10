@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminRoleSeeder::class);
         $this->call(RouteApprovalSeeder::class);
         $this->call(AuditiSeeder::class);
+        $this->call(KodeTemuanSeeder::class);
+        $this->call(KodeRekomendasiSeeder::class);
         $this->call(PkptSeeder::class);
+        $this->call(NonPkptSeeder::class);
     }
 }

@@ -177,6 +177,11 @@ class RoleController extends Controller
             Cache::forget('menu_tree_role_' . $role->id);
             Cache::forget('has_profile_access_role_' . $role->id);
 
+            $routes = Menu::whereNotNull('route')->pluck('route');
+            foreach ($routes as $route) {
+                Cache::forget("menu_{$route}");
+            }
+
             // commit transaksi
             DB::commit();
 

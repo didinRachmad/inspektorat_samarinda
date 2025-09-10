@@ -3,155 +3,48 @@
 namespace Database\Seeders;
 
 use App\Models\Menu;
-use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MenuSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $menus = [
-            [
-                'title'       => 'Master',
-                'route'       => null,
-                'parent_id'   => null,
-                'icon'        => 'storage',
-                'order'       => 1,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Auditi',
-                'route'       => 'auditi',
-                'parent_id'   => '1',
-                'icon'        => null,
-                'order'       => 1,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Perencanaan',
-                'route'       => null,
-                'parent_id'   => null,
-                'icon'        => 'event_note',
-                'order'       => 2,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'PKPT',
-                'route'       => 'pkpt',
-                'parent_id'   => '3',
-                'icon'        => null,
-                'order'       => 1,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Pelaksanaan',
-                'route'       => null,
-                'parent_id'   => null,
-                'icon'        => 'play_circle',
-                'order'       => 2,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'LHA',
-                'route'       => 'lha',
-                'parent_id'   => '5',
-                'icon'        => null,
-                'order'       => 1,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'KKA',
-                'route'       => 'kka',
-                'parent_id'   => '5',
-                'icon'        => null,
-                'order'       => 2,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Temuan',
-                'route'       => 'temuan',
-                'parent_id'   => '5',
-                'icon'        => null,
-                'order'       => 3,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Setting',
-                'route'       => null,
-                'parent_id'   => null,
-                'icon'        => 'settings',
-                'order'       => 4,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Roles',
-                'route'       => 'roles',
-                'parent_id'   => '9',
-                'icon'        => null,
-                'order'       => 1,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Permissions',
-                'route'       => 'permissions',
-                'parent_id'   => '9',
-                'icon'        => null,
-                'order'       => 2,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Users',
-                'route'       => 'users',
-                'parent_id'   => '9',
-                'icon'        => null,
-                'order'       => 3,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Menus',
-                'route'       => 'menus',
-                'parent_id'   => '9',
-                'icon'        => null,
-                'order'       => 4,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Approval Routes',
-                'route'       => 'approval_routes',
-                'parent_id'   => '9',
-                'icon'        => null,
-                'order'       => 5,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
-            [
-                'title'       => 'Profile',
-                'route'       => 'profile',
-                'parent_id'   => null,
-                'icon'        => 'manage_accounts',
-                'order'       => 10,
-                'created_at'  => Carbon::now(),
-                'updated_at'  => Carbon::now(),
-            ],
+            ['title' => 'Master', 'route' => null, 'icon' => 'storage', 'order' => 1, 'parent_title' => null],
+            ['title' => 'Auditi', 'route' => 'auditi', 'icon' => null, 'order' => 1, 'parent_title' => 'Master'],
+            ['title' => 'Kode Temuan', 'route' => 'kode_temuan', 'icon' => null, 'order' => 2, 'parent_title' => 'Master'],
+            ['title' => 'Kode Rekomendasi', 'route' => 'kode_rekomendasi', 'icon' => null, 'order' => 3, 'parent_title' => 'Master'],
+            ['title' => 'Perencanaan', 'route' => null, 'icon' => 'event_note', 'order' => 2, 'parent_title' => null],
+            ['title' => 'PKPT', 'route' => 'pkpt', 'icon' => null, 'order' => 1, 'parent_title' => 'Perencanaan'],
+            ['title' => 'Non PKPT', 'route' => 'non_pkpt', 'icon' => null, 'order' => 2, 'parent_title' => 'Perencanaan'],
+            ['title' => 'Pelaksanaan', 'route' => null, 'icon' => 'play_circle', 'order' => 3, 'parent_title' => null],
+            ['title' => 'LHA', 'route' => 'lha', 'icon' => null, 'order' => 1, 'parent_title' => 'Pelaksanaan'],
+            ['title' => 'KKA', 'route' => 'kka', 'icon' => null, 'order' => 2, 'parent_title' => 'Pelaksanaan'],
+            ['title' => 'Temuan', 'route' => 'temuan', 'icon' => null, 'order' => 3, 'parent_title' => 'Pelaksanaan'],
+            ['title' => 'Setting', 'route' => null, 'icon' => 'settings', 'order' => 4, 'parent_title' => null],
+            ['title' => 'Roles', 'route' => 'roles', 'icon' => null, 'order' => 1, 'parent_title' => 'Setting'],
+            ['title' => 'Permissions', 'route' => 'permissions', 'icon' => null, 'order' => 2, 'parent_title' => 'Setting'],
+            ['title' => 'Users', 'route' => 'users', 'icon' => null, 'order' => 3, 'parent_title' => 'Setting'],
+            ['title' => 'Menus', 'route' => 'menus', 'icon' => null, 'order' => 4, 'parent_title' => 'Setting'],
+            ['title' => 'Approval Routes', 'route' => 'approval_routes', 'icon' => null, 'order' => 5, 'parent_title' => 'Setting'],
+            ['title' => 'Profile', 'route' => 'profile', 'icon' => 'manage_accounts', 'order' => 10, 'parent_title' => null],
         ];
 
-        Menu::insert($menus);
+        foreach ($menus as $menu) {
+            $parentId = null;
+
+            if ($menu['parent_title']) {
+                $parent = Menu::where('title', $menu['parent_title'])->first();
+                $parentId = $parent?->id;
+            }
+
+            Menu::create([
+                'title'     => $menu['title'],
+                'route'     => $menu['route'],
+                'parent_id' => $parentId,
+                'icon'      => $menu['icon'],
+                'order'     => $menu['order'],
+            ]);
+        }
     }
 }

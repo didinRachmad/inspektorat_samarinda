@@ -6,10 +6,13 @@ use App\Http\Controllers\Admin\Setting\UserManagementController;
 use App\Http\Controllers\Admin\Setting\MenuController;
 use App\Http\Controllers\Admin\Setting\ApprovalRouteController;
 use App\Http\Controllers\Admin\Master\AuditiController;
+use App\Http\Controllers\Admin\Master\KodeRekomendasiController;
+use App\Http\Controllers\Admin\Master\KodeTemuanController;
 use App\Http\Controllers\Admin\OngkirController;
 use App\Http\Controllers\Admin\Pelaksanaan\KkaController;
 use App\Http\Controllers\Admin\Pelaksanaan\LhaController;
 use App\Http\Controllers\Admin\Pelaksanaan\TemuanController;
+use App\Http\Controllers\Admin\Perencanaan\NonPkptController;
 use App\Http\Controllers\Admin\Perencanaan\PkptController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SearchController;
@@ -233,6 +236,62 @@ Route::prefix('auditi')
             ->name('auditi.getAuditi');
     });
 
+Route::prefix('kode_temuan')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [KodeTemuanController::class, 'index'])
+            ->name('kode_temuan.index')
+            ->middleware('menu.permission:index');
+        Route::get('/data', [KodeTemuanController::class, 'data'])
+            ->name('kode_temuan.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [KodeTemuanController::class, 'create'])
+            ->name('kode_temuan.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [KodeTemuanController::class, 'store'])
+            ->name('kode_temuan.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{kode_temuan}', [KodeTemuanController::class, 'edit'])
+            ->name('kode_temuan.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{kode_temuan}', [KodeTemuanController::class, 'update'])
+            ->name('kode_temuan.update')
+            ->middleware('menu.permission:update');
+        Route::delete('/destroy/{kode_temuan}', [KodeTemuanController::class, 'destroy'])
+            ->name('kode_temuan.destroy')
+            ->middleware('menu.permission:destroy');
+        Route::get('/getAuditi', [KodeTemuanController::class, 'getAuditi'])
+            ->name('kode_temuan.getAuditi');
+    });
+
+Route::prefix('kode_rekomendasi')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [KodeRekomendasiController::class, 'index'])
+            ->name('kode_rekomendasi.index')
+            ->middleware('menu.permission:index');
+        Route::get('/data', [KodeRekomendasiController::class, 'data'])
+            ->name('kode_rekomendasi.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [KodeRekomendasiController::class, 'create'])
+            ->name('kode_rekomendasi.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [KodeRekomendasiController::class, 'store'])
+            ->name('kode_rekomendasi.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{kode_rekomendasi}', [KodeRekomendasiController::class, 'edit'])
+            ->name('kode_rekomendasi.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{kode_rekomendasi}', [KodeRekomendasiController::class, 'update'])
+            ->name('kode_rekomendasi.update')
+            ->middleware('menu.permission:update');
+        Route::delete('/destroy/{kode_rekomendasi}', [KodeRekomendasiController::class, 'destroy'])
+            ->name('kode_rekomendasi.destroy')
+            ->middleware('menu.permission:destroy');
+        Route::get('/getAuditi', [KodeRekomendasiController::class, 'getAuditi'])
+            ->name('kode_rekomendasi.getAuditi');
+    });
+
 Route::prefix('transaksi_sales_orders')
     ->middleware('auth')
     ->group(function () {
@@ -342,6 +401,32 @@ Route::prefix('pkpt')
             ->middleware('menu.permission:update');
         Route::delete('/destroy/{pkpt}', [PkptController::class, 'destroy'])
             ->name('pkpt.destroy')
+            ->middleware('menu.permission:destroy');
+    });
+
+Route::prefix('non_pkpt')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [NonPkptController::class, 'index'])
+            ->name('non_pkpt.index')
+            ->middleware('menu.permission:index');
+        Route::get('/data', [NonPkptController::class, 'data'])
+            ->name(name: 'non_pkpt.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [NonPkptController::class, 'create'])
+            ->name('non_pkpt.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [NonPkptController::class, 'store'])
+            ->name('non_pkpt.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{pkpt}', [NonPkptController::class, 'edit'])
+            ->name('non_pkpt.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{pkpt}', [NonPkptController::class, 'update'])
+            ->name('non_pkpt.update')
+            ->middleware('menu.permission:update');
+        Route::delete('/destroy/{pkpt}', [NonPkptController::class, 'destroy'])
+            ->name('non_pkpt.destroy')
             ->middleware('menu.permission:destroy');
     });
 

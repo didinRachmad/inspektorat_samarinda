@@ -1,12 +1,12 @@
 import route from "@/routes";
 
 const routes = {
-    datatable: () => route("auditi.data"),
+    datatable: () => route("kode_temuan.data"),
 };
 
-class AuditiPage {
+class KodeTemuanPage {
     constructor() {
-        this.pageName = "Master Auditi";
+        this.pageName = "Master Kode Temuan";
         this.datatableEl = $("#datatables");
     }
 
@@ -46,10 +46,10 @@ class AuditiPage {
                     searchable: false,
                 },
                 { data: "id", name: "id", visible: false },
-                { data: "kode_auditi", name: "kode_auditi" },
-                { data: "nama_auditi", name: "nama_auditi" },
-                { data: "alamat", name: "alamat" },
-                { data: "telepon", name: "telepon" },
+                { data: "kode", name: "kode" },
+                { data: "nama_temuan", name: "nama_temuan" },
+                { data: "parent_id", name: "parent_id", visible: false }, // opsional ditampilkan
+                { data: "level", name: "level", className: "text-center" },
                 {
                     data: null,
                     orderable: false,
@@ -97,7 +97,7 @@ class AuditiPage {
                 [20, 50, -1],
                 [20, 50, "Semua"],
             ],
-            order: [[1, "desc"]],
+            order: [[2, "asc"]], // urut berdasarkan kode
             info: true,
             language: {
                 sEmptyTable: "Tidak ada data yang tersedia di tabel",
@@ -123,4 +123,4 @@ class AuditiPage {
     }
 }
 
-export default new AuditiPage();
+export default new KodeTemuanPage();

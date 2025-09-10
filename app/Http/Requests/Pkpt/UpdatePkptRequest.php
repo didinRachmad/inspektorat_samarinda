@@ -32,6 +32,8 @@ class UpdatePkptRequest extends FormRequest
             'auditor_ringkas' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:500',
 
+            'pkpt'   => 'nullable|integer|min:0',
+
             'jabatans' => 'required|array|min:1',
             'jabatans.*.jabatan' => 'required|in:PJ,WPJ,PT,KT,AT',
             'jabatans.*.jumlah' => 'nullable|integer|min:0',

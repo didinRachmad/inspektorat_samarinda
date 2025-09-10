@@ -8,7 +8,7 @@ use App\Models\Auditi;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
-class PkptSeeder extends Seeder
+class NonPkptSeeder extends Seeder
 {
     protected $jumlahData = 10;
 
@@ -56,7 +56,7 @@ class PkptSeeder extends Seeder
                 'jadwal_rpl_bulan' => $faker->numberBetween($bulanSekarang, 12),
                 'jadwal_hp_hari' => $faker->numberBetween(10, 20),
                 'irbanwil' => $faker->randomElement($this->irbanwilList),
-                'pkpt' => 1,
+                'pkpt' => 0,
             ]);
 
             // Detail jabatan dinamis
