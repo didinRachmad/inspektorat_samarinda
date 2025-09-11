@@ -23,11 +23,13 @@
                                 <tr>
                                     <th>No</th>
                                     <th>ID</th>
-                                    <th>PKPT No</th>
-                                    <th>PKPT Auditi</th>
-                                    <th>PKPT Sasaran</th>
-                                    <th>Nomor Temuan</th>
-                                    <th>Tanggal</th>
+                                    <th>Nomor LHA</th>
+                                    <th>Judul</th>
+                                    <th>Kode</th>
+                                    <th>Kondisi</th>
+                                    <th>Kriteria</th>
+                                    <th>Sebab</th>
+                                    <th>Akibat</th>
                                     <th>Rekomendasi</th>
                                     <th>Aksi</th>
                                 </tr>

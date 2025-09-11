@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('temuan_id')->constrained('temuans')->onDelete('cascade');
 
-            $table->string('kode_rekomendasi')->nullable();
+            $table->foreignId('kode_rekomendasi_id')->constrained('kode_rekomendasis')->onDelete('restrict');
             $table->text('rekomendasi_temuan');
 
             $table->timestamps();

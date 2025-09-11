@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('lha_id')->constrained('lhas')->onDelete('cascade'); // relasi ke LHA
 
             $table->string('judul_temuan');
-            $table->string('kode_temuan')->unique();
+            $table->foreignId('kode_temuan_id')->constrained('kode_temuans')->onDelete('restrict');
 
             $table->text('kondisi_temuan');
             $table->text('kriteria_temuan')->nullable();

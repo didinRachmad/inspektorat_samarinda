@@ -25,8 +25,15 @@
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Kode Temuan</label>
-        <input type="text" name="kode_temuan" class="form-control"
-            value="{{ old('kode_temuan', $temuan->kode_temuan ?? '') }}">
+        <select name="kode_temuan_id" class="form-select" required>
+            <option value="">-- Pilih Kode Temuan --</option>
+            @foreach ($kodeTemuans as $kt)
+                <option value="{{ $kt->id }}"
+                    {{ (old('kode_temuan_id') ?? ($temuan->kode_temuan_id ?? '')) == $kt->id ? 'selected' : '' }}>
+                    {{ $kt->kode }} | {{ $kt->nama_temuan }}
+                </option>
+            @endforeach
+        </select>
     </div>
 
     {{-- Kondisi, Kriteria, Sebab, Akibat --}}
@@ -54,12 +61,22 @@
     <div class="col-md-12 mb-3" id="rekomendasi-wrapper">
         <label class="form-label">Rekomendasi Temuan</label>
         @php $oldRekom = old('rekomendasis', $temuan->rekomendasis ?? []); @endphp
+
         @foreach ($oldRekom as $i => $r)
             <div class="input-group mb-2 rekomendasi-item">
-                <input type="text" name="rekomendasis[{{ $i }}][kode_rekomendasi]" class="form-control"
-                    placeholder="Kode Rekomendasi" value="{{ $r['kode_rekomendasi'] ?? '' }}">
+                <select name="rekomendasis[{{ $i }}][kode_rekomendasi_id]" class="form-select">
+                    <option value="">-- Pilih Kode Rekomendasi --</option>
+                    @foreach ($kodeRekomendasis as $kr)
+                        <option value="{{ $kr->id }}"
+                            {{ ($r['kode_rekomendasi_id'] ?? ($r->kode_rekomendasi_id ?? '')) == $kr->id ? 'selected' : '' }}>
+                            {{ $kr->kode }} | {{ $kr->nama_rekomendasi }}
+                        </option>
+                    @endforeach
+                </select>
+
                 <input type="text" name="rekomendasis[{{ $i }}][rekomendasi_temuan]" class="form-control"
-                    placeholder="Rekomendasi" value="{{ $r['rekomendasi_temuan'] ?? '' }}">
+                    placeholder="Rekomendasi" value="{{ $r['rekomendasi_temuan'] ?? ($r->rekomendasi_temuan ?? '') }}">
+
                 @if ($loop->last)
                     <button type="button" class="btn btn-success add-rekomendasi">+</button>
                 @else
@@ -70,8 +87,14 @@
 
         @if (empty($oldRekom))
             <div class="input-group mb-2 rekomendasi-item">
-                <input type="text" name="rekomendasis[0][kode_rekomendasi]" class="form-control"
-                    placeholder="Kode Rekomendasi">
+                <select name="rekomendasis[0][kode_rekomendasi_id]" class="form-select">
+                    <option value="">-- Pilih Kode Rekomendasi --</option>
+                    @foreach ($kodeRekomendasis as $kr)
+                        <option value="{{ $kr->id }}">{{ $kr->kode }} | {{ $kr->nama_rekomendasi }}
+                        </option>
+                    @endforeach
+                </select>
+
                 <input type="text" name="rekomendasis[0][rekomendasi_temuan]" class="form-control"
                     placeholder="Rekomendasi">
                 <button type="button" class="btn btn-success add-rekomendasi">+</button>

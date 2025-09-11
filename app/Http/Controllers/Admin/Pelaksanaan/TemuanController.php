@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Pelaksanaan;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Temuan\StoreTemuanRequest;
 use App\Http\Requests\Temuan\UpdateTemuanRequest;
+use App\Models\KodeRekomendasi;
+use App\Models\KodeTemuan;
 use App\Models\Lha;
 use App\Models\Temuan;
 use App\Models\Pkpt;
@@ -30,18 +32,20 @@ class TemuanController extends Controller
         $activeMenu = currentMenu();
 
         $query = Temuan::with([
-            'pkpt:id,no_pkpt,auditi_id,sasaran',
-            'pkpt.auditi:id,nama_auditi'
+            'lha',             // ambil data Temuan
+            'rekomendasis',    // ambil daftar rekomendasi
         ])->select('temuans.*');
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('pkpt_no', fn($row) => $row->pkpt->no_pkpt ?? '-')
-            ->addColumn('pkpt_auditi', fn($row) => $row->pkpt->auditi->nama_auditi ?? '-') // ✅ ambil dari relasi auditi
-            ->addColumn('pkpt_sasaran', fn($row) => $row->pkpt->sasaran ?? '-')
-            ->editColumn('nomor_temuan', fn($row) => $row->nomor_temuan ?? '-')
-            ->editColumn('tanggal_temuan', fn($r) => $r->tanggal_temuan ? $r->tanggal_temuan->format('d-m-Y') : '-')
-            ->editColumn('rekomendasi', fn($row) => $row->rekomendasi ? Str::limit($row->rekomendasi, 50) : '-')
+            ->addColumn('lha_no', fn($row) => $row->lha->nomor_lha ?? '-') // nomor Temuan langsung
+            ->addColumn('judul_temuan', fn($row) => $row->judul_temuan ?? '-')
+            ->addColumn('kode_temuan', fn($row) => $row->kode_temuan ?? '-')
+            ->addColumn(
+                'rekomendasi',
+                fn($row) =>
+                $row->rekomendasis->pluck('rekomendasi_temuan')->implode('<br>') ?: '-'
+            )
             ->addColumn('can_show', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'show'))
             ->addColumn('can_edit', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'edit'))
             ->addColumn('can_delete', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'destroy'))
@@ -55,54 +59,62 @@ class TemuanController extends Controller
     public function create()
     {
         $lhas = Lha::orderBy('tanggal_lha', 'desc')->get();
-        return view('pelaksanaan.temuan.create', compact('lhas'));
+        $kodeTemuans = KodeTemuan::with('parent')
+            ->whereNotNull('parent_id')
+            ->get();
+        $kodeRekomendasis = KodeRekomendasi::orderBy('urutan')->get();
+        return view('pelaksanaan.temuan.create', compact('lhas', 'kodeTemuans', 'kodeRekomendasis'));
     }
 
     public function store(StoreTemuanRequest $request)
     {
         DB::beginTransaction();
         try {
-            // Ambil data hasil validasi dari FormRequest
             $data = $request->validated();
 
-            // Ambil bulan & tahun dari tanggal LHA
-            $tanggal = Carbon::parse($data['tanggal_temuan']);
-            $bulan = $tanggal->format('m');
-            $tahun = $tanggal->format('Y');
+            // Simpan temuan utama
+            $temuan = Temuan::create([
+                'lha_id'           => $data['lha_id'],
+                'kode_temuan_id'   => $data['kode_temuan_id'], // relasi foreign key
+                'judul_temuan'     => $data['judul_temuan'],
+                'kondisi_temuan'   => $data['kondisi_temuan'],
+                'kriteria_temuan'  => $data['kriteria_temuan'] ?? null,
+                'sebab_temuan'     => $data['sebab_temuan'] ?? null,
+                'akibat_temuan'    => $data['akibat_temuan'] ?? null,
+            ]);
 
-            // Cari nomor terakhir di bulan & tahun ini
-            $lastTemuan = Temuan::whereYear('tanggal_temuan', $tahun)
-                ->whereMonth('tanggal_temuan', $bulan)
-                ->orderBy('id', 'desc')
-                ->first();
-
-            // Tentukan urutan
-            $urutan = $lastTemuan ? $lastTemuan->id + 1 : 1;
-
-            // Generate nomor otomatis
-            $data['nomor_temuan'] = sprintf("LHA-%02d-%d-%02d", $bulan, $tahun, $urutan);
-
-            // Tambahkan audit trail
-            $data['created_by'] = auth()->id();
-
-            // Upload file jika ada
-            if ($request->hasFile('file_temuan')) {
-                $data['file_temuan'] = $request->file('file_temuan')->store('temuans', 'public');
+            // Simpan rekomendasi (jika ada input array rekomendasi)
+            if ($request->has('rekomendasis')) {
+                foreach ($request->rekomendasis as $r) {
+                    if (!empty($r['rekomendasi_temuan'])) {
+                        $temuan->rekomendasis()->create([
+                            'kode_rekomendasi_id' => $r['kode_rekomendasi_id'] ?? null,
+                            'rekomendasi_temuan'  => $r['rekomendasi_temuan'],
+                        ]);
+                    }
+                }
             }
 
-            // Simpan ke DB
-            Temuan::create($data);
+            // Simpan file (jika ada upload)
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $path = $file->store('temuans', 'public');
+                    $temuan->files()->create([
+                        'file_path' => $path,
+                        'file_name' => $file->getClientOriginalName(),
+                    ]);
+                }
+            }
 
             DB::commit();
-            session()->flash('success', 'LHA berhasil dibuat.');
-            return redirect()->route('temuan.index');
+            return redirect()->route('temuan.index')->with('success', 'Temuan berhasil disimpan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error simpan LHA: ' . $e->getMessage());
-            session()->flash('error', 'Terjadi kesalahan saat menyimpan data.');
-            return redirect()->back()->withInput();
+            \Log::error('Error simpan Temuan: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
         }
     }
+
 
     public function show(Temuan $temuan)
     {
@@ -116,8 +128,12 @@ class TemuanController extends Controller
 
     public function edit(Temuan $temuan)
     {
-        $pkpts = Pkpt::orderBy('tahun', 'desc')->get();
-        return view('pelaksanaan.temuan.edit', compact('temuan', 'pkpts'));
+        $lhas = Lha::orderBy('tanggal_lha', 'desc')->get();
+        $kodeTemuans = KodeTemuan::with('parent')
+            ->whereNotNull('parent_id')
+            ->get();
+        $kodeRekomendasis = KodeRekomendasi::orderBy('urutan')->get();
+        return view('pelaksanaan.temuan.edit', compact('temuan', 'lhas', 'kodeTemuans', 'kodeRekomendasis'));
     }
 
     public function update(UpdateTemuanRequest $request, Temuan $temuan)
@@ -126,24 +142,87 @@ class TemuanController extends Controller
         try {
             $data = $request->validated();
 
-            if ($request->hasFile('file_temuan')) {
-                // hapus file lama jika ada
-                if ($temuan->file_temuan && Storage::disk('public')->exists($temuan->file_temuan)) {
-                    Storage::disk('public')->delete($temuan->file_temuan);
+            // =======================
+            // UPDATE DATA UTAMA
+            // =======================
+            $temuan->update([
+                'lha_id'           => $data['lha_id'],
+                'kode_temuan_id'   => $data['kode_temuan_id'],
+                'judul_temuan'     => $data['judul_temuan'],
+                'kondisi_temuan'   => $data['kondisi_temuan'],
+                'kriteria_temuan'  => $data['kriteria_temuan'] ?? null,
+                'sebab_temuan'     => $data['sebab_temuan'] ?? null,
+                'akibat_temuan'    => $data['akibat_temuan'] ?? null,
+            ]);
+
+            // =======================
+            // REKOMENDASI
+            // =======================
+            $temuan->rekomendasis()->delete();
+            if ($request->has('rekomendasis')) {
+                foreach ($request->rekomendasis as $r) {
+                    if (!empty($r['rekomendasi_temuan'])) {
+                        $temuan->rekomendasis()->create([
+                            'kode_rekomendasi_id' => $r['kode_rekomendasi_id'] ?? null,
+                            'rekomendasi_temuan'  => $r['rekomendasi_temuan'],
+                        ]);
+                    }
                 }
-                $path = $request->file('file_temuan')->store('temuan', 'public');
-                $data['file_temuan'] = $path;
             }
 
-            $temuan->update($data);
-            DB::commit();
+            // =======================
+            // FILE
+            // =======================
+            $fileIds = $request->input('file_ids', []); // file lama yg tetap dipakai
+            $oldFiles = $temuan->files()->get();
 
-            session()->flash('success', 'LHA berhasil diperbarui.');
-            return redirect()->route('temuan.index');
+            // 1. Hapus file lama yg tidak ada di request
+            foreach ($oldFiles as $old) {
+                if (!in_array($old->id, $fileIds)) {
+                    if (\Storage::disk('public')->exists($old->file_path)) {
+                        \Storage::disk('public')->delete($old->file_path);
+                    }
+                    $old->delete();
+                }
+            }
+
+            // 2. Ganti file lama dengan file baru jika ada upload replace
+            if ($request->hasFile('replace_files')) {
+                foreach ($request->file('replace_files') as $id => $newFile) {
+                    $old = $temuan->files()->find($id);
+                    if ($old) {
+                        // hapus file lama fisik
+                        if (\Storage::disk('public')->exists($old->file_path)) {
+                            \Storage::disk('public')->delete($old->file_path);
+                        }
+
+                        // simpan file baru
+                        $path = $newFile->store('temuans', 'public');
+                        $old->update([
+                            'file_path' => $path,
+                            'file_name' => $newFile->getClientOriginalName(),
+                        ]);
+                    }
+                }
+            }
+
+            // 3. Tambah file baru
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $path = $file->store('temuans', 'public');
+                    $temuan->files()->create([
+                        'file_path' => $path,
+                        'file_name' => $file->getClientOriginalName(),
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('temuan.index')->with('success', 'Temuan berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error update LHA: ' . $e->getMessage());
-            return back()->withInput()->with('error', 'Terjadi kesalahan saat update LHA.');
+            \Log::error('Error update Temuan: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat mengupdate data.');
         }
     }
 
@@ -157,12 +236,12 @@ class TemuanController extends Controller
             }
             $temuan->delete();
             DB::commit();
-            session()->flash('success', 'LHA berhasil dihapus.');
+            session()->flash('success', 'Temuan berhasil dihapus.');
             return redirect()->route('temuan.index');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error hapus LHA: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan saat menghapus LHA.');
+            Log::error('Error hapus Temuan: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat menghapus Temuan.');
         }
     }
 }

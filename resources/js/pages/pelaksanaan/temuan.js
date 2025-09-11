@@ -60,16 +60,19 @@ class TemuanPage {
                     searchable: false,
                 },
                 { data: "id", name: "id", visible: false },
-                { data: "pkpt_no", name: "pkpt_no" },
-                { data: "pkpt_auditi", name: "pkpt_auditi" },
-                { data: "pkpt_sasaran", name: "pkpt_sasaran" },
-                { data: "nomor_temuan", name: "nomor_temuan" },
+                { data: "lha_no", name: "lha_no" }, // nomor LHA
+                { data: "judul_temuan", name: "judul_temuan" }, // judul temuan
+                { data: "kode_temuan", name: "kode_temuan" }, // kode temuan
+                { data: "kondisi_temuan", name: "kondisi_temuan" }, // kondisi temuan
+                { data: "kriteria_temuan", name: "kriteria_temuan" }, // kriteria temuan
+                { data: "sebab_temuan", name: "sebab_temuan" }, // sebab temuan
+                { data: "akibat_temuan", name: "akibat_temuan" }, // akibat temuan
                 {
-                    data: "tanggal_temuan",
-                    name: "tanggal_temuan",
-                    className: "text-center",
+                    data: "rekomendasi",
+                    name: "rekomendasi",
+                    orderable: false,
+                    searchable: false,
                 },
-                { data: "rekomendasi", name: "rekomendasi" },
                 {
                     data: null,
                     orderable: false,
@@ -78,36 +81,33 @@ class TemuanPage {
                     render: (data, type, row) => {
                         let buttons = "";
 
-                        // tombol show
                         if (row.can_show) {
                             buttons += `
-                <a href="${row.show_url}" class="btn btn-sm btn-info rounded-4" data-bs-toggle="tooltip" title="Detail">
-                    <i class="bi bi-eye-fill"></i>
-                </a>`;
+        <a href="${row.show_url}" class="btn btn-sm btn-info rounded-4" data-bs-toggle="tooltip" title="Detail">
+            <i class="bi bi-eye-fill"></i>
+        </a>`;
                         }
 
-                        // tombol edit
                         if (row.can_edit) {
                             buttons += `
-                <a href="${row.edit_url}" class="btn btn-sm btn-warning rounded-4" data-bs-toggle="tooltip" title="Edit">
-                    <i class="bi bi-pencil-square"></i>
-                </a>`;
+        <a href="${row.edit_url}" class="btn btn-sm btn-warning rounded-4" data-bs-toggle="tooltip" title="Edit">
+            <i class="bi bi-pencil-square"></i>
+        </a>`;
                         }
 
-                        // tombol delete
                         if (row.can_delete) {
                             buttons += `
-                <form action="${
-                    row.delete_url
-                }" method="POST" class="d-inline form-delete">
-                    <input type="hidden" name="_token" value="${$(
-                        'meta[name="csrf-token"]'
-                    ).attr("content")}">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="button" class="btn btn-sm btn-danger rounded-4 btn-delete" data-bs-toggle="tooltip" title="Hapus">
-                        <i class="bi bi-trash-fill"></i>
-                    </button>
-                </form>`;
+        <form action="${
+            row.delete_url
+        }" method="POST" class="d-inline form-delete">
+            <input type="hidden" name="_token" value="${$(
+                'meta[name="csrf-token"]'
+            ).attr("content")}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="button" class="btn btn-sm btn-danger rounded-4 btn-delete" data-bs-toggle="tooltip" title="Hapus">
+                <i class="bi bi-trash-fill"></i>
+            </button>
+        </form>`;
                         }
 
                         return `<div class="d-flex justify-content-center gap-1">${buttons}</div>`;

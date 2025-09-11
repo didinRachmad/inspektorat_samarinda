@@ -11,7 +11,7 @@ class Temuan extends Model
     protected $fillable = [
         'lha_id',
         'judul_temuan',
-        'kode_temuan',
+        'kode_temuan_id',
         'kondisi_temuan',
         'kriteria_temuan',
         'sebab_temuan',
@@ -21,6 +21,11 @@ class Temuan extends Model
     public function lha()
     {
         return $this->belongsTo(Lha::class);
+    }
+
+    public function kodeTemuan()
+    {
+        return $this->belongsTo(KodeTemuan::class);
     }
 
     public function rekomendasis()
