@@ -81,12 +81,12 @@ class TemuanPage {
                     render: (data, type, row) => {
                         let buttons = "";
 
-                        if (row.can_show) {
-                            buttons += `
-        <a href="${row.show_url}" class="btn btn-sm btn-info rounded-4" data-bs-toggle="tooltip" title="Detail">
-            <i class="bi bi-eye-fill"></i>
-        </a>`;
-                        }
+        //                 if (row.can_show) {
+        //                     buttons += `
+        // <a href="${row.show_url}" class="btn btn-sm btn-info rounded-4" data-bs-toggle="tooltip" title="Detail">
+        //     <i class="bi bi-eye-fill"></i>
+        // </a>`;
+        //                 }
 
                         if (row.can_edit) {
                             buttons += `
