@@ -8,7 +8,7 @@
 @section('dashboard-content')
     <x-breadcrumbs></x-breadcrumbs>
     <div class="card rounded-4 w-100 m-0">
-        <form action="{{ route('pkpt.update', $pkpt->id) }}" method="POST">
+        <form action="{{ route('pkpt.update', $pkpt->id) }}" method="POST" enctype="multipart/form-data">
             @csrf @method('PUT')
             <div class="card-header">
                 <h5 class="card-title">Edit PKPT</h5>

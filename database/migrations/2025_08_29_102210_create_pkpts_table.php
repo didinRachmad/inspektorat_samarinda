@@ -23,8 +23,8 @@ return new class extends Migration
             $table->foreignId('auditi_id')->constrained('auditis')->cascadeOnDelete(); // contoh: "PM" atau nama OPD (pakai teks bebas agar fleksibel)
             $table->string('ruang_lingkup')->nullable(); // contoh: "PM"
             $table->string('sasaran');                // contoh: "Pendampingan LPPD"
-            $table->enum('jenis_pengawasan', ['REVIEW', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING'])
-                ->default('REVIEW');
+            $table->enum('jenis_pengawasan', ['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING'])
+                ->default('REVIU');
 
             // Jadwal pemeriksaan
             $table->tinyInteger('jadwal_rmp_bulan')->nullable(); // 1..12
@@ -52,6 +52,7 @@ return new class extends Migration
 
             $table->index(['tahun', 'bulan']);
             $table->index('irbanwil');
+            $table->string('file_surat_tugas')->nullable();
         });
     }
 

@@ -21,7 +21,7 @@ class UpdatePkptRequest extends FormRequest
             'auditi_id' => 'required|exists:auditis,id',
             'ruang_lingkup' => 'nullable|string|max:255',
             'sasaran' => 'required|string|max:255',
-            'jenis_pengawasan' => 'required|in:REVIEW,AUDIT,PENGAWASAN,EVALUASI,MONITORING,PRA_REVIEW',
+            'jenis_pengawasan' => 'required|in:REVIU,AUDIT,PENGAWASAN,EVALUASI,MONITORING,PRA_REVIU',
 
             'jadwal_rmp_bulan' => 'nullable|integer|between:1,12',
             'jadwal_rsp_bulan' => 'nullable|integer|between:1,12',
@@ -43,6 +43,7 @@ class UpdatePkptRequest extends FormRequest
             'auditors.*.user_id' => 'nullable|exists:users,id',
             'auditors.*.nama_manual' => 'nullable|string|max:255',
             'auditors.*.jabatan' => 'nullable|string|max:50',
+            'file_surat_tugas' => 'nullable|file|mimes:pdf,doc,docx|max:10000', // max 10MB
         ];
     }
 }

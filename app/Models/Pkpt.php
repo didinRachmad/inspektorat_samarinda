@@ -26,6 +26,8 @@ class Pkpt extends Model
         'irbanwil',
         'auditor_ringkas',
         'keterangan',
+        'pkpt',
+        'file_surat_tugas',
         'created_by',
         'updated_by'
     ];

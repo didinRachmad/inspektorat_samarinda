@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Setting\UserManagementController;
 use App\Http\Controllers\Admin\Setting\MenuController;
 use App\Http\Controllers\Admin\Setting\ApprovalRouteController;
 use App\Http\Controllers\Admin\Master\AuditiController;
+use App\Http\Controllers\Admin\Master\IrbanwilController;
 use App\Http\Controllers\Admin\Master\KodeRekomendasiController;
 use App\Http\Controllers\Admin\Master\KodeTemuanController;
 use App\Http\Controllers\Admin\OngkirController;
@@ -234,6 +235,32 @@ Route::prefix('auditi')
             ->middleware('menu.permission:destroy');
         Route::get('/getAuditi', [AuditiController::class, 'getAuditi'])
             ->name('auditi.getAuditi');
+    });
+
+Route::prefix('irbanwil')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [IrbanwilController::class, 'index'])
+            ->name('irbanwil.index')
+            ->middleware('menu.permission:index');
+        Route::get('/data', [IrbanwilController::class, 'data'])
+            ->name('irbanwil.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [IrbanwilController::class, 'create'])
+            ->name('irbanwil.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [IrbanwilController::class, 'store'])
+            ->name('irbanwil.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{irbanwil}', [IrbanwilController::class, 'edit'])
+            ->name('irbanwil.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{irbanwil}', [IrbanwilController::class, 'update'])
+            ->name('irbanwil.update')
+            ->middleware('menu.permission:update');
+        Route::delete('/destroy/{irbanwil}', [IrbanwilController::class, 'destroy'])
+            ->name('irbanwil.destroy')
+            ->middleware('menu.permission:destroy');
     });
 
 Route::prefix('kode_temuan')

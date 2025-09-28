@@ -12,9 +12,15 @@ class Auditi extends Model
     protected $fillable = [
         'nama_auditi',
         'kode_auditi',
+        'irbanwil_id',
         'alamat',
         'telepon',
     ];
+
+    public function irbanwil()
+    {
+        return $this->belongsTo(Irbanwil::class);
+    }
 
     public function pkpts()
     {

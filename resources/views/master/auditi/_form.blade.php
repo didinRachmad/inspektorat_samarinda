@@ -13,6 +13,12 @@
 
     <div class="col-md-4">
         <div class="form-group mb-3">
+            <x-form.select label="Irbanwil" name="irbanwil_id" :options="['' => 'Pilih Irbanwil'] + $irbanwils->pluck('nama', 'id')->toArray()" :value="old('irbanwil_id', $auditi->irbanwil_id ?? '')" />
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group mb-3">
             <x-form.input label="Telepon" name="telepon" type="text" :value="$auditi->telepon ?? ''" />
         </div>
     </div>

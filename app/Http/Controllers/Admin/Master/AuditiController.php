@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auditi\StoreAuditiRequest;
 use App\Http\Requests\Auditi\UpdateAuditiRequest;
 use App\Models\Auditi;
+use App\Models\Irbanwil;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,10 +23,13 @@ class AuditiController extends Controller
     public function data()
     {
         $activeMenu = currentMenu();
-        $query = Auditi::select('id', 'kode_auditi', 'nama_auditi', 'alamat', 'telepon');
+
+        $query = Auditi::with('irbanwil:id,nama')
+            ->select('auditis.id', 'auditis.kode_auditi', 'auditis.nama_auditi', 'auditis.irbanwil_id', 'auditis.alamat', 'auditis.telepon');
 
         return DataTables::of($query)
             ->addIndexColumn()
+            ->addColumn('irbanwil', fn($row) => $row->irbanwil?->nama ?? '-')
             ->addColumn('can_edit', fn($row) => Auth::user()->hasMenuPermission($activeMenu->id, 'edit'))
             ->addColumn('can_delete', fn($row) => Auth::user()->hasMenuPermission($activeMenu->id, 'destroy'))
             ->addColumn('edit_url', fn($row) => route('auditi.edit', $row->id))
@@ -35,7 +39,8 @@ class AuditiController extends Controller
 
     public function create()
     {
-        return view('master.auditi.create');
+        $irbanwils = Irbanwil::all();
+        return view('master.auditi.create', compact('irbanwils'));
     }
 
     public function store(StoreAuditiRequest $request)
@@ -43,7 +48,6 @@ class AuditiController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->validated();
-
             $data['kode_auditi'] = $this->generateKode($data['nama_auditi']);
 
             Auditi::create($data);
@@ -60,15 +64,15 @@ class AuditiController extends Controller
 
     public function edit(Auditi $auditi)
     {
-        return view('master.auditi.edit', compact('auditi'));
+        $irbanwils = Irbanwil::all();
+        return view('master.auditi.edit', compact('auditi', 'irbanwils'));
     }
 
     public function update(UpdateAuditiRequest $request, Auditi $auditi)
     {
-        // Jika tidak ada perubahan data
         if (
-            $request->only(['kode_auditi', 'nama_auditi', 'alamat', 'telepon']) ==
-            $auditi->only(['kode_auditi', 'nama_auditi', 'alamat', 'telepon'])
+            $request->only(['kode_auditi', 'nama_auditi', 'irbanwil_id', 'alamat', 'telepon']) ==
+            $auditi->only(['kode_auditi', 'nama_auditi', 'irbanwil_id', 'alamat', 'telepon'])
         ) {
             return redirect()->route('auditi.index')
                 ->with('info', 'Tidak ada perubahan data.');
@@ -105,15 +109,12 @@ class AuditiController extends Controller
 
     private function generateKode($nama)
     {
-        // Ambil kata-kata dari nama
         $words = explode(' ', strtoupper($nama));
 
-        // Kalau format "Dinas Pariwisata" → ambil huruf depan "Dinas" + ambil 4 huruf awal dari kata kedua
         if (count($words) >= 2) {
             return substr($words[0], 0, 3) . substr($words[1], 0, 3);
         }
 
-        // Default ambil 6 huruf awal dari satu kata
         return substr($words[0], 0, 6);
     }
 

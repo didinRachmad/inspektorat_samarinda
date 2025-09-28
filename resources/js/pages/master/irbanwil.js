@@ -1,38 +1,39 @@
 import route from "@/routes";
 
 const routes = {
-    datatable: () => route("users.data"),
-    getRoles: () => route("roles.getRoles"),
+    datatable: () => route("irbanwil.data"),
 };
 
-class UsersPage {
+class IrbanwilPage {
     constructor() {
-        this.pageName = "Setting Users";
-        this.table = $("#datatables");
-        this.roleSelect = $("#role_id");
+        this.pageName = "Master Irbanwil";
+        this.datatableEl = $("#datatables");
     }
 
+    // Halaman Index
     initIndex() {
         console.log(`Halaman ${this.pageName} Index berhasil dimuat!`);
         this.initDataTable();
     }
 
+    // Halaman Show
     initShow() {
         console.log(`Halaman ${this.pageName} Show berhasil dimuat!`);
     }
 
+    // Halaman Create
     initCreate() {
         console.log(`Halaman ${this.pageName} Create berhasil dimuat!`);
-        this.initRoleSelect();
     }
 
+    // Halaman Edit
     initEdit() {
         console.log(`Halaman ${this.pageName} Edit berhasil dimuat!`);
-        this.initRoleSelect();
     }
 
+    // Inisialisasi DataTable
     initDataTable() {
-        this.table.DataTable({
+        this.datatableEl.DataTable({
             processing: true,
             serverSide: true,
             ajax: routes.datatable(),
@@ -44,11 +45,7 @@ class UsersPage {
                     orderable: false,
                     searchable: false,
                 },
-                { data: "id", name: "id", visible: false },
-                { data: "name", name: "name" },
-                { data: "email", name: "email" },
-                { data: "roles", name: "roles" },
-                { data: "irbanwil", name: "irbanwil" },
+                { data: "nama", name: "nama" },
                 {
                     data: null,
                     orderable: false,
@@ -61,21 +58,8 @@ class UsersPage {
                             buttons += `
                                 <a href="${row.edit_url}" class="btn btn-sm btn-warning rounded-4" data-bs-toggle="tooltip" title="Edit">
                                     <i class="bi bi-pencil-square"></i>
-                                </a> `;
-                        }
-
-                        if (row.can_reset_password) {
-                            buttons += `
-                                <form action="${
-                                    row.reset_password_url
-                                }" method="POST" class="d-inline form-reset-password">
-                                    <input type="hidden" name="_token" value="${$(
-                                        'meta[name="csrf-token"]'
-                                    ).attr("content")}">
-                                    <button type="button" class="btn btn-sm btn-secondary rounded-4 btn-reset-password" data-bs-toggle="tooltip" title="Reset Password">
-                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                    </button>
-                                </form>`;
+                                </a>
+                            `;
                         }
 
                         if (row.can_delete) {
@@ -90,7 +74,8 @@ class UsersPage {
                                     <button type="button" class="btn btn-sm btn-danger rounded-4 btn-delete" data-bs-toggle="tooltip" title="Hapus">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
-                                </form>`;
+                                </form>
+                            `;
                         }
 
                         return `<div class="d-flex justify-content-center gap-1">${buttons}</div>`;
@@ -108,13 +93,7 @@ class UsersPage {
                 [20, 50, -1],
                 [20, 50, "Semua"],
             ],
-            order: [[1, "desc"]],
-            columnDefs: [
-                {
-                    targets: 0,
-                    className: "text-center",
-                },
-            ],
+            order: [[1, "asc"]],
             info: true,
             language: {
                 sEmptyTable: "Tidak ada data yang tersedia di tabel",
@@ -127,47 +106,17 @@ class UsersPage {
                 sSearch: "Cari:",
                 sZeroRecords: "Tidak ditemukan data yang cocok",
                 oAria: {
-                    sSortAscending:
-                        ": aktifkan untuk mengurutkan kolom secara menaik",
+                    sSortAscending: ": aktifkan untuk mengurutkan kolom menaik",
                     sSortDescending:
-                        ": aktifkan untuk mengurutkan kolom secara menurun",
+                        ": aktifkan untuk mengurutkan kolom menurun",
                 },
             },
-            drawCallback: () => {
+            drawCallback: () =>
                 $('[data-bs-toggle="tooltip"]').each(function () {
                     new bootstrap.Tooltip(this);
-                });
-            },
-        });
-    }
-
-    initRoleSelect() {
-        if (!this.roleSelect.length) return;
-
-        this.roleSelect.select2({
-            theme: "bootstrap-5",
-            placeholder: "Pilih role…",
-            allowClear: true,
-            width: "100%",
-            selectionCssClass: "select2--small",
-            dropdownCssClass: "select2--small",
-            ajax: {
-                url: routes.getRoles(),
-                dataType: "json",
-                delay: 250,
-                data: (params) => ({
-                    q: params.term,
                 }),
-                processResults: (data) => ({
-                    results: data.map((role) => ({
-                        id: role.id,
-                        text: role.name,
-                    })),
-                }),
-                cache: true,
-            },
         });
     }
 }
 
-export default new UsersPage();
+export default new IrbanwilPage();

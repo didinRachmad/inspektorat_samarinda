@@ -29,6 +29,7 @@
                                     <th>Auditi</th>
                                     <th>Ruang Lingkup</th>
                                     <th>Sasaran</th>
+                                    <th>Jenis Pengawasan</th>
                                     <th>RMP</th>
                                     <th>RSP</th>
                                     <th>RPL</th>
@@ -39,6 +40,7 @@
                                     <th>KT</th>
                                     <th>AT</th>
                                     <th>Anggaran Total</th>
+                                    <th>Irbanwil</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>

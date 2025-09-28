@@ -8,7 +8,7 @@
 @section('dashboard-content')
     <x-breadcrumbs></x-breadcrumbs>
     <div class="card rounded-4 w-100 m-0">
-        <form action="{{ route('non_pkpt.store') }}" method="POST">
+        <form action="{{ route('non_pkpt.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="card-header">
                 <h5 class="card-title">Tambah PKPT</h5>

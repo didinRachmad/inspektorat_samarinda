@@ -12,20 +12,15 @@ use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class PkptController extends Controller
 {
-    /**
-     * Tampilkan halaman index (list PKPT).
-     */
     public function index()
     {
         return view('perencanaan.pkpt.index');
     }
 
-    /**
-     * Endpoint DataTables (server-side).
-     */
     public function data()
     {
         $activeMenu = currentMenu();
@@ -51,11 +46,13 @@ class PkptController extends Controller
             'auditis.nama_auditi',
             'pkpts.ruang_lingkup',
             'pkpts.sasaran',
+            'pkpts.jenis_pengawasan',
             'pkpts.anggaran_total',
             'pkpts.jadwal_rmp_bulan',
             'pkpts.jadwal_rsp_bulan',
             'pkpts.jadwal_rpl_bulan',
             'pkpts.jadwal_hp_hari',
+            'irbanwils.nama as nama_irbanwil',
             'jabatans.pj',
             'jabatans.wpj',
             'jabatans.pt',
@@ -64,32 +61,42 @@ class PkptController extends Controller
             'jabatans.anggaran_total_calc',
         ])
             ->leftJoin('auditis', 'auditis.id', '=', 'pkpts.auditi_id')
+            ->leftJoin('irbanwils', 'irbanwils.id', '=', 'auditis.irbanwil_id') // ✅ lewat auditis
             ->leftJoinSub($subJabatans, 'jabatans', function ($join) {
                 $join->on('pkpts.id', '=', 'jabatans.pkpt_id');
-            })->where('pkpts.pkpt', 1);
+            })
+            ->where('pkpts.pkpt', 1);
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->editColumn('bulan', function ($row) {
-                return $row->bulan
+            ->editColumn(
+                'bulan',
+                fn($row) =>
+                $row->bulan
                     ? Carbon::create()->month($row->bulan)->translatedFormat('F')
-                    : '-';
-            })
-            ->editColumn('jadwal_rmp_bulan', function ($row) {
-                return $row->jadwal_rmp_bulan
+                    : '-'
+            )
+            ->editColumn(
+                'jadwal_rmp_bulan',
+                fn($row) =>
+                $row->jadwal_rmp_bulan
                     ? Carbon::create()->month($row->jadwal_rmp_bulan)->translatedFormat('F')
-                    : '-';
-            })
-            ->editColumn('jadwal_rsp_bulan', function ($row) {
-                return $row->jadwal_rsp_bulan
+                    : '-'
+            )
+            ->editColumn(
+                'jadwal_rsp_bulan',
+                fn($row) =>
+                $row->jadwal_rsp_bulan
                     ? Carbon::create()->month($row->jadwal_rsp_bulan)->translatedFormat('F')
-                    : '-';
-            })
-            ->editColumn('jadwal_rpl_bulan', function ($row) {
-                return $row->jadwal_rpl_bulan
+                    : '-'
+            )
+            ->editColumn(
+                'jadwal_rpl_bulan',
+                fn($row) =>
+                $row->jadwal_rpl_bulan
                     ? Carbon::create()->month($row->jadwal_rpl_bulan)->translatedFormat('F')
-                    : '-';
-            })
+                    : '-'
+            )
             ->addColumn('anggaran_total', function ($row) {
                 // gunakan anggaran_total summary, fallback ke hasil kalkulasi
                 return (int) ($row->anggaran_total ?: $row->anggaran_total_calc);
@@ -117,41 +124,41 @@ class PkptController extends Controller
             ->make(true);
     }
 
-    /**
-     * Form create PKPT.
-     */
     public function create()
     {
         $auditis = Auditi::orderBy('nama_auditi')->get();
         return view('perencanaan.pkpt.create', compact('auditis'));
     }
 
-    /**
-     * Simpan PKPT baru.
-     */
     public function store(StorePkptRequest $request)
     {
         DB::beginTransaction();
         try {
-            // Ambil bulan & tahun dari input, fallback ke sekarang
             $tahun = $request->input('tahun', date('Y'));
             $bulan = $request->input('bulan', date('m'));
 
             // Ambil urutan terakhir di bulan & tahun ini
             $lastPkpt = Pkpt::whereYear('created_at', $tahun)
                 ->whereMonth('created_at', $bulan)
+                ->where('pkpt', 1)
                 ->orderBy('id', 'desc')
                 ->first();
 
             $urutan = $lastPkpt ? $lastPkpt->id + 1 : 1;
             $no_pkpt = sprintf("PKPT-%02d-%d-%02d", $bulan, $tahun, $urutan);
 
-            // Gabungkan ke validated data
+            // Gabungkan data
             $data = $request->validated();
             $data['no_pkpt'] = $no_pkpt;
-            $data['pkpt'] = 0;
+            $data['pkpt'] = 1;
 
-            // Simpan PKPT
+            // Upload file
+            if ($request->hasFile('file_surat_tugas')) {
+                $file = $request->file('file_surat_tugas');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $data['file_surat_tugas'] = $file->storeAs('pkpt/surat_tugas', $filename, 'public');
+            }
+
             $pkpt = Pkpt::create($data);
 
             // Simpan jabatans (nested array)
@@ -170,9 +177,6 @@ class PkptController extends Controller
         }
     }
 
-    /**
-     * Form edit PKPT.
-     */
     public function edit(Pkpt $pkpt)
     {
         $pkpt->load('jabatans', 'auditi');
@@ -181,14 +185,21 @@ class PkptController extends Controller
         return view('perencanaan.pkpt.edit', compact('pkpt', 'auditis'));
     }
 
-    /**
-     * Update PKPT.
-     */
     public function update(UpdatePkptRequest $request, Pkpt $pkpt)
     {
         DB::beginTransaction();
         try {
-            $pkpt->update($request->validated());
+            $data = $request->validated();
+
+            // Jika ada file baru, hapus lama lalu simpan baru
+            if ($request->hasFile('file_surat_tugas')) {
+                if ($pkpt->file_surat_tugas) {
+                    Storage::disk('public')->delete($pkpt->file_surat_tugas);
+                }
+                $data['file_surat_tugas'] = $request->file('file_surat_tugas')->store('pkpt/surat tugas', 'public');
+            }
+
+            $pkpt->update($data);
 
             // Hapus jabatans lama lalu insert ulang (sederhana)
             $pkpt->jabatans()->delete();
@@ -207,9 +218,6 @@ class PkptController extends Controller
         }
     }
 
-    /**
-     * Hapus PKPT.
-     */
     public function destroy(Pkpt $pkpt)
     {
         DB::beginTransaction();

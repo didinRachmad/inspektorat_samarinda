@@ -30,13 +30,17 @@ class LhaController extends Controller
 
         $query = Lha::with([
             'pkpt:id,no_pkpt,auditi_id,sasaran',
-            'pkpt.auditi:id,nama_auditi'
-        ])->select('lhas.*');
+            'pkpt.auditi:id,nama_auditi,irbanwil_id'
+        ])
+            ->select('lhas.*')
+            ->whereHas('pkpt.auditi', function ($q) {
+                $q->where('irbanwil_id', Auth::user()->irbanwil_id);
+            });
 
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('pkpt_no', fn($row) => $row->pkpt->no_pkpt ?? '-')
-            ->addColumn('pkpt_auditi', fn($row) => $row->pkpt->auditi->nama_auditi ?? '-') // ✅ ambil dari relasi auditi
+            ->addColumn('pkpt_auditi', fn($row) => $row->pkpt->auditi->nama_auditi ?? '-')
             ->addColumn('pkpt_sasaran', fn($row) => $row->pkpt->sasaran ?? '-')
             ->editColumn('nomor_lha', fn($row) => $row->nomor_lha ?? '-')
             ->editColumn('tanggal_lha', fn($r) => $r->tanggal_lha ? $r->tanggal_lha->format('d-m-Y') : '-')
@@ -53,7 +57,15 @@ class LhaController extends Controller
 
     public function create()
     {
-        $pkpts = Pkpt::orderBy('tahun', 'desc')->get();
+        $user = Auth::user();
+
+        $pkpts = Pkpt::with('auditi:id,nama_auditi,irbanwil_id')
+            ->whereHas('auditi', function ($q) use ($user) {
+                $q->where('irbanwil_id', $user->irbanwil_id);
+            })
+            ->orderBy('tahun', 'desc')
+            ->get();
+
         return view('pelaksanaan.lha.create', compact('pkpts'));
     }
 
@@ -115,7 +127,14 @@ class LhaController extends Controller
 
     public function edit(Lha $lha)
     {
-        $pkpts = Pkpt::orderBy('tahun', 'desc')->get();
+        $user = Auth::user();
+
+        $pkpts = Pkpt::with('auditi:id,nama_auditi,irbanwil_id')
+            ->whereHas('auditi', function ($q) use ($user) {
+                $q->where('irbanwil_id', $user->irbanwil_id);
+            })
+            ->orderBy('tahun', 'desc')
+            ->get();
         return view('pelaksanaan.lha.edit', compact('lha', 'pkpts'));
     }
 

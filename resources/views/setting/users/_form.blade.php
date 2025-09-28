@@ -15,6 +15,12 @@
             <x-form.input type="email" label="Email" name="email" :value="$user->email ?? ''" required />
         </div>
     </div>
+    {{-- Role --}}
+    <div class="col-md-4">
+        <div class="form-group mb-3">
+            <x-form.select label="Role" name="role_id" :options="$roles->pluck('name', 'id')->toArray()" :value="$user?->roles->first()?->id ?? ''" required />
+        </div>
+    </div>
     {{-- Password --}}
     <div class="col-md-4">
         <div class="form-group mb-3">
@@ -27,10 +33,8 @@
             <x-form.input type="password" label="Konfirmasi Password" name="password_confirmation" required />
         </div>
     </div>
-    {{-- Role --}}
+    {{-- Irbanwil --}}
     <div class="col-md-4">
-        <div class="form-group mb-3">
-            <x-form.select label="Role" name="role_id" :options="$roles->pluck('name', 'id')->toArray()" :value="$user?->roles->first()?->id ?? ''" required />
-        </div>
+        <x-form.select label="Irbanwil" name="irbanwil_id" :options="['' => 'Pilih Irbanwil'] + $irbanwils->pluck('nama', 'id')->toArray()" :value="old('irbanwil_id', $user->irbanwil_id ?? '')" />
     </div>
 </div>

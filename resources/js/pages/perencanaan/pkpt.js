@@ -14,7 +14,6 @@ class PkptPage {
     initIndex() {
         console.log(`Halaman ${this.pageName} Index berhasil dimuat!`);
         this.initDataTable();
-        this.handleDelete(); // register handler delete
     }
 
     initCreate() {
@@ -47,6 +46,7 @@ class PkptPage {
                 { data: "nama_auditi", name: "auditis.nama_auditi" }, // ✅ relasi langsung
                 { data: "ruang_lingkup", name: "ruang_lingkup" },
                 { data: "sasaran", name: "sasaran" },
+                { data: "jenis_pengawasan", name: "jenis_pengawasan" },
                 { data: "jadwal_rmp_bulan", name: "jadwal_rmp_bulan" },
                 { data: "jadwal_rsp_bulan", name: "jadwal_rsp_bulan" },
                 { data: "jadwal_rpl_bulan", name: "jadwal_rpl_bulan" },
@@ -62,6 +62,7 @@ class PkptPage {
                     className: "text-end",
                     render: $.fn.dataTable.render.number(".", ",", 0, "Rp "),
                 },
+                { data: "nama_irbanwil", name: "nama_irbanwil" },
                 {
                     data: null,
                     orderable: false,
@@ -125,17 +126,6 @@ class PkptPage {
                 $('[data-bs-toggle="tooltip"]').each(function () {
                     new bootstrap.Tooltip(this);
                 }),
-        });
-    }
-
-    // handler delete
-    handleDelete() {
-        document.addEventListener("click", (e) => {
-            const btn = e.target.closest(".btn-delete");
-            if (!btn) return;
-            if (confirm("Yakin hapus data ini?")) {
-                btn.closest("form").submit();
-            }
         });
     }
 

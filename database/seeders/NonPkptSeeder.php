@@ -15,7 +15,7 @@ class NonPkptSeeder extends Seeder
     protected $jabatanList = ['PJ', 'WPJ', 'PT', 'KT', 'AT'];
     protected $ruangLingkupList = ['PM', 'Administrasi', 'Teknis'];
     protected $sasaranList = ['Pendampingan LPPD', 'Evaluasi Kinerja', 'Audit Keuangan'];
-    protected $jenisPengawasanList = ['REVIEW', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING'];
+    protected $jenisPengawasanList = ['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING'];
     protected $irbanwilList = ['SEMUA IRBAN', 'IRBAN I', 'IRBAN II', 'IRBAN III', 'IRBAN IV', 'IRBAN KHUSUS'];
 
     public function run(): void
@@ -33,13 +33,14 @@ class NonPkptSeeder extends Seeder
         // Ambil nomor urut terakhir
         $lastPkpt = Pkpt::whereYear('created_at', now()->year)
             ->whereMonth('created_at', now()->month)
+            ->where('pkpt', 0)
             ->orderByDesc('id')
             ->first();
         $startUrut = $lastPkpt ? (int)substr($lastPkpt->no_pkpt, -2) + 1 : 1;
 
         for ($i = $startUrut; $i < $startUrut + $this->jumlahData; $i++) {
             $noUrut = str_pad($i, 2, '0', STR_PAD_LEFT);
-            $kodeUnik = "PKPT-{$bulanTahun}-{$noUrut}";
+            $kodeUnik = "NONPKPT-{$bulanTahun}-{$noUrut}";
 
             $bulanSekarang = now()->month;
 

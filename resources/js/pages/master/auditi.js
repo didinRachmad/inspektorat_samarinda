@@ -48,6 +48,7 @@ class AuditiPage {
                 { data: "id", name: "id", visible: false },
                 { data: "kode_auditi", name: "kode_auditi" },
                 { data: "nama_auditi", name: "nama_auditi" },
+                { data: "irbanwil", name: "irbanwil" },
                 { data: "alamat", name: "alamat" },
                 { data: "telepon", name: "telepon" },
                 {

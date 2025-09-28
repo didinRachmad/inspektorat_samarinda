@@ -27,6 +27,7 @@
                                     <th>Nama</th>
                                     <th>Email</th>
                                     <th>Role</th>
+                                    <th>Irbanwil</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>

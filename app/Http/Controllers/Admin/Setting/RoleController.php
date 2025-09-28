@@ -151,26 +151,57 @@ class RoleController extends Controller
 
     public function assignMenuPermissions(Request $request, Role $role)
     {
-        // 1) validasi input
         $request->validate([
             'menu_permissions'     => 'array',
             'menu_permissions.*'   => 'array',
             'menu_permissions.*.*' => 'exists:permissions,id',
         ]);
 
-        // 2) mulai transaksi manual
         DB::beginTransaction();
 
         try {
-            // detach semua relasi lama
+            $menuPermissions = $request->input('menu_permissions', []);
+
+            $restrictedMenus = ['roles', 'permissions', 'users', 'menus', 'approval_routes'];
+            $restrictedMenuIds = Menu::whereIn('route', $restrictedMenus)->pluck('id')->toArray();
+
+            // Hapus semua relasi lama
             $role->menus()->detach();
 
-            // attach ulang dengan permission_id di pivot
-            foreach ($request->menu_permissions as $menuId => $permissionIds) {
-                foreach ($permissionIds as $permissionId) {
-                    $role->menus()->attach($menuId, [
-                        'permission_id' => $permissionId,
-                    ]);
+            // 🚫 Jika role super_admin → kunci menu terlarang (selalu set penuh)
+            if ($role->name === 'super_admin') {
+                foreach ($restrictedMenuIds as $restrictedId) {
+                    // Ambil semua permission_id untuk menu tersebut (biar full akses)
+                    $allPermissionIds = \DB::table('permissions')
+                        ->pluck('id')
+                        ->toArray();
+
+                    foreach ($allPermissionIds as $permId) {
+                        $role->menus()->attach($restrictedId, [
+                            'permission_id' => $permId,
+                        ]);
+                    }
+                }
+
+                // Sisanya boleh diproses dari request
+                foreach ($menuPermissions as $menuId => $permissionIds) {
+                    if (in_array($menuId, $restrictedMenuIds)) {
+                        continue; // skip, sudah dikunci di atas
+                    }
+                    foreach ($permissionIds as $permissionId) {
+                        $role->menus()->attach($menuId, [
+                            'permission_id' => $permissionId,
+                        ]);
+                    }
+                }
+            } else {
+                // Kalau bukan super_admin → biasa saja
+                foreach ($menuPermissions as $menuId => $permissionIds) {
+                    foreach ($permissionIds as $permissionId) {
+                        $role->menus()->attach($menuId, [
+                            'permission_id' => $permissionId,
+                        ]);
+                    }
                 }
             }
 
@@ -182,15 +213,18 @@ class RoleController extends Controller
                 Cache::forget("menu_{$route}");
             }
 
-            // commit transaksi
             DB::commit();
 
-            // redirect sukses
+            if (Auth::user()->roles->contains('id', $role->id)) {
+                return redirect()
+                    ->route('dashboard')
+                    ->with('success', "Menu permissions untuk role “{$role->name}” berhasil diperbarui.");
+            }
+
             return redirect()
                 ->route('roles.index')
                 ->with('success', "Menu permissions untuk role “{$role->name}” berhasil diperbarui.");
         } catch (\Exception $e) {
-            // rollback jika gagal
             DB::rollBack();
             \Log::error('Gagal assign menu permissions: ' . $e->getMessage());
 

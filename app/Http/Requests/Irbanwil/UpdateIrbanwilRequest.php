@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Auditi;
+namespace App\Http\Requests\Irbanwil;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreAuditiRequest extends FormRequest
+class UpdateIrbanwilRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +23,12 @@ class StoreAuditiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_auditi' => 'required|string|max:255|unique:auditis,nama_auditi',
-            'kode_auditi' => 'nullable|string|max:100',
-            'irbanwil_id' => [
-                'nullable',
-                'integer',
-                'exists:irbanwils,id',
+            'nama' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('irbanwil', 'nama')->ignore($this->route('irbanwil')),
             ],
-            'alamat'  => 'nullable|string|max:255',
-            'telepon' => 'nullable|string|max:20',
         ];
     }
 }

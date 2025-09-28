@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'irbanwil_id',
     ];
 
     protected $hidden = [
@@ -44,5 +45,10 @@ class User extends Authenticatable
             ->where('role_has_permissions.menu_id', $menuId)
             ->where('permissions.name', $permissionName)
             ->exists();
+    }
+
+    public function irbanwil()
+    {
+        return $this->belongsTo(Irbanwil::class);
     }
 }

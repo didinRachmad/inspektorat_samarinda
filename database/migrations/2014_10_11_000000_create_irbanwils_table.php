@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('auditis', function (Blueprint $table) {
+        Schema::create('irbanwils', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_auditi')->unique();
-            $table->string('kode_auditi')->nullable();
-            $table->foreignId('irbanwil_id')->nullable()->constrained('irbanwils')->nullOnDelete();
-            $table->string('alamat')->nullable();
-            $table->string('telepon')->nullable();
+            $table->string('nama')->unique();
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('auditis');
+        Schema::dropIfExists('irbanwils');
     }
 };

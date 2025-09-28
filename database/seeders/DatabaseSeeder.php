@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Auditi;
+use App\Models\Irbanwil;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MenuSeeder::class);
         $this->call(AdminRoleSeeder::class);
         $this->call(RouteApprovalSeeder::class);
+        $this->call(IrbanwilSeeder::class);
         $this->call(AuditiSeeder::class);
         $this->call(KodeTemuanSeeder::class);
         $this->call(KodeRekomendasiSeeder::class);

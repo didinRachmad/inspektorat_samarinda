@@ -27,11 +27,13 @@ class LhaPage {
     // === Create Page ===
     initCreate() {
         console.log(`Halaman ${this.pageName} Create berhasil dimuat!`);
+        this.initAuditFields();
     }
 
     // === Edit Page ===
     initEdit() {
         console.log(`Halaman ${this.pageName} Edit berhasil dimuat!`);
+        this.initAuditFields();
     }
 
     // === Show Page ===
@@ -144,6 +146,25 @@ class LhaPage {
                     new bootstrap.Tooltip(this);
                 }),
         });
+    }
+
+    initAuditFields() {
+        const pkptSelect = document.getElementById("pkptSelect");
+        const auditFields = document.getElementById("auditFields");
+        if (!pkptSelect || !auditFields) return;
+
+        const toggleAuditFields = () => {
+            const selected = pkptSelect.options[pkptSelect.selectedIndex];
+            const jenis = selected?.getAttribute("data-jenis") || "";
+            if (jenis === "AUDIT") {
+                auditFields.style.display = "block";
+            } else {
+                auditFields.style.display = "none";
+            }
+        };
+
+        pkptSelect.addEventListener("change", toggleAuditFields);
+        toggleAuditFields(); // jalankan saat load (misalnya edit mode)
     }
 
     // === Handler untuk tombol Tambah KKA di Show ===

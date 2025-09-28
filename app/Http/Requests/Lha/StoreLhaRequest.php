@@ -24,7 +24,7 @@ class StoreLhaRequest extends FormRequest
         return [
             'pkpt_id' => 'required|exists:pkpts,id',
             'nomor_lha' => 'nullable|string|max:255',
-            'tanggal_lha' => 'nullable|date',
+            'tanggal_lha' => ['required', 'date', 'after_or_equal:today'],
             'uraian_temuan' => 'nullable|string',
             'rekomendasi' => 'nullable|string',
             'file_lha' => 'nullable|file|mimes:pdf,doc,docx|max:10000', // max 10MB

@@ -30,15 +30,20 @@ class TemuanController extends Controller
     public function data()
     {
         $activeMenu = currentMenu();
+        $user = Auth::user();
 
         $query = Temuan::with([
-            'lha',             // ambil data Temuan
-            'rekomendasis',    // ambil daftar rekomendasi
-        ])->select('temuans.*');
+            'lha.pkpt.auditi',   // ikutkan auditi supaya bisa difilter
+            'rekomendasis',
+        ])
+            ->whereHas('lha.pkpt.auditi', function ($q) use ($user) {
+                $q->where('irbanwil_id', $user->irbanwil_id);
+            })
+            ->select('temuans.*');
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('lha_no', fn($row) => $row->lha->nomor_lha ?? '-') // nomor Temuan langsung
+            ->addColumn('lha_no', fn($row) => $row->lha->nomor_lha ?? '-')
             ->addColumn('judul_temuan', fn($row) => $row->judul_temuan ?? '-')
             ->addColumn('kode_temuan', fn($row) => $row->kode_temuan ?? '-')
             ->addColumn(
@@ -58,11 +63,21 @@ class TemuanController extends Controller
 
     public function create()
     {
-        $lhas = Lha::orderBy('tanggal_lha', 'desc')->get();
+        $user = Auth::user();
+
+        $lhas = Lha::with('pkpt.auditi')
+            ->whereHas('pkpt.auditi', function ($q) use ($user) {
+                $q->where('irbanwil_id', $user->irbanwil_id);
+            })
+            ->orderBy('tanggal_lha', 'desc')
+            ->get();
+
         $kodeTemuans = KodeTemuan::with('parent')
             ->whereNotNull('parent_id')
             ->get();
+
         $kodeRekomendasis = KodeRekomendasi::orderBy('urutan')->get();
+
         return view('pelaksanaan.temuan.create', compact('lhas', 'kodeTemuans', 'kodeRekomendasis'));
     }
 
@@ -128,7 +143,14 @@ class TemuanController extends Controller
 
     public function edit(Temuan $temuan)
     {
-        $lhas = Lha::orderBy('tanggal_lha', 'desc')->get();
+        $user = Auth::user();
+
+        $lhas = Lha::with('pkpt.auditi')
+            ->whereHas('pkpt.auditi', function ($q) use ($user) {
+                $q->where('irbanwil_id', $user->irbanwil_id);
+            })
+            ->orderBy('tanggal_lha', 'desc')
+            ->get();
         $kodeTemuans = KodeTemuan::with('parent')
             ->whereNotNull('parent_id')
             ->get();

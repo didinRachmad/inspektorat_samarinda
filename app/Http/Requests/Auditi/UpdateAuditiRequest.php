@@ -30,8 +30,13 @@ class UpdateAuditiRequest extends FormRequest
                 Rule::unique('auditis', 'nama_auditi')->ignore($this->route('auditi')),
             ],
             'kode_auditi' => 'nullable|string|max:100',
-            'alamat'      => 'nullable|string|max:255',
-            'telepon'     => 'nullable|string|max:20',
+            'irbanwil_id' => [
+                'nullable',
+                'integer',
+                'exists:irbanwils,id',
+            ],
+            'alamat'  => 'nullable|string|max:255',
+            'telepon' => 'nullable|string|max:20',
         ];
     }
 }

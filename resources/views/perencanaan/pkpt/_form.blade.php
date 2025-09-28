@@ -63,7 +63,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Jenis Pengawasan</label>
         <select name="jenis_pengawasan" class="form-select" required>
-            @foreach (['REVIEW', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING', 'PRA_REVIEW'] as $item)
+            @foreach (['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING', 'PRA_REVIU'] as $item)
                 <option value="{{ $item }}" @selected(old('jenis_pengawasan', $pkpt->jenis_pengawasan ?? '') === $item)>{{ $item }}</option>
             @endforeach
         </select>
@@ -179,5 +179,24 @@
         <label class="form-label">Keterangan</label>
         <input type="text" name="keterangan" class="form-control"
             value="{{ old('keterangan', $pkpt->keterangan ?? '') }}">
+    </div>
+</div>
+<hr>
+<div class="row">
+    {{-- File Surat Tugas --}}
+    <div class="col-md-12 mb-3">
+        <label class="form-label">File Surat Tugas</label>
+        <input type="file" name="file_surat_tugas" class="form-control" accept=".pdf,.doc,.docx,.jpg,.png">
+
+        {{-- Jika sudah ada file sebelumnya --}}
+        @if (!empty($pkpt->file_surat_tugas))
+            <div class="mt-2">
+                <p>File saat ini:
+                    <a href="{{ asset('storage/' . $pkpt->file_surat_tugas) }}" target="_blank">
+                        Lihat File
+                    </a>
+                </p>
+            </div>
+        @endif
     </div>
 </div>
