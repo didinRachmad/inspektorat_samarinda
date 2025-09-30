@@ -9,7 +9,7 @@ class TemuanRekomendasi extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['temuan_id', 'kode_rekomendasi_id', 'rekomendasi_temuan'];
+    protected $fillable = ['temuan_id', 'kode_rekomendasi_id', 'rekomendasi_temuan', 'nominal'];
 
     public function temuan()
     {

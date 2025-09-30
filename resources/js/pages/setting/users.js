@@ -47,8 +47,9 @@ class UsersPage {
                 { data: "id", name: "id", visible: false },
                 { data: "name", name: "name" },
                 { data: "email", name: "email" },
-                { data: "roles", name: "roles" },
-                { data: "irbanwil", name: "irbanwil" },
+                { data: "roles_text", name: "roles_text" },
+                { data: "irbanwil_nama", name: "irbanwils.nama" },
+                { data: "auditi_nama", name: "auditis.nama_auditi" },
                 {
                     data: null,
                     orderable: false,
@@ -167,6 +168,36 @@ class UsersPage {
                 cache: true,
             },
         });
+
+        // --- Wrapper elements ---
+        const irbanwilWrapper = $("#irbanwilWrapper");
+        const auditiWrapper = $("#auditiWrapper");
+
+        // --- Tampilkan/Hide berdasarkan role ---
+        const toggleRoleFields = () => {
+            const roleText = this.roleSelect
+                .find("option:selected")
+                .text()
+                .toLowerCase()
+                .trim();
+
+            if (roleText === "auditor") {
+                irbanwilWrapper.removeClass("d-none");
+                auditiWrapper.addClass("d-none");
+            } else if (roleText === "auditi") {
+                auditiWrapper.removeClass("d-none");
+                irbanwilWrapper.addClass("d-none");
+            } else {
+                irbanwilWrapper.addClass("d-none");
+                auditiWrapper.addClass("d-none");
+            }
+        };
+
+        // --- Event listener change ---
+        this.roleSelect.on("change", toggleRoleFields);
+
+        // --- Jalankan sekali untuk set nilai awal (misal saat edit) ---
+        toggleRoleFields();
     }
 }
 

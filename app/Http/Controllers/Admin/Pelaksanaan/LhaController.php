@@ -27,15 +27,19 @@ class LhaController extends Controller
     public function data()
     {
         $activeMenu = currentMenu();
+        $user = Auth::user();
 
         $query = Lha::with([
             'pkpt:id,no_pkpt,auditi_id,sasaran',
             'pkpt.auditi:id,nama_auditi,irbanwil_id'
-        ])
-            ->select('lhas.*')
-            ->whereHas('pkpt.auditi', function ($q) {
-                $q->where('irbanwil_id', Auth::user()->irbanwil_id);
+        ])->select('lhas.*');
+
+        // Jika bukan super_admin, batasi berdasarkan irbanwil
+        if (!$user->hasRole('super_admin')) {
+            $query->whereHas('pkpt.auditi', function ($q) use ($user) {
+                $q->where('irbanwil_id', $user->irbanwil_id);
             });
+        }
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -45,9 +49,9 @@ class LhaController extends Controller
             ->editColumn('nomor_lha', fn($row) => $row->nomor_lha ?? '-')
             ->editColumn('tanggal_lha', fn($r) => $r->tanggal_lha ? $r->tanggal_lha->format('d-m-Y') : '-')
             ->editColumn('rekomendasi', fn($row) => $row->rekomendasi ? Str::limit($row->rekomendasi, 50) : '-')
-            ->addColumn('can_show', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'show'))
-            ->addColumn('can_edit', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'edit'))
-            ->addColumn('can_delete', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'destroy'))
+            ->addColumn('can_show', fn() => $user->hasMenuPermission($activeMenu->id, 'show'))
+            ->addColumn('can_edit', fn() => $user->hasMenuPermission($activeMenu->id, 'edit'))
+            ->addColumn('can_delete', fn() => $user->hasMenuPermission($activeMenu->id, 'destroy'))
             ->addColumn('edit_url', fn($row) => route('lha.edit', $row->id))
             ->addColumn('show_url', fn($row) => route('lha.show', $row->id))
             ->addColumn('delete_url', fn($row) => route('lha.destroy', $row->id))
@@ -59,12 +63,15 @@ class LhaController extends Controller
     {
         $user = Auth::user();
 
-        $pkpts = Pkpt::with('auditi:id,nama_auditi,irbanwil_id')
-            ->whereHas('auditi', function ($q) use ($user) {
+        $pkpts = Pkpt::with('auditi:id,nama_auditi,irbanwil_id');
+
+        if (!$user->hasRole('super_admin')) {
+            $pkpts = $pkpts->whereHas('auditi', function ($q) use ($user) {
                 $q->where('irbanwil_id', $user->irbanwil_id);
-            })
-            ->orderBy('tahun', 'desc')
-            ->get();
+            });
+        }
+
+        $pkpts = $pkpts->orderBy('tahun', 'desc')->get();
 
         return view('pelaksanaan.lha.create', compact('pkpts'));
     }

@@ -2,46 +2,42 @@
 
 namespace Database\Seeders;
 
-use App\Models\Permission;
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\PermissionRegistrar;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        // Super Admin
+        $superAdmin = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('12345678'),
+            ]
+        );
+        $superAdmin->assignRole('super_admin');
 
-        $permissions = [
-            'index',
-            'show',
-            'create',
-            'store',
-            'edit',
-            'update',
-            'destroy',
-            'approve',
-            'print',
-        ];
+        // Auditor
+        $auditor = User::firstOrCreate(
+            ['email' => 'auditor@gmail.com'],
+            [
+                'name' => 'Auditor User',
+                'password' => Hash::make('12345678'),
+            ]
+        );
+        $auditor->assignRole('auditor');
 
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
-        }
-
-        $superAdminRole = Role::create(['name' => 'super_admin']);
-
-        $superAdmin = User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('12345678'),
-        ]);
-        $superAdmin->assignRole($superAdminRole);
+        // Auditi
+        $auditi = User::firstOrCreate(
+            ['email' => 'auditi@gmail.com'],
+            [
+                'name' => 'Auditi User',
+                'password' => Hash::make('12345678'),
+            ]
+        );
+        $auditi->assignRole('auditi');
     }
 }

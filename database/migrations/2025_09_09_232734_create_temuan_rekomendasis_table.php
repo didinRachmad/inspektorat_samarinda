@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->foreignId('kode_rekomendasi_id')->constrained('kode_rekomendasis')->onDelete('restrict');
             $table->text('rekomendasi_temuan');
+            $table->unsignedBigInteger('nominal')->nullable()->default(0);
 
             $table->timestamps();
         });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Setting;
 
 use App\Http\Controllers\Controller;
+use App\Models\Auditi;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Irbanwil;
@@ -30,16 +31,22 @@ class UserManagementController extends Controller
             ->groupBy('model_has_roles.model_id');
 
         $query = User::query()
-            ->select('users.id', 'users.name', 'users.email', 'role_summary.roles_text', 'irbanwils.nama as nama')
+            ->select(
+                'users.id',
+                'users.name',
+                'users.email',
+                'role_summary.roles_text',
+                'irbanwils.nama as irbanwil_nama',
+                'auditis.nama_auditi as auditi_nama'
+            )
             ->leftJoinSub($sub, 'role_summary', function ($join) {
                 $join->on('users.id', '=', 'role_summary.model_id');
             })
-            ->leftJoin('irbanwils', 'users.irbanwil_id', '=', 'irbanwils.id');
+            ->leftJoin('irbanwils', 'users.irbanwil_id', '=', 'irbanwils.id')
+            ->leftJoin('auditis', 'users.auditi_id', '=', 'auditis.id');
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->editColumn('roles', fn($row) => $row->roles_text)
-            ->editColumn('irbanwil', fn($row) => $row->nama ?? '-')
             ->filterColumn('roles', function ($query, $keyword) {
                 $query->whereRaw("role_summary.roles_text LIKE ?", ["%{$keyword}%"]);
             })
@@ -59,7 +66,8 @@ class UserManagementController extends Controller
     {
         $roles = Role::all();
         $irbanwils = Irbanwil::all();
-        return view('setting.users.create', compact('roles', 'irbanwils'));
+        $auditis = Auditi::all();
+        return view('setting.users.create', compact('roles', 'irbanwils', 'auditis'));
     }
 
     public function store(Request $request)
@@ -70,6 +78,7 @@ class UserManagementController extends Controller
             'password'     => 'required|string|min:8|confirmed',
             'role_id'      => 'required|exists:roles,id',
             'irbanwil_id'  => 'nullable|exists:irbanwils,id',
+            'auditi_id' => 'nullable|exists:auditis,id',
         ]);
 
         DB::beginTransaction();
@@ -79,6 +88,7 @@ class UserManagementController extends Controller
                 'email'       => $validated['email'],
                 'password'    => bcrypt($validated['password']),
                 'irbanwil_id' => $validated['irbanwil_id'] ?? null,
+                'auditi_id' => $validated['auditi_id'] ?? null,
             ]);
 
             $role = Role::find($validated['role_id']);
@@ -99,7 +109,8 @@ class UserManagementController extends Controller
     {
         $roles = Role::all();
         $irbanwils = Irbanwil::all();
-        return view('setting.users.edit', compact('user', 'roles', 'irbanwils'));
+        $auditis = Auditi::all();
+        return view('setting.users.edit', compact('user', 'roles', 'irbanwils', 'auditis'));
     }
 
     public function update(Request $request, User $user)
@@ -109,6 +120,7 @@ class UserManagementController extends Controller
             'email'       => 'required|email|unique:users,email,' . $user->id,
             'role_id'     => 'required|exists:roles,id',
             'irbanwil_id' => 'nullable|exists:irbanwils,id',
+            'auditi_id' => 'nullable|exists:auditis,id',
         ]);
 
         DB::beginTransaction();
@@ -117,6 +129,7 @@ class UserManagementController extends Controller
                 'name'        => $validated['name'],
                 'email'       => $validated['email'],
                 'irbanwil_id' => $validated['irbanwil_id'] ?? null,
+                'auditi_id' => $validated['auditi_id'] ?? null,
             ]);
 
             $role = Role::find($validated['role_id']);

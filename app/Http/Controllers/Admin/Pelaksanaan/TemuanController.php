@@ -105,6 +105,7 @@ class TemuanController extends Controller
                         $temuan->rekomendasis()->create([
                             'kode_rekomendasi_id' => $r['kode_rekomendasi_id'] ?? null,
                             'rekomendasi_temuan'  => $r['rekomendasi_temuan'],
+                            'nominal'  => $r['nominal'],
                         ]);
                     }
                 }
@@ -187,6 +188,7 @@ class TemuanController extends Controller
                         $temuan->rekomendasis()->create([
                             'kode_rekomendasi_id' => $r['kode_rekomendasi_id'] ?? null,
                             'rekomendasi_temuan'  => $r['rekomendasi_temuan'],
+                            'nominal'  => $r['nominal'],
                         ]);
                     }
                 }
