@@ -18,6 +18,7 @@ class UpdatePkptRequest extends FormRequest
             'bulan' => 'nullable|integer|min:1|max:12',
             'no_pkpt' => 'required|string|max:255',
 
+            'mandatory_id' => 'required|exists:mandatories,id',
             'auditi_id' => 'required|exists:auditis,id',
             'ruang_lingkup' => 'nullable|string|max:255',
             'sasaran' => 'required|string|max:255',

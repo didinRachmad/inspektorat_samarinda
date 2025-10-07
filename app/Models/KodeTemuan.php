@@ -22,4 +22,14 @@ class KodeTemuan extends Model
     {
         return $this->hasMany(KodeTemuan::class, 'parent_id');
     }
+
+    public function kodeRekomendasis()
+    {
+        return $this->belongsToMany(
+            KodeRekomendasi::class,
+            'kode_rekomendasi_kode_temuan',
+            'kode_temuan_id',
+            'kode_rekomendasi_id'
+        );
+    }
 }

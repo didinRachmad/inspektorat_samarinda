@@ -15,15 +15,16 @@ return new class extends Migration
             $table->id();
 
             // Periode & pengurutan
-            $table->smallInteger('tahun');            // contoh: 2025
-            $table->tinyInteger('bulan')->nullable(); // 1..12 (dokumen per "Bulan Januari/Februari", optional)
+            $table->smallInteger('tahun');
+            $table->tinyInteger('bulan')->nullable();
             $table->string('no_pkpt')->unique();
 
             // Kolom utama
-            $table->foreignId('auditi_id')->constrained('auditis')->cascadeOnDelete(); // contoh: "PM" atau nama OPD (pakai teks bebas agar fleksibel)
+            $table->foreignId('mandatory_id')->constrained('mandatories')->cascadeOnDelete();
+            $table->foreignId('auditi_id')->constrained('auditis')->cascadeOnDelete();
             $table->string('ruang_lingkup')->nullable(); // contoh: "PM"
             $table->string('sasaran');                // contoh: "Pendampingan LPPD"
-            $table->enum('jenis_pengawasan', ['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING'])
+            $table->enum('jenis_pengawasan', ['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING', 'KONSULTING'])
                 ->default('REVIU');
 
             // Jadwal pemeriksaan

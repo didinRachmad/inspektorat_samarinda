@@ -11,6 +11,12 @@ import "simplebar";
 import { initAutoNumeric } from "@/utils/autoNumeric";
 import "./main";
 
+$.fn.tooltip = function () {
+    // Bisa kamu return this supaya chaining tetap jalan
+    return this;
+};
+import "summernote/dist/summernote-bs5.js";
+
 // SweetAlert utilities
 import {
     showAlert,
@@ -18,6 +24,8 @@ import {
     showInputDialog,
     showToast,
 } from "./modules/sweetalert.js";
+
+import "./utils/summernote.js";
 
 // ==================== CLASS DEFINITION ====================
 
@@ -50,6 +58,7 @@ class DashboardApp {
         this.initSearch();
         initAutoNumeric();
         this.loadPageModule();
+        this.initSummernote();
     }
 
     // ——— bootstrap tooltips ———
@@ -304,6 +313,23 @@ class DashboardApp {
         }
 
         container.innerHTML = html;
+    }
+
+    initSummernote() {
+        $(".summernote").each(function () {
+            const rows = $(this).attr("rows") || 3; // default 3
+            const lineHeight = 24; // kira-kira tinggi baris px
+            const dynamicHeight = rows * lineHeight + 40; // tambahan padding
+            $(this).summernote({
+                height: dynamicHeight,
+                toolbar: [
+                    ["style", ["bold", "italic", "underline", "clear"]],
+                    ["font", ["fontsize", "color"]],
+                    ["para", ["ul", "ol", "paragraph"]],
+                    ["view", ["fullscreen"]],
+                ],
+            });
+        });
     }
 }
 

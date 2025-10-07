@@ -33,9 +33,11 @@
                                     @endforeach
                                 </select>
                             </td>
-                            <td><input type="text" name="rekomendasis[{{ $i }}][rekomendasi_temuan]"
-                                    class="form-control rekom-uraian"
-                                    value="{{ $r['rekomendasi_temuan'] ?? ($r->rekomendasi_temuan ?? '') }}"></td>
+                            <td>
+                                <textarea name="rekomendasis[{{ $i }}][rekomendasi_temuan]" class="form-control summernote">
+                                    {{ $r['rekomendasi_temuan'] ?? ($r->rekomendasi_temuan ?? '') }}
+                                </textarea>
+                            </td>
                             <td><input type="text" name="rekomendasis[{{ $i }}][nominal]"
                                     class="form-control rekom-nominal numeric" value="{{ $r['nominal'] ?? 0 }}"></td>
                             <td class="text-center"><button type="button"
@@ -53,7 +55,9 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td><input type="text" name="rekomendasis[0][rekomendasi_temuan]" class="form-control"></td>
+                        <td>
+                            <textarea name="rekomendasis[0][rekomendasi_temuan]" class="form-control summernote"></textarea>
+                        </td>
                         <td><input type="text" name="rekomendasis[0][nominal]" class="form-control numeric"
                                 value="0">
                         </td>

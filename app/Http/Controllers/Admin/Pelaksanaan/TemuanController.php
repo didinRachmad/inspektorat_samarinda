@@ -32,32 +32,34 @@ class TemuanController extends Controller
         $activeMenu = currentMenu();
         $user = Auth::user();
 
-        $query = Temuan::with([
-            'lha.pkpt.auditi',   // ikutkan auditi supaya bisa difilter
-            'rekomendasis',
-        ])
-            ->whereHas('lha.pkpt.auditi', function ($q) use ($user) {
-                $q->where('irbanwil_id', $user->irbanwil_id);
-            })
-            ->select('temuans.*');
+        // Gunakan query builder dengan join untuk efisiensi sort/search
+        $query = Temuan::query()
+            ->select('temuans.*', 'lhas.nomor_lha as lha_no', 'kode_temuans.kode as kode_temuan')
+            ->join('lhas', 'lhas.id', '=', 'temuans.lha_id')
+            ->join('pkpts', 'pkpts.id', '=', 'lhas.pkpt_id')
+            ->join('auditis', 'auditis.id', '=', 'pkpts.auditi_id')
+            ->leftJoin('kode_temuans', 'kode_temuans.id', '=', 'temuans.kode_temuan_id')
+            ->where('auditis.irbanwil_id', $user->irbanwil_id);
 
         return DataTables::of($query)
             ->addIndexColumn()
-            ->addColumn('lha_no', fn($row) => $row->lha->nomor_lha ?? '-')
-            ->addColumn('judul_temuan', fn($row) => $row->judul_temuan ?? '-')
-            ->addColumn('kode_temuan', fn($row) => $row->kode_temuan ?? '-')
-            ->addColumn(
-                'rekomendasi',
-                fn($row) =>
-                $row->rekomendasis->pluck('rekomendasi_temuan')->implode('<br>') ?: '-'
-            )
-            ->addColumn('can_show', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'show'))
-            ->addColumn('can_edit', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'edit'))
-            ->addColumn('can_delete', fn() => Auth::user()->hasMenuPermission($activeMenu->id, 'destroy'))
+            // Tentukan kolom yang boleh mengandung HTML
+            ->rawColumns([
+                'kondisi_temuan',
+                'kriteria_temuan',
+                'sebab_temuan',
+                'akibat_temuan',
+            ])
+            // Kolom permission
+            ->addColumn('can_show', fn() => $user->hasMenuPermission($activeMenu->id, 'show'))
+            ->addColumn('can_edit', fn() => $user->hasMenuPermission($activeMenu->id, 'edit'))
+            ->addColumn('can_delete', fn() => $user->hasMenuPermission($activeMenu->id, 'destroy'))
+
+            // Kolom URL action
             ->addColumn('edit_url', fn($row) => route('temuan.edit', $row->id))
             ->addColumn('show_url', fn($row) => route('temuan.show', $row->id))
             ->addColumn('delete_url', fn($row) => route('temuan.destroy', $row->id))
-            ->rawColumns(['rekomendasi'])
+
             ->make(true);
     }
 
@@ -88,6 +90,18 @@ class TemuanController extends Controller
             $data = $request->validated();
 
             // Simpan temuan utama
+            // Cari nomor terakhir di bulan & tahun ini
+            $lastLha = Lha::whereYear('tanggal_lha', $tahun)
+                ->whereMonth('tanggal_lha', $bulan)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            // Tentukan urutan
+            $urutan = $lastLha ? $lastLha->id + 1 : 1;
+
+            // Generate nomor otomatis
+            $data['nomor_lha'] = sprintf("LHA-%02d-%d-%02d", $bulan, $tahun, $urutan);
+
             $temuan = Temuan::create([
                 'lha_id'           => $data['lha_id'],
                 'kode_temuan_id'   => $data['kode_temuan_id'], // relasi foreign key

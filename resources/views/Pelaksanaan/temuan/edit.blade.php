@@ -8,7 +8,7 @@
 @section('dashboard-content')
     <x-breadcrumbs></x-breadcrumbs>
     <form action="{{ route('temuan.update', $temuan->id) }}" method="POST" enctype="multipart/form-data">
-        @csrf
+        @csrf @method('PUT')
         <div class="card rounded-4 w-100 mb-3">
             <div class="card-header">
                 <h5 class="card-title">Edit Temuan</h5>

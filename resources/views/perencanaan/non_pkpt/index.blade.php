@@ -26,6 +26,7 @@
                                     <th>Tahun</th>
                                     <th>Bulan</th>
                                     <th>No PKPT</th>
+                                    <th>Mandatory</th>
                                     <th>Auditi</th>
                                     <th>Ruang Lingkup</th>
                                     <th>Sasaran</th>

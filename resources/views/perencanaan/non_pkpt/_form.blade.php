@@ -20,10 +20,24 @@
     </div>
 
     {{-- No PKPT --}}
-    <div class="col-md-6 mb-3">
+    <div class="col-md-3 mb-3">
         <label class="form-label">No PKPT</label>
         <input type="text" name="no_pkpt" class="form-control" value="{{ old('no_pkpt', $pkpt->no_pkpt ?? '') }}"
             readonly>
+    </div>
+
+    {{-- Mandatory --}}
+    <div class="col-md-3 mb-3">
+        <label class="form-label">Mandatory</label>
+        <select name="mandatory_id" class="form-select" required>
+            <option value="">-- pilih Mandatory --</option>
+            @foreach ($mandatories as $mandatory)
+                <option value="{{ $mandatory->id }}"
+                    {{ (old('mandatory_id') ?? ($pkpt->mandatory_id ?? '')) == $mandatory->id ? 'selected' : '' }}>
+                    {{ $mandatory->nama }}
+                </option>
+            @endforeach
+        </select>
     </div>
 </div>
 
@@ -63,7 +77,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Jenis Pengawasan</label>
         <select name="jenis_pengawasan" class="form-select" required>
-            @foreach (['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING', 'PRA_REVIU'] as $item)
+            @foreach (['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING', 'PRA_REVIU', 'KONSULTING'] as $item)
                 <option value="{{ $item }}" @selected(old('jenis_pengawasan', $pkpt->jenis_pengawasan ?? '') === $item)>{{ $item }}</option>
             @endforeach
         </select>

@@ -19,11 +19,26 @@ class KodeRekomendasiPage {
     // Halaman Create
     initCreate() {
         console.log(`Halaman ${this.pageName} Create berhasil dimuat!`);
+        this.initSelect2();
     }
 
     // Halaman Edit
     initEdit() {
         console.log(`Halaman ${this.pageName} Edit berhasil dimuat!`);
+        this.initSelect2();
+    }
+
+    // Inisialisasi Select2 multi-select untuk temuan
+    initSelect2() {
+        const el = $("#temuan_ids");
+        if (el.length && !el.hasClass("select2-hidden-accessible")) {
+            el.select2({
+                theme: "bootstrap-5",
+                placeholder: "Pilih temuan terkait",
+                allowClear: true,
+                width: "100%",
+            });
+        }
     }
 
     // Inisialisasi DataTable
@@ -40,7 +55,13 @@ class KodeRekomendasiPage {
                     orderable: false,
                     searchable: false,
                 },
-                { data: "id", name: "id", visible: false },
+                {
+                    data: "kode_temuan_list",
+                    name: "kode_temuan_list",
+                    render: function (data) {
+                        return data ? data.replace(/ \| /g, "<br>") : "";
+                    },
+                },
                 { data: "kode", name: "kode" },
                 { data: "nama_rekomendasi", name: "nama_rekomendasi" },
                 { data: "urutan", name: "urutan", className: "text-center" },
@@ -91,7 +112,7 @@ class KodeRekomendasiPage {
                 [20, 50, -1],
                 [20, 50, "Semua"],
             ],
-            order: [[2, "asc"]], // urut berdasarkan kode
+            order: [[4, "asc"]], // urut berdasarkan kode temuan
             info: true,
             language: {
                 sEmptyTable: "Tidak ada data yang tersedia di tabel",

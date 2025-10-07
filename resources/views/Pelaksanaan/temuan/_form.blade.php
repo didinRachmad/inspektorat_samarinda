@@ -39,21 +39,21 @@
     {{-- Kondisi, Kriteria, Sebab, Akibat --}}
     <div class="col-md-12 mb-3">
         <label class="form-label">Kondisi Temuan</label>
-        <textarea name="kondisi_temuan" class="form-control" rows="3">{{ old('kondisi_temuan', $temuan->kondisi_temuan ?? '') }}</textarea>
+        <textarea name="kondisi_temuan" class="form-control summernote" rows="3">{{ old('kondisi_temuan', $temuan->kondisi_temuan ?? '') }}</textarea>
     </div>
 
     <div class="col-md-12 mb-3">
         <label class="form-label">Kriteria Temuan</label>
-        <textarea name="kriteria_temuan" class="form-control" rows="3">{{ old('kriteria_temuan', $temuan->kriteria_temuan ?? '') }}</textarea>
+        <textarea name="kriteria_temuan" class="form-control summernote" rows="3">{{ old('kriteria_temuan', $temuan->kriteria_temuan ?? '') }}</textarea>
     </div>
 
     <div class="col-md-12 mb-3">
         <label class="form-label">Sebab Temuan</label>
-        <textarea name="sebab_temuan" class="form-control" rows="3">{{ old('sebab_temuan', $temuan->sebab_temuan ?? '') }}</textarea>
+        <textarea name="sebab_temuan" class="form-control summernote" rows="3">{{ old('sebab_temuan', $temuan->sebab_temuan ?? '') }}</textarea>
     </div>
 
     <div class="col-md-12 mb-3">
         <label class="form-label">Akibat Temuan</label>
-        <textarea name="akibat_temuan" class="form-control" rows="3">{{ old('akibat_temuan', $temuan->akibat_temuan ?? '') }}</textarea>
+        <textarea name="akibat_temuan" class="form-control summernote" rows="3">{{ old('akibat_temuan', $temuan->akibat_temuan ?? '') }}</textarea>
     </div>
 </div>

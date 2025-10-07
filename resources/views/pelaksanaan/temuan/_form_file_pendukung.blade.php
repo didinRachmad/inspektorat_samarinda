@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12 mb-3">
-        <label class="form-label">File Pendukung</label>
+        <label class="form-label">File Pendukung</label><span class="text-danger">*</span>
         {{-- Tabel File Pendukung --}}
         <table class="table table-bordered" id="fileTable">
             <thead>

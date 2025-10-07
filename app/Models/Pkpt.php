@@ -12,6 +12,7 @@ class Pkpt extends Model
         'tahun',
         'bulan',
         'no_pkpt',
+        'mandatory_id',
         'auditi_id',
         'ruang_lingkup',
         'sasaran',

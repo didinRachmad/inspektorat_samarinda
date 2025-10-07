@@ -15,6 +15,7 @@ class MenuSeeder extends Seeder
             ['title' => 'Auditi', 'route' => 'auditi', 'icon' => null, 'order' => 2, 'parent_title' => 'Master'],
             ['title' => 'Kode Temuan', 'route' => 'kode_temuan', 'icon' => null, 'order' => 3, 'parent_title' => 'Master'],
             ['title' => 'Kode Rekomendasi', 'route' => 'kode_rekomendasi', 'icon' => null, 'order' => 4, 'parent_title' => 'Master'],
+            ['title' => 'Mandatory', 'route' => 'mandatory', 'icon' => null, 'order' => 5, 'parent_title' => 'Master'],
             ['title' => 'Perencanaan', 'route' => null, 'icon' => 'event_note', 'order' => 2, 'parent_title' => null],
             ['title' => 'PKPT', 'route' => 'pkpt', 'icon' => null, 'order' => 1, 'parent_title' => 'Perencanaan'],
             ['title' => 'Non PKPT', 'route' => 'non_pkpt', 'icon' => null, 'order' => 2, 'parent_title' => 'Perencanaan'],

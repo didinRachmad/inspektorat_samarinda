@@ -23,8 +23,7 @@ class KodeTemuanController extends Controller
     {
         $activeMenu = currentMenu();
 
-        $query = KodeTemuan::select('id', 'kode', 'nama_temuan', 'parent_id', 'level', 'urutan')
-            ->orderBy('kode');
+        $query = KodeTemuan::select('id', 'kode', 'nama_temuan', 'parent_id', 'level', 'urutan');
 
         return DataTables::of($query)
             ->addIndexColumn()

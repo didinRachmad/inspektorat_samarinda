@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Master\AuditiController;
 use App\Http\Controllers\Admin\Master\IrbanwilController;
 use App\Http\Controllers\Admin\Master\KodeRekomendasiController;
 use App\Http\Controllers\Admin\Master\KodeTemuanController;
+use App\Http\Controllers\Admin\Master\MandatoryController;
 use App\Http\Controllers\Admin\OngkirController;
 use App\Http\Controllers\Admin\Pelaksanaan\KkaController;
 use App\Http\Controllers\Admin\Pelaksanaan\LhaController;
@@ -319,91 +320,33 @@ Route::prefix('kode_rekomendasi')
             ->name('kode_rekomendasi.getAuditi');
     });
 
-Route::prefix('transaksi_sales_orders')
+Route::prefix('mandatory')
     ->middleware('auth')
     ->group(function () {
-        Route::get('/', [SalesOrdersController::class, 'index'])
-            ->name('transaksi_sales_orders.index')
+        Route::get('/', [MandatoryController::class, 'index'])
+            ->name('mandatory.index')
             ->middleware('menu.permission:index');
-        Route::get('/transaksi_sales_orders/{salesOrder}', [SalesOrdersController::class, 'show'])
-            ->name('transaksi_sales_orders.show')
-            ->middleware('menu.permission:show');
-        Route::get('/data', [SalesOrdersController::class, 'data'])
-            ->name('transaksi_sales_orders.data')
+        Route::get('/data', [MandatoryController::class, 'data'])
+            ->name('mandatory.data')
             ->middleware('menu.permission:index');
-        Route::get('/create', [SalesOrdersController::class, 'create'])
-            ->name('transaksi_sales_orders.create')
+        Route::get('/create', [MandatoryController::class, 'create'])
+            ->name('mandatory.create')
             ->middleware('menu.permission:create');
-        Route::post('/store', [SalesOrdersController::class, 'store'])
-            ->name('transaksi_sales_orders.store')
+        Route::post('/store', [MandatoryController::class, 'store'])
+            ->name('mandatory.store')
             ->middleware('menu.permission:store');
-        Route::get('/edit/{salesOrder}', [SalesOrdersController::class, 'edit'])
-            ->name('transaksi_sales_orders.edit')
+        Route::get('/edit/{mandatory}', [MandatoryController::class, 'edit'])
+            ->name('mandatory.edit')
             ->middleware('menu.permission:edit');
-        Route::put('/update/{salesOrder}', [SalesOrdersController::class, 'update'])
-            ->name('transaksi_sales_orders.update')
+        Route::put('/update/{mandatory}', [MandatoryController::class, 'update'])
+            ->name('mandatory.update')
             ->middleware('menu.permission:update');
-        Route::post('/approve/{salesOrder}', [SalesOrdersController::class, 'approve'])
-            ->name('transaksi_sales_orders.approve')
-            ->middleware('menu.permission:approve');
-        Route::post('/approve/{salesOrder}/revise', [SalesOrdersController::class, 'revise'])
-            ->name('transaksi_sales_orders.revise')
-            ->middleware('menu.permission:approve');
-        Route::post('/approve/{salesOrder}/reject', [SalesOrdersController::class, 'reject'])
-            ->name('transaksi_sales_orders.reject')
-            ->middleware('menu.permission:approve');
-        Route::delete('/destroy/{salesOrder}', [SalesOrdersController::class, 'destroy'])
-            ->name('transaksi_sales_orders.destroy')
-            ->middleware('menu.permission:destroy');
-
-        Route::get('/getSalesOrders', [SalesOrdersController::class, 'getSalesOrders'])
-            ->name('transaksi_sales_orders.getSalesOrders');
-        Route::get('/getSalesOrderDetail/{salesOrder}', [SalesOrdersController::class, 'getSalesOrderDetail'])
-            ->name('transaksi_sales_orders.getSalesOrderDetail');
-    });
-
-Route::prefix('transaksi_delivery_orders')
-    ->middleware('auth')
-    ->group(function () {
-        Route::get('/', [DeliveryOrdersController::class, 'index'])
-            ->name('transaksi_delivery_orders.index')
-            ->middleware('menu.permission:index');
-        Route::get('/transaksi_delivery_orders/{deliveryOrder}', [DeliveryOrdersController::class, 'show'])
-            ->name('transaksi_delivery_orders.show')
-            ->middleware('menu.permission:show');
-        Route::get('/data', [DeliveryOrdersController::class, 'data'])
-            ->name('transaksi_delivery_orders.data')
-            ->middleware('menu.permission:index');
-        Route::get('/create', [DeliveryOrdersController::class, 'create'])
-            ->name('transaksi_delivery_orders.create')
-            ->middleware('menu.permission:create');
-        Route::post('/store', [DeliveryOrdersController::class, 'store'])
-            ->name('transaksi_delivery_orders.store')
-            ->middleware('menu.permission:store');
-        Route::get('/edit/{deliveryOrder}', [DeliveryOrdersController::class, 'edit'])
-            ->name('transaksi_delivery_orders.edit')
-            ->middleware('menu.permission:edit');
-        Route::put('/update/{deliveryOrder}', [DeliveryOrdersController::class, 'update'])
-            ->name('transaksi_delivery_orders.update')
-            ->middleware('menu.permission:update');
-        Route::post('/approve/{deliveryOrder}', [DeliveryOrdersController::class, 'approve'])
-            ->name('transaksi_delivery_orders.approve')
-            ->middleware('menu.permission:approve');
-        Route::post('/approve/{deliveryOrder}/revise', [DeliveryOrdersController::class, 'revise'])
-            ->name('transaksi_delivery_orders.revise')
-            ->middleware('menu.permission:approve');
-        Route::post('/approve/{deliveryOrder}/reject', [DeliveryOrdersController::class, 'reject'])
-            ->name('transaksi_delivery_orders.reject')
-            ->middleware('menu.permission:approve');
-        Route::delete('/destroy/{deliveryOrder}', [DeliveryOrdersController::class, 'destroy'])
-            ->name('transaksi_delivery_orders.destroy')
+        Route::delete('/destroy/{mandatory}', [MandatoryController::class, 'destroy'])
+            ->name('mandatory.destroy')
             ->middleware('menu.permission:destroy');
     });
 
-
-Route::get('/biteship/areas', [OngkirController::class, 'getAreas'])->middleware('auth')->name('biteship.areas');
-Route::post('/biteship/cek-ongkir', [OngkirController::class, 'cekOngkir'])->middleware('auth')->name('biteship.cek-ongkir');
-
+// ============== PERENCANAAN ===============
 
 Route::prefix('pkpt')
     ->middleware('auth')

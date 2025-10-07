@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pkpt\StorePkptRequest;
 use App\Http\Requests\Pkpt\UpdatePkptRequest;
 use App\Models\Auditi;
+use App\Models\Mandatory;
 use App\Models\Pkpt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -43,6 +44,7 @@ class PkptController extends Controller
             'pkpts.tahun',
             'pkpts.bulan',
             'pkpts.no_pkpt',
+            'mandatories.nama',
             'auditis.nama_auditi',
             'pkpts.ruang_lingkup',
             'pkpts.sasaran',
@@ -60,6 +62,7 @@ class PkptController extends Controller
             'jabatans.at',
             'jabatans.anggaran_total_calc',
         ])
+            ->leftJoin('mandatories', 'mandatories.id', '=', 'pkpts.mandatory_id')
             ->leftJoin('auditis', 'auditis.id', '=', 'pkpts.auditi_id')
             ->leftJoin('irbanwils', 'irbanwils.id', '=', 'auditis.irbanwil_id') // ✅ lewat auditis
             ->leftJoinSub($subJabatans, 'jabatans', function ($join) {
@@ -127,7 +130,8 @@ class PkptController extends Controller
     public function create()
     {
         $auditis = Auditi::orderBy('nama_auditi')->get();
-        return view('perencanaan.pkpt.create', compact('auditis'));
+        $mandatories = Mandatory::orderBy('nama')->get();
+        return view('perencanaan.pkpt.create', compact('auditis', 'mandatories'));
     }
 
     public function store(StorePkptRequest $request)
@@ -181,8 +185,9 @@ class PkptController extends Controller
     {
         $pkpt->load('jabatans', 'auditi');
         $auditis = Auditi::orderBy('nama_auditi')->get();
+        $mandatories = Mandatory::orderBy('nama')->get();
 
-        return view('perencanaan.pkpt.edit', compact('pkpt', 'auditis'));
+        return view('perencanaan.pkpt.edit', compact('pkpt', 'auditis', 'mandatories'));
     }
 
     public function update(UpdatePkptRequest $request, Pkpt $pkpt)

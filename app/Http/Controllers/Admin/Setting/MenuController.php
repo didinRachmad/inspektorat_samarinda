@@ -9,6 +9,7 @@ use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -66,7 +67,6 @@ class MenuController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input, tambahkan validasi untuk parent_id (nullable dan harus ada di tabel menus jika diisi)
         $validatedData = $request->validate([
             'title'     => 'required|string|max:255',
             'route'     => 'nullable|string|max:255',
@@ -78,13 +78,19 @@ class MenuController extends Controller
         DB::beginTransaction();
 
         try {
-            Menu::create([
+            $menu = Menu::create([
                 'title'     => $validatedData['title'],
                 'route'     => $validatedData['route'],
                 'icon'      => $validatedData['icon'] ?? null,
                 'order'     => $validatedData['order'],
                 'parent_id' => $validatedData['parent_id'] ?? null,
             ]);
+
+            // Hapus cache untuk route menu baru (jika ada)
+            if ($menu->route) {
+                $cacheKey = "menu_{$menu->route}";
+                Cache::forget($cacheKey);
+            }
 
             DB::commit();
             session()->flash('success', 'Data berhasil ditambahkan.');
@@ -115,6 +121,13 @@ class MenuController extends Controller
 
         DB::beginTransaction();
         try {
+            // Hapus cache lama jika route sebelumnya ada
+            if ($menu->route) {
+                $oldCacheKey = "menu_{$menu->route}";
+                Cache::forget($oldCacheKey);
+            }
+
+            // Update menu
             $menu->update([
                 'title' => $validatedData['title'],
                 'route' => $validatedData['route'],
@@ -122,6 +135,12 @@ class MenuController extends Controller
                 'order' => $validatedData['order'],
                 'parent_id' => $validatedData['parent_id'] ?? null,
             ]);
+
+            // Hapus cache baru jika route diubah atau ada route baru
+            if ($menu->route) {
+                $newCacheKey = "menu_{$menu->route}";
+                Cache::forget($newCacheKey);
+            }
 
             DB::commit();
             session()->flash('success', 'Data menu berhasil diperbarui.');

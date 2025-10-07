@@ -43,6 +43,7 @@ class NonPkptPage {
                 { data: "tahun", name: "tahun", className: "text-center" },
                 { data: "bulan", name: "bulan", className: "text-center" },
                 { data: "no_pkpt", name: "no_pkpt" },
+                { data: "nama", name: "mandatories.nama" },
                 { data: "nama_auditi", name: "auditis.nama_auditi" }, // ✅ relasi langsung
                 { data: "ruang_lingkup", name: "ruang_lingkup" },
                 { data: "sasaran", name: "sasaran" },

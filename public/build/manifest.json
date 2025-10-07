@@ -26,6 +26,22 @@
     "file": "assets/bootstrap-icons-mSm7cUeB.woff2",
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
   },
+  "node_modules/summernote/dist/font/summernote.eot": {
+    "file": "assets/summernote-jt9apK1s.eot",
+    "src": "node_modules/summernote/dist/font/summernote.eot"
+  },
+  "node_modules/summernote/dist/font/summernote.ttf": {
+    "file": "assets/summernote-BDPkqvsB.ttf",
+    "src": "node_modules/summernote/dist/font/summernote.ttf"
+  },
+  "node_modules/summernote/dist/font/summernote.woff": {
+    "file": "assets/summernote-MGhHcnpK.woff",
+    "src": "node_modules/summernote/dist/font/summernote.woff"
+  },
+  "node_modules/summernote/dist/font/summernote.woff2": {
+    "file": "assets/summernote-tk6LuLER.woff2",
+    "src": "node_modules/summernote/dist/font/summernote.woff2"
+  },
   "public/images/bg-themes/body-background.webp": {
     "file": "assets/body-background-DiXvsbEL.webp",
     "src": "public/images/bg-themes/body-background.webp"
@@ -41,7 +57,7 @@
     "isEntry": true
   },
   "resources/css/dashboard.css": {
-    "file": "assets/dashboard-BIB8r9yF.css",
+    "file": "assets/dashboard-DkKTxAF4.css",
     "src": "resources/css/dashboard.css",
     "isEntry": true
   },
@@ -52,7 +68,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Dsg4CmtR.js",
+    "file": "assets/app-CNlC3Oil.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -68,7 +84,7 @@
     "isEntry": true
   },
   "resources/js/dashboard.js": {
-    "file": "assets/dashboard-DEjyEWSH.js",
+    "file": "assets/dashboard-CAmSZEv3.js",
     "name": "dashboard",
     "src": "resources/js/dashboard.js",
     "isEntry": true,
@@ -81,6 +97,7 @@
       "resources/js/pages/master/irbanwil.js",
       "resources/js/pages/master/kode_rekomendasi.js",
       "resources/js/pages/master/kode_temuan.js",
+      "resources/js/pages/master/mandatory.js",
       "resources/js/pages/pelaksanaan/lha.js",
       "resources/js/pages/pelaksanaan/temuan.js",
       "resources/js/pages/perencanaan/non_pkpt.js",
@@ -131,7 +148,7 @@
     ]
   },
   "resources/js/pages/master/kode_rekomendasi.js": {
-    "file": "assets/kode_rekomendasi-849_j3lY.js",
+    "file": "assets/kode_rekomendasi-BdkEunCZ.js",
     "name": "kode_rekomendasi",
     "src": "resources/js/pages/master/kode_rekomendasi.js",
     "isDynamicEntry": true,
@@ -150,6 +167,16 @@
       "_parse-B3pZ8sEA.js"
     ]
   },
+  "resources/js/pages/master/mandatory.js": {
+    "file": "assets/mandatory-6ppRn8Lf.js",
+    "name": "mandatory",
+    "src": "resources/js/pages/master/mandatory.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_routes-D3ctfpXk.js",
+      "_parse-B3pZ8sEA.js"
+    ]
+  },
   "resources/js/pages/pelaksanaan/lha.js": {
     "file": "assets/lha-vJTfpkF6.js",
     "name": "lha",
@@ -161,7 +188,7 @@
     ]
   },
   "resources/js/pages/pelaksanaan/temuan.js": {
-    "file": "assets/temuan-DIzlSJKA.js",
+    "file": "assets/temuan-CPggjwAL.js",
     "name": "temuan",
     "src": "resources/js/pages/pelaksanaan/temuan.js",
     "isDynamicEntry": true,
@@ -171,7 +198,7 @@
     ]
   },
   "resources/js/pages/perencanaan/non_pkpt.js": {
-    "file": "assets/non_pkpt-QVZgqeoG.js",
+    "file": "assets/non_pkpt-DN7286Pi.js",
     "name": "non_pkpt",
     "src": "resources/js/pages/perencanaan/non_pkpt.js",
     "isDynamicEntry": true,
@@ -183,7 +210,7 @@
     ]
   },
   "resources/js/pages/perencanaan/pkpt.js": {
-    "file": "assets/pkpt-CXAjhR3k.js",
+    "file": "assets/pkpt-DBXVY65C.js",
     "name": "pkpt",
     "src": "resources/js/pages/perencanaan/pkpt.js",
     "isDynamicEntry": true,
@@ -262,7 +289,7 @@
     ]
   },
   "resources/js/pages/transaksi/sales_orders.js": {
-    "file": "assets/sales_orders-x9AT5UjX.js",
+    "file": "assets/sales_orders-CsJ73t7Q.js",
     "name": "sales_orders",
     "src": "resources/js/pages/transaksi/sales_orders.js",
     "isDynamicEntry": true,

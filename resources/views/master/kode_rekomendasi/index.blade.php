@@ -21,7 +21,7 @@
                         <thead class="bg-gd">
                             <tr>
                                 <th>No</th>
-                                <th>ID</th>
+                                <th>Kode Temuan</th>
                                 <th>Kode</th>
                                 <th>Nama Rekomendasi</th>
                                 <th>Urutan</th>

@@ -30,7 +30,7 @@
                                     <th>Kriteria</th>
                                     <th>Sebab</th>
                                     <th>Akibat</th>
-                                    <th>Rekomendasi</th>
+                                    {{-- <th>Rekomendasi</th> --}}
                                     <th>Aksi</th>
                                 </tr>
                             </thead>

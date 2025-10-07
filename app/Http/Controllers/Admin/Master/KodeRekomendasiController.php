@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin\Master;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\KodeRekomendasi\StoreKodeRekomendasiRequest;
+use App\Http\Requests\KodeRekomendasi\UpdateKodeRekomendasiRequest;
 use App\Models\KodeRekomendasi;
-use Illuminate\Http\Request;
+use App\Models\KodeTemuan;
 use Yajra\DataTables\DataTables;
 use Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +22,18 @@ class KodeRekomendasiController extends Controller
     public function data()
     {
         $activeMenu = currentMenu();
-        $query = KodeRekomendasi::select('id', 'kode', 'nama_rekomendasi', 'urutan')->orderBy('urutan');
+
+        $query = KodeRekomendasi::query()
+            ->leftJoin('kode_rekomendasi_kode_temuan as pivot', 'kode_rekomendasis.id', '=', 'pivot.kode_rekomendasi_id')
+            ->leftJoin('kode_temuans', 'pivot.kode_temuan_id', '=', 'kode_temuans.id')
+            ->select([
+                'kode_rekomendasis.id',
+                'kode_rekomendasis.kode',
+                'kode_rekomendasis.nama_rekomendasi',
+                'kode_rekomendasis.urutan',
+                DB::raw("GROUP_CONCAT(CONCAT(kode_temuans.kode, ' - ', kode_temuans.nama_temuan) SEPARATOR ' | ') as kode_temuan_list")
+            ])
+            ->groupBy('kode_rekomendasis.id');
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -28,27 +41,35 @@ class KodeRekomendasiController extends Controller
             ->addColumn('can_delete', fn($row) => Auth::user()->hasMenuPermission($activeMenu->id, 'destroy'))
             ->addColumn('edit_url', fn($row) => route('kode_rekomendasi.edit', $row->id))
             ->addColumn('delete_url', fn($row) => route('kode_rekomendasi.destroy', $row->id))
+            ->rawColumns(['kode_temuan'])
             ->make(true);
     }
 
     public function create()
     {
-        return view('master.kode_rekomendasi.create');
+        $temuans = KodeTemuan::orderBy('kode')->get()->mapWithKeys(function ($item) {
+            return [$item->id => ['kode' => $item->kode, 'nama_temuan' => $item->nama_temuan]];
+        });
+        return view('master.kode_rekomendasi.create', compact('temuans'));
     }
 
-    public function store(Request $request)
+    public function store(StoreKodeRekomendasiRequest $request)
     {
-        $request->validate([
-            'kode' => 'required|string|max:10|unique:kode_rekomendasis,kode',
-            'nama_rekomendasi' => 'required|string|max:255',
-            'urutan' => 'required|integer|min:0',
-        ]);
-
         DB::beginTransaction();
         try {
-            KodeRekomendasi::create($request->all());
+            // Buat rekomendasi baru
+            $rekomendasi = KodeRekomendasi::create($request->validated());
+
+            // Attach ke temuan terkait melalui pivot
+            if ($request->has('temuan_ids')) {
+                $rekomendasi->kodeTemuans()->attach($request->temuan_ids);
+            }
+
             DB::commit();
-            return redirect()->route('kode_rekomendasi.index')->with('success', 'Kode Rekomendasi berhasil disimpan!');
+
+            return redirect()
+                ->route('kode_rekomendasi.index')
+                ->with('success', 'Kode Rekomendasi berhasil disimpan!');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Store Kode Rekomendasi Error: ' . $e->getMessage());
@@ -58,26 +79,36 @@ class KodeRekomendasiController extends Controller
 
     public function edit(KodeRekomendasi $kode_rekomendasi)
     {
-        return view('master.kode_rekomendasi.edit', compact('kode_rekomendasi'));
+        $temuans = KodeTemuan::orderBy('kode')->get()->mapWithKeys(function ($item) {
+            return [$item->id => ['kode' => $item->kode, 'nama_temuan' => $item->nama_temuan]];
+        });
+
+        $selectedTemuans = $kode_rekomendasi->kodeTemuans()->pluck('kode_temuans.id')->toArray();
+
+        return view('master.kode_rekomendasi.edit', compact(
+            'kode_rekomendasi',
+            'temuans',
+            'selectedTemuans'
+        ));
     }
 
-    public function update(Request $request, KodeRekomendasi $kode_rekomendasi)
+    public function update(UpdateKodeRekomendasiRequest $request, KodeRekomendasi $kode_rekomendasi)
     {
-        $request->validate([
-            'kode' => 'required|string|max:10|unique:kode_rekomendasis,kode,' . $kode_rekomendasi->id,
-            'nama_rekomendasi' => 'required|string|max:255',
-            'urutan' => 'required|integer|min:0',
-        ]);
-
         DB::beginTransaction();
         try {
-            $kode_rekomendasi->update($request->all());
+            $kode_rekomendasi->update($request->validated());
+
+            $kode_rekomendasi->kodeTemuans()->sync($request->temuan_ids ?? []);
+
             DB::commit();
-            return redirect()->route('kode_rekomendasi.index')->with('success', 'Kode Rekomendasi berhasil diperbarui!');
+
+            return redirect()
+                ->route('kode_rekomendasi.index')
+                ->with('success', 'Kode Rekomendasi berhasil diperbarui!');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Update Kode Rekomendasi Error: ' . $e->getMessage());
-            return back()->with('error', 'Gagal update Kode Rekomendasi');
+            return back()->with('error', 'Gagal memperbarui Kode Rekomendasi');
         }
     }
 
@@ -85,7 +116,10 @@ class KodeRekomendasiController extends Controller
     {
         DB::beginTransaction();
         try {
+            // Lepas relasi pivot sebelum delete
+            $kode_rekomendasi->temuans()->detach();
             $kode_rekomendasi->delete();
+
             DB::commit();
             return redirect()->route('kode_rekomendasi.index')->with('success', 'Data berhasil dihapus!');
         } catch (\Exception $e) {

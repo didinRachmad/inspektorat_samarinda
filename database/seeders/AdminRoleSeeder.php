@@ -44,6 +44,11 @@ class AdminRoleSeeder extends Seeder
         // --- Super Admin: semua menu ---
         foreach ($menus as $menu) {
             foreach ($permissions as $permission) {
+                // Batasi permission hanya untuk menu 'kka'
+                if ($menu->route === 'kka' && !in_array($permission->name, ['create', 'store', 'destroy'])) {
+                    continue;
+                }
+
                 DB::table('role_has_permissions')->insertOrIgnore([
                     'role_id'       => $superAdmin->id,
                     'permission_id' => $permission->id,
@@ -55,15 +60,20 @@ class AdminRoleSeeder extends Seeder
         // --- Auditor: hanya menu lha, kka, temuan ---
         $auditorMenus = ['lha', 'kka', 'temuan'];
         foreach ($auditorMenus as $menuName) {
-            if (isset($menus[$menuName])) {
-                $menu = $menus[$menuName];
-                foreach ($permissions as $permission) {
-                    DB::table('role_has_permissions')->insertOrIgnore([
-                        'role_id'       => $auditor->id,
-                        'permission_id' => $permission->id,
-                        'menu_id'       => $menu->id,
-                    ]);
+            if (!isset($menus[$menuName])) {
+                continue; // lewati jika menu tidak ditemukan
+            }
+            $menu = $menus[$menuName];
+            foreach ($permissions as $permission) {
+                // Jika menu 'kka', maka filter permission hanya create, store, destroy
+                if ($menuName === 'kka' && !in_array($permission->name, ['create', 'store', 'destroy'])) {
+                    continue;
                 }
+                DB::table('role_has_permissions')->insertOrIgnore([
+                    'role_id'       => $auditor->id,
+                    'permission_id' => $permission->id,
+                    'menu_id'       => $menu->id,
+                ]);
             }
         }
 

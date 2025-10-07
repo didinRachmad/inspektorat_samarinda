@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Pkpt;
 use App\Models\PkptJabatan;
 use App\Models\Auditi;
+use App\Models\Mandatory;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
@@ -15,13 +16,20 @@ class NonPkptSeeder extends Seeder
     protected $jabatanList = ['PJ', 'WPJ', 'PT', 'KT', 'AT'];
     protected $ruangLingkupList = ['PM', 'Administrasi', 'Teknis'];
     protected $sasaranList = ['Pendampingan LPPD', 'Evaluasi Kinerja', 'Audit Keuangan'];
-    protected $jenisPengawasanList = ['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING'];
+    protected $jenisPengawasanList = ['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING', 'KONSULTING'];
     protected $irbanwilList = ['SEMUA IRBAN', 'IRBAN I', 'IRBAN II', 'IRBAN III', 'IRBAN IV', 'IRBAN KHUSUS'];
 
     public function run(): void
     {
         $faker = Faker::create();
         $bulanTahun = now()->format('m-Y');
+
+        // Ambil data mandatory
+        $mandatoryIds = Mandatory::pluck('id')->toArray();
+        if (empty($mandatoryIds)) {
+            $this->command->warn('Seeder Pkpt dilewati karena belum ada data di tabel mandatories.');
+            return;
+        }
 
         // Ambil data auditi
         $auditiIds = Auditi::pluck('id')->toArray();
@@ -48,6 +56,7 @@ class NonPkptSeeder extends Seeder
                 'tahun' => now()->year,
                 'bulan' => $bulanSekarang,
                 'no_pkpt' => $kodeUnik,
+                'mandatory_id' => $faker->randomElement($mandatoryIds),
                 'auditi_id' => $faker->randomElement($auditiIds),
                 'ruang_lingkup' => $faker->randomElement($this->ruangLingkupList),
                 'sasaran' => $faker->randomElement($this->sasaranList),
