@@ -85,13 +85,28 @@ class LhpController extends Controller
             ->addColumn('is_super_admin', fn() => $user->hasRole('super_admin'))
             ->addColumn('can_show', fn() => $user->hasMenuPermission($activeMenu->id, 'show'))
             ->addColumn('can_edit', function ($r) use ($user) {
-                return $user->hasMenuPermission(currentMenu()->id, 'edit')
-                    && $r->approval_status === 'draft'
-                    && $user->id === $r->created_by;
+                $menuPermission = $user->hasMenuPermission(currentMenu()->id, 'edit');
+                $isDraft = $r->approval_status === 'draft';
+                $isCreator = $user->id === $r->created_by;
+
+                $canEdit = $menuPermission && $isDraft && $isCreator;
+
+                // Log detail kenapa bisa false
+                if (!$canEdit) {
+                    Log::info("can_edit false", [
+                        'user_id' => $user->id,
+                        'tindak_lanjut_id' => $r->id,
+                        'has_menu_permission' => $menuPermission,
+                        'approval_status' => $r->approval_status,
+                        'is_creator' => $isCreator
+                    ]);
+                }
+
+                return $canEdit;
             })
             ->addColumn('can_delete', fn() => $user->hasMenuPermission($activeMenu->id, 'destroy'))
             ->addColumn('can_approve', function ($r) use ($user) {
-                if (in_array($r->approval_status, ['draft', 'waiting'])) {
+                if ($user->hasMenuPermission(currentMenu()->id, 'approve') && in_array($r->approval_status, ['draft', 'waiting'])) {
                     if ($r->approval_status === 'draft' && $user->id === $r->created_by) return true;
                     if ($r->approval_status === 'waiting') {
                         $routes = ApprovalRoute::where('module', 'lhp')
