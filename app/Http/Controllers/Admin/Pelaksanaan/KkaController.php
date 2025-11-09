@@ -4,13 +4,10 @@ namespace App\Http\Controllers\Admin\Pelaksanaan;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Kka\StoreKkaRequest;
-use App\Http\Requests\Kka\UpdateKkaRequest;
 use App\Models\Kka;
-use App\Models\Lha;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Auth;
 
 class KkaController extends Controller
 {
@@ -29,7 +26,7 @@ class KkaController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('lha.show', $kka->lha_id)
+                ->route('lhp.show', $kka->lhp_id)
                 ->with('success', 'KKA berhasil ditambahkan');
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -45,7 +42,7 @@ class KkaController extends Controller
     {
         DB::beginTransaction();
         try {
-            $lhaId = $kka->lha_id; // simpan dulu ID induknya
+            $lhpId = $kka->lhp_id; // simpan dulu ID induknya
 
             if ($kka->file_kka && Storage::disk('public')->exists($kka->file_kka)) {
                 Storage::disk('public')->delete($kka->file_kka);
@@ -55,7 +52,7 @@ class KkaController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('lha.show', $lhaId)
+                ->route('lhp.show', $lhpId)
                 ->with('success', 'KKA berhasil dihapus.');
         } catch (\Exception $e) {
             DB::rollBack();

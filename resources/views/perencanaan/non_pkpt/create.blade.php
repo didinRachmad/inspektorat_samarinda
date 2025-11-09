@@ -11,7 +11,7 @@
         <form action="{{ route('non_pkpt.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="card-header">
-                <h5 class="card-title">Tambah PKPT</h5>
+                <h5 class="card-title">Tambah Non PKPT</h5>
             </div>
             <div class="card-body">
                 @include('perencanaan.non_pkpt._form')

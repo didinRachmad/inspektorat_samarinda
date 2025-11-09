@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('temuans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lha_id')->constrained('lhas')->onDelete('cascade'); // relasi ke LHA
-
+            $table->foreignId('lhp_id')->constrained('lhps')->cascadeOnDelete();
             $table->string('judul_temuan');
-            $table->foreignId('kode_temuan_id')->constrained('kode_temuans')->onDelete('restrict');
+            $table->foreignId('kode_temuan_id')->constrained('kode_temuans')->restrictOnDelete();
 
-            $table->text('kondisi_temuan');
+            $table->text('kondisi_temuan')->nullable();
             $table->text('kriteria_temuan')->nullable();
             $table->text('sebab_temuan')->nullable();
             $table->text('akibat_temuan')->nullable();

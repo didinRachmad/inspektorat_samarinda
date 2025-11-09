@@ -24,7 +24,7 @@ class KodeRekomendasiController extends Controller
         $activeMenu = currentMenu();
 
         $query = KodeRekomendasi::query()
-            ->leftJoin('kode_rekomendasi_kode_temuan as pivot', 'kode_rekomendasis.id', '=', 'pivot.kode_rekomendasi_id')
+            ->leftJoin('kode_temuan_rekomendasi as pivot', 'kode_rekomendasis.id', '=', 'pivot.kode_rekomendasi_id')
             ->leftJoin('kode_temuans', 'pivot.kode_temuan_id', '=', 'kode_temuans.id')
             ->select([
                 'kode_rekomendasis.id',

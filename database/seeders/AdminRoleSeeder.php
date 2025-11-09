@@ -38,6 +38,7 @@ class AdminRoleSeeder extends Seeder
         $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
         $auditor    = Role::firstOrCreate(['name' => 'auditor', 'guard_name' => 'web']);
         $auditi     = Role::firstOrCreate(['name' => 'auditi', 'guard_name' => 'web']);
+        $approver     = Role::firstOrCreate(['name' => 'approver', 'guard_name' => 'web']);
 
         $menus = Menu::all()->keyBy('route');
 
@@ -57,8 +58,8 @@ class AdminRoleSeeder extends Seeder
             }
         }
 
-        // --- Auditor: hanya menu lha, kka, temuan ---
-        $auditorMenus = ['lha', 'kka', 'temuan'];
+        // --- Auditor: hanya menu lhp, kka, tindak_lanjut_temuan ---
+        $auditorMenus = ['lhp', 'kka', 'tindak_lanjut_temuan'];
         foreach ($auditorMenus as $menuName) {
             if (!isset($menus[$menuName])) {
                 continue; // lewati jika menu tidak ditemukan
@@ -77,14 +78,29 @@ class AdminRoleSeeder extends Seeder
             }
         }
 
-        // --- Auditi: hanya menu temuan ---
-        $auditiMenus = ['temuan'];
+        // --- Auditi: hanya menu tindak_lanjut_temuan ---
+        $auditiMenus = ['tindak_lanjut_temuan'];
         foreach ($auditiMenus as $menuName) {
             if (isset($menus[$menuName])) {
                 $menu = $menus[$menuName];
                 foreach ($permissions as $permission) {
                     DB::table('role_has_permissions')->insertOrIgnore([
                         'role_id'       => $auditi->id,
+                        'permission_id' => $permission->id,
+                        'menu_id'       => $menu->id,
+                    ]);
+                }
+            }
+        }
+
+        // --- Approver: hanya menu lhp ---
+        $approverMenus = ['lhp'];
+        foreach ($approverMenus as $menuName) {
+            if (isset($menus[$menuName])) {
+                $menu = $menus[$menuName];
+                foreach ($permissions as $permission) {
+                    DB::table('role_has_permissions')->insertOrIgnore([
+                        'role_id'       => $approver->id,
                         'permission_id' => $permission->id,
                         'menu_id'       => $menu->id,
                     ]);

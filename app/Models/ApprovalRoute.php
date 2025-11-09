@@ -9,7 +9,7 @@ class ApprovalRoute extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['module', 'role_id', 'sequence', 'assigned_user_id'];
+    protected $fillable = ['module', 'module_id', 'role_id', 'sequence', 'assigned_user_id'];
 
     // Relasi ke Role (gunakan model Role milik Anda)
     public function role()

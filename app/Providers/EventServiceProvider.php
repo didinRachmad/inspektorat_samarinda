@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\LhpEvent;
+use App\Events\TindakLanjutTemuanEvent;
+use App\Listeners\SendLhpNotification;
+use App\Listeners\SendTindakLanjutTemuanNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,6 +20,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        LhpEvent::class => [
+            SendLhpNotification::class,
+        ],
+        TindakLanjutTemuanEvent::class => [
+            SendTindakLanjutTemuanNotification::class,
         ],
     ];
 

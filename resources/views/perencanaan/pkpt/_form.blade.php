@@ -1,4 +1,11 @@
 <div class="row">
+    {{-- No PKPT --}}
+    <div class="col-md-3 mb-3">
+        <label class="form-label">No PKPT</label><span class="text-warning"><small> (readonly)</small></span>
+        <input type="text" name="no_pkpt" class="form-control" value="{{ old('no_pkpt', $pkpt->no_pkpt ?? '') }}"
+            readonly>
+    </div>
+
     {{-- Tahun --}}
     <div class="col-md-3 mb-3">
         <label class="form-label">Tahun</label>
@@ -9,7 +16,7 @@
     {{-- Bulan --}}
     <div class="col-md-3 mb-3">
         <label class="form-label">Bulan</label>
-        <select name="bulan" class="form-select">
+        <select name="bulan" class="form-select select2">
             <option value="">-- Pilih Bulan --</option>
             @foreach (range(1, 12) as $m)
                 <option value="{{ $m }}" @selected(old('bulan', $pkpt->bulan ?? '') == $m)>
@@ -19,18 +26,11 @@
         </select>
     </div>
 
-    {{-- No PKPT --}}
-    <div class="col-md-3 mb-3">
-        <label class="form-label">No PKPT</label>
-        <input type="text" name="no_pkpt" class="form-control" value="{{ old('no_pkpt', $pkpt->no_pkpt ?? '') }}"
-            readonly>
-    </div>
-
     {{-- Mandatory --}}
     <div class="col-md-3 mb-3">
         <label class="form-label">Mandatory</label>
-        <select name="mandatory_id" class="form-select" required>
-            <option value="">-- pilih Mandatory --</option>
+        <select name="mandatory_id" class="form-select select2" required>
+            <option value="">-- Pilih Mandatory --</option>
             @foreach ($mandatories as $mandatory)
                 <option value="{{ $mandatory->id }}"
                     {{ (old('mandatory_id') ?? ($pkpt->mandatory_id ?? '')) == $mandatory->id ? 'selected' : '' }}>
@@ -44,13 +44,13 @@
 <div class="row">
     {{-- Auditi --}}
     <div class="col-md-6 mb-3">
-        <label class="form-label">Auditi</label>
-        <select name="auditi_id" class="form-select" required>
-            <option value="">-- pilih Auditi --</option>
+        <label for="auditis" class="form-label">Auditi</label>
+        <select name="auditis[]" id="auditis" class="form-control select2" multiple="multiple">
+            <option value="">-- Pilih Auditi --</option>
             @foreach ($auditis as $auditi)
                 <option value="{{ $auditi->id }}"
-                    {{ (old('auditi_id') ?? ($pkpt->auditi_id ?? '')) == $auditi->id ? 'selected' : '' }}>
-                    {{ $auditi->kode_auditi }} - {{ $auditi->nama_auditi }}
+                    {{ in_array($auditi->id, old('auditis', $selectedAuditis ?? [])) ? 'selected' : '' }}>
+                    {{ $auditi->nama_auditi }}
                 </option>
             @endforeach
         </select>
@@ -68,7 +68,7 @@
     {{-- Ruang Lingkup --}}
     <div class="col-md-12 mb-3">
         <label class="form-label">Ruang Lingkup</label>
-        <textarea name="ruang_lingkup" class="form-control">{{ old('ruang_lingkup', $pkpt->ruang_lingkup ?? '') }}</textarea>
+        <textarea name="ruang_lingkup" class="form-control summernote">{{ old('ruang_lingkup', $pkpt->ruang_lingkup ?? '') }}</textarea>
     </div>
 </div>
 
@@ -76,9 +76,14 @@
     {{-- Jenis Pengawasan --}}
     <div class="col-md-6 mb-3">
         <label class="form-label">Jenis Pengawasan</label>
-        <select name="jenis_pengawasan" class="form-select" required>
-            @foreach (['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING', 'PRA_REVIU', 'KONSULTING'] as $item)
-                <option value="{{ $item }}" @selected(old('jenis_pengawasan', $pkpt->jenis_pengawasan ?? '') === $item)>{{ $item }}</option>
+        <select name="jenis_pengawasan_id" class="form-select select2" required>
+            <option value="">-- Pilih Jenis Pengawasan --</option>
+            @foreach ($jenisPengawasans as $parent)
+                @foreach ($parent->children as $child)
+                    <option value="{{ $child->id }}" @selected(old('jenis_pengawasan_id', $pkpt->jenis_pengawasan_id ?? '') == $child->id)>
+                        {{ $parent->nama }}: {{ $child->nama }}
+                    </option>
+                @endforeach
             @endforeach
         </select>
     </div>
@@ -86,7 +91,7 @@
     {{-- Irbanwil --}}
     <div class="col-md-6 mb-3">
         <label class="form-label">Irbanwil</label>
-        <select name="irbanwil" class="form-select">
+        <select name="irbanwil" class="form-select select2">
             <option value="">-- Pilih Irbanwil --</option>
             @foreach (['SEMUA IRBAN', 'IRBAN I', 'IRBAN II', 'IRBAN III', 'IRBAN IV', 'IRBAN KHUSUS'] as $item)
                 <option value="{{ $item }}" @selected(old('irbanwil', $pkpt->irbanwil ?? '') === $item)>{{ $item }}</option>
@@ -99,7 +104,7 @@
     {{-- Jadwal RPM, RSP, RPL, HP --}}
     <div class="col-md-3 mb-3">
         <label class="form-label">Rencana Pemeriksaan Mulai (RPM)</label>
-        <select name="jadwal_rmp_bulan" class="form-select">
+        <select name="jadwal_rmp_bulan" class="form-select select2">
             <option value="">-- Pilih Bulan --</option>
             @foreach (range(1, 12) as $m)
                 <option value="{{ $m }}" @selected(old('jadwal_rmp_bulan', $pkpt->jadwal_rmp_bulan ?? '') == $m)>
@@ -110,7 +115,7 @@
     </div>
     <div class="col-md-3 mb-3">
         <label class="form-label">Rencana Selesai Pemeriksaan (RSP)</label>
-        <select name="jadwal_rsp_bulan" class="form-select">
+        <select name="jadwal_rsp_bulan" class="form-select select2">
             <option value="">-- Pilih Bulan --</option>
             @foreach (range(1, 12) as $m)
                 <option value="{{ $m }}" @selected(old('jadwal_rsp_bulan', $pkpt->jadwal_rsp_bulan ?? '') == $m)>
@@ -121,7 +126,7 @@
     </div>
     <div class="col-md-3 mb-3">
         <label class="form-label">Rencana Penerbitan Laporan (RPL)</label>
-        <select name="jadwal_rpl_bulan" class="form-select">
+        <select name="jadwal_rpl_bulan" class="form-select select2">
             <option value="">-- Pilih Bulan --</option>
             @foreach (range(1, 12) as $m)
                 <option value="{{ $m }}" @selected(old('jadwal_rpl_bulan', $pkpt->jadwal_rpl_bulan ?? '') == $m)>
@@ -160,7 +165,7 @@
             @endphp
             <tr>
                 <td>
-                    <select name="jabatans[{{ $i }}][jabatan]" class="form-select" required>
+                    <select name="jabatans[{{ $i }}][jabatan]" class="form-select select2" required>
                         <option value="{{ $jabatan }}" selected>{{ $jabatan }}</option>
                     </select>
                 </td>
@@ -170,7 +175,7 @@
                 </td>
                 <td>
                     <input type="text" name="jabatans[{{ $i }}][anggaran]"
-                        class="form-control anggaran numeric" value="{{ $row['anggaran'] ?? 0 }}" required>
+                        class="form-control anggaran numeric" value="{{ $row['anggaran'] ?? 0 }}" readonly required>
                 </td>
             </tr>
         @endforeach

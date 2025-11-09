@@ -15,11 +15,12 @@ class KodeRekomendasi extends Model
         'urutan',
     ];
 
-    public function kodeTemuans()
+    // Relasi ke kode temuan
+    public function temuans()
     {
         return $this->belongsToMany(
             KodeTemuan::class,
-            'kode_rekomendasi_kode_temuan',
+            'kode_temuan_rekomendasi',
             'kode_rekomendasi_id',
             'kode_temuan_id'
         );

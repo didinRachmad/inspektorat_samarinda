@@ -11,7 +11,7 @@
         <form action="{{ route('non_pkpt.update', $pkpt->id) }}" method="POST" enctype="multipart/form-data">
             @csrf @method('PUT')
             <div class="card-header">
-                <h5 class="card-title">Edit PKPT</h5>
+                <h5 class="card-title">Edit Non PKPT</h5>
             </div>
             <div class="card-body">
                 @include('perencanaan.non_pkpt._form', ['pkpt' => $pkpt])

@@ -16,7 +16,7 @@ class Pkpt extends Model
         'auditi_id',
         'ruang_lingkup',
         'sasaran',
-        'jenis_pengawasan',
+        'jenis_pengawasan_id',
         'jadwal_rmp_bulan',
         'jadwal_rsp_bulan',
         'jadwal_rpl_bulan',
@@ -24,7 +24,7 @@ class Pkpt extends Model
         'jumlah_tenaga',
         'hp_5x6',
         'anggaran_total',
-        'irbanwil',
+        'irbanwil_id',
         'auditor_ringkas',
         'keterangan',
         'pkpt',
@@ -43,8 +43,23 @@ class Pkpt extends Model
         return $this->hasMany(PkptAuditor::class);
     }
 
-    public function auditi()
+    public function mandatory()
     {
-        return $this->belongsTo(Auditi::class);
+        return $this->belongsTo(Mandatory::class);
+    }
+
+    // Pkpt.php
+    public function auditis()
+    {
+        return $this->belongsToMany(Auditi::class, 'auditi_pkpt', 'pkpt_id', 'auditi_id');
+    }
+    public function jenisPengawasan()
+    {
+        return $this->belongsTo(JenisPengawasan::class);
+    }
+
+    public function irbanwils()
+    {
+        return $this->belongsTo(Irbanwil::class);
     }
 }

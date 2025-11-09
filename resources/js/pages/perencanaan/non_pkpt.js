@@ -1,19 +1,29 @@
 import route from "@/routes";
 import AutoNumeric from "autonumeric";
+import axios from "axios";
 
 const routes = {
     datatable: () => route("non_pkpt.data"),
+    getAnggaran: () => route("setting_anggaran.getAnggaran"),
 };
 
 class NonPkptPage {
     constructor() {
         this.pageName = "Non PKPT";
         this.datatableEl = $("#datatables");
+        this.anggaranPerHari = 170000;
     }
 
     initIndex() {
         console.log(`Halaman ${this.pageName} Index berhasil dimuat!`);
         this.initDataTable();
+
+        // filter reload
+        $(
+            "#filterMandatory, #filterBulan, #filterTahun, #filterAuditi, #filterIrbanwil, #filterJenisPengawasan"
+        ).on("change", () => {
+            $("#datatables").DataTable().ajax.reload();
+        });
     }
 
     initCreate() {
@@ -26,28 +36,72 @@ class NonPkptPage {
         this.initForm();
     }
 
+    /**
+     * -------------------------------
+     * Datatable
+     * -------------------------------
+     */
     initDataTable() {
         this.datatableEl.DataTable({
             processing: true,
             serverSide: true,
-            ajax: routes.datatable(),
+            ajax: {
+                url: routes.datatable(),
+                type: "GET",
+                data: function (d) {
+                    d.bulan = $("#filterBulan").val();
+                    d.tahun = $("#filterTahun").val();
+                    d.mandatory_id = $("#filterMandatory").val();
+                    d.auditi_id = $("#filterAuditi").val();
+                    d.irbanwil_id = $("#filterIrbanwil").val();
+                    d.jenis_pengawasan_id = $("#filterJenisPengawasan").val();
+                },
+            },
             columns: [
                 {
                     data: "DT_RowIndex",
                     name: "DT_RowIndex",
-                    className: "text-center",
                     orderable: false,
                     searchable: false,
+                    className: "text-center",
                 },
                 { data: "id", name: "id", visible: false },
                 { data: "tahun", name: "tahun", className: "text-center" },
                 { data: "bulan", name: "bulan", className: "text-center" },
                 { data: "no_pkpt", name: "no_pkpt" },
-                { data: "nama", name: "mandatories.nama" },
-                { data: "nama_auditi", name: "auditis.nama_auditi" }, // ✅ relasi langsung
-                { data: "ruang_lingkup", name: "ruang_lingkup" },
+                { data: "mandatory_nama", name: "mandatories.nama" },
+                {
+                    data: "auditi_list",
+                    render: function (data, type, row, meta) {
+                        if (type === "display") {
+                            if (!data) return "";
+                            let items = data.split(",").map((a) => a.trim());
+                            let html =
+                                '<ul class="m-0" style="padding-left: 15px; margin:0;">';
+                            items.forEach((a) => (html += `<li>${a}</li>`));
+                            html += "</ul>";
+                            return html;
+                        }
+                        // Untuk sort/search, kembalikan data murni
+                        return data;
+                    },
+                },
                 { data: "sasaran", name: "sasaran" },
-                { data: "jenis_pengawasan", name: "jenis_pengawasan" },
+                {
+                    data: "ruang_lingkup",
+                    name: "ruang_lingkup",
+                    render: window.renderSummernoteText,
+                },
+                {
+                    data: "parent_jenis",
+                    name: "parent_jp.nama",
+                    className: "text-center",
+                },
+                {
+                    data: "jenis_pengawasan",
+                    name: "jenis_pengawasans.nama",
+                    className: "text-center",
+                },
                 { data: "jadwal_rmp_bulan", name: "jadwal_rmp_bulan" },
                 { data: "jadwal_rsp_bulan", name: "jadwal_rsp_bulan" },
                 { data: "jadwal_rpl_bulan", name: "jadwal_rpl_bulan" },
@@ -63,19 +117,16 @@ class NonPkptPage {
                     className: "text-end",
                     render: $.fn.dataTable.render.number(".", ",", 0, "Rp "),
                 },
-                { data: "nama_irbanwil", name: "nama_irbanwil" },
+                { data: "irbanwil_nama", name: "irbanwils.nama" },
                 {
                     data: null,
                     orderable: false,
                     searchable: false,
                     className: "text-center no-export",
-                    render: (data, type, row) => {
+                    render: function (data, type, row) {
                         let buttons = "";
                         if (row.can_edit) {
-                            buttons += `
-                            <a href="${row.edit_url}" class="btn btn-sm btn-warning rounded-4" data-bs-toggle="tooltip" title="Edit">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>`;
+                            buttons += `<a href="${row.edit_url}" class="btn btn-sm btn-warning rounded-4" title="Edit"><i class="bi bi-pencil-square"></i></a>`;
                         }
                         if (row.can_delete) {
                             buttons += `
@@ -86,7 +137,7 @@ class NonPkptPage {
                                     'meta[name="csrf-token"]'
                                 ).attr("content")}">
                                 <input type="hidden" name="_method" value="DELETE">
-                                <button type="button" class="btn btn-sm btn-danger rounded-4 btn-delete" data-bs-toggle="tooltip" title="Hapus">
+                                <button type="button" class="btn btn-sm btn-danger rounded-4 btn-delete" title="Hapus">
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
                             </form>`;
@@ -97,7 +148,7 @@ class NonPkptPage {
             ],
             dom:
                 "<'row'<'col-md-3'l><'col-md-6 text-center'><'col-md-3'f>>" +
-                "<'row py-2'<'col-sm-12'tr>>" +
+                "<'row table-responsive py-2'<'col-sm-12'tr>>" +
                 "<'row'<'col-md-5'i><'col-md-7'p>>",
             paging: true,
             responsive: true,
@@ -108,61 +159,64 @@ class NonPkptPage {
             ],
             order: [[1, "desc"]],
             info: true,
-            language: {
-                sEmptyTable: "Tidak ada data yang tersedia di tabel",
-                sInfo: "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
-                sInfoFiltered: "(disaring dari _MAX_ entri keseluruhan)",
-                sLengthMenu: "Tampilkan _MENU_ entri",
-                sLoadingRecords: "Memuat...",
-                sProcessing: "Sedang memproses...",
-                sSearch: "Cari:",
-                sZeroRecords: "Tidak ditemukan data yang cocok",
-                oAria: {
-                    sSortAscending: ": aktifkan untuk mengurutkan kolom menaik",
-                    sSortDescending:
-                        ": aktifkan untuk mengurutkan kolom menurun",
-                },
-            },
-            drawCallback: () =>
-                $('[data-bs-toggle="tooltip"]').each(function () {
-                    new bootstrap.Tooltip(this);
-                }),
         });
     }
 
+    /**
+     * -------------------------------
+     * Form Create/Edit
+     * -------------------------------
+     */
     initForm() {
-        this.hitungTotalAnggaran();
-
-        document
-            .querySelector("#jabatanTable")
-            .addEventListener("input", (e) => {
-                if (e.target.matches(".anggaran")) {
-                    this.hitungTotalAnggaran();
-                }
+        axios
+            .get(routes.getAnggaran())
+            .then((res) => {
+                this.anggaranPerHari = res.data.anggaran;
+                this.hitungSemuaAnggaran();
+            })
+            .catch(() => {
+                this.anggaranPerHari = 170000;
             });
+
+        // Event ketika jumlah atau jadwal_hp_hari berubah
+        document.addEventListener("input", (e) => {
+            if (
+                e.target.matches('[name="jadwal_hp_hari"]') ||
+                e.target.matches(".jumlah")
+            ) {
+                this.hitungSemuaAnggaran();
+            }
+        });
     }
 
-    hitungTotalAnggaran() {
+    /**
+     * Hitung setiap anggaran jabatan dan total keseluruhan
+     */
+    hitungSemuaAnggaran() {
+        const hpInput = document.querySelector('[name="jadwal_hp_hari"]');
+        const hpHari = parseInt(hpInput?.value || 0);
         let total = 0;
 
         document.querySelectorAll("#jabatanTable tbody tr").forEach((row) => {
-            const anggaran =
-                AutoNumeric.getAutoNumericElement(
-                    row.querySelector(".anggaran")
-                )?.getNumber() ?? 0;
+            const jumlahInput = row.querySelector(".jumlah");
+            const anggaranInput = row.querySelector(".anggaran");
+
+            const jumlah = parseInt(jumlahInput?.value || 0);
+            const anggaran = hpHari * jumlah * this.anggaranPerHari;
+
+            // set nilai anggaran
+            const an = AutoNumeric.getAutoNumericElement(anggaranInput);
+            if (an) an.set(anggaran);
+            else anggaranInput.value = anggaran;
+
             total += anggaran;
         });
-        console.log(total);
 
+        // tampilkan total di bawah
         const totalInput = document.getElementById("totalAnggaran");
-        if (totalInput) {
-            const totalAN = AutoNumeric.getAutoNumericElement(totalInput);
-            if (totalAN) {
-                totalAN.set(total);
-            } else {
-                totalInput.value = total;
-            }
-        }
+        const totalAN = AutoNumeric.getAutoNumericElement(totalInput);
+        if (totalAN) totalAN.set(total);
+        else totalInput.value = total;
     }
 }
 

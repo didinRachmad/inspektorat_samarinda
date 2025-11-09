@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('temuan_rekomendasis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('temuan_id')->constrained('temuans')->onDelete('cascade');
+            $table->foreignId('temuan_id')->constrained('temuans')->cascadeOnDelete();
+            $table->foreignId('kode_rekomendasi_id')->constrained('kode_rekomendasis')->restrictOnDelete();
 
-            $table->foreignId('kode_rekomendasi_id')->constrained('kode_rekomendasis')->onDelete('restrict');
-            $table->text('rekomendasi_temuan');
-            $table->unsignedBigInteger('nominal')->nullable()->default(0);
+            $table->text('rekomendasi_temuan')->nullable(); // isi rekomendasi temuan
+            $table->unsignedBigInteger('nominal')->default(0);
 
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

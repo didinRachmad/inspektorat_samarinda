@@ -18,15 +18,17 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(MenuSeeder::class);
         $this->call(AdminRoleSeeder::class);
-        $this->call(UserSeeder::class);
         $this->call(RouteApprovalSeeder::class);
+        $this->call(AnggaranSeeder::class);
         $this->call(IrbanwilSeeder::class);
         $this->call(MandatorySeeder::class);
         $this->call(AuditiSeeder::class);
         $this->call(KodeTemuanSeeder::class);
         $this->call(KodeRekomendasiSeeder::class);
         $this->call(KodeRekomendasiTemuanSeeder::class);
+        $this->call(JenisPengawasanSeeder::class);
         $this->call(PkptSeeder::class);
         $this->call(NonPkptSeeder::class);
+        $this->call(UserSeeder::class);
     }
 }

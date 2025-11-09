@@ -2,7 +2,7 @@
     {{-- Module Select --}}
     <div class="col-md-4">
         <div class="form-group mb-3">
-            <x-form.select label="Module" name="module" :options="$menus->pluck('route', 'route')->toArray()" :value="$approval_route->module ?? ''" class="select2-module"
+            <x-form.select label="Module" name="module_id" :options="$menus->pluck('route', 'id')->toArray()" :value="$approval_route->module_id ?? ''" class="select2-module"
                 required />
         </div>
     </div>

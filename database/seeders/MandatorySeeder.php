@@ -13,10 +13,10 @@ class MandatorySeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['nama' => 'Mandatory I'],
-            ['nama' => 'Mandatory II'],
-            ['nama' => 'Mandatory III'],
-            ['nama' => 'Mandatory IV'],
+            ['nama' => 'Reguler'],
+            ['nama' => 'Pengaduan'],
+            ['nama' => 'Pendampingan Eksternal'],
+            ['nama' => 'MCP KPK'],
         ];
 
         foreach ($data as $item) {

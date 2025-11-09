@@ -47,7 +47,7 @@
                 @else
                     <tr>
                         <td>
-                            <select name="rekomendasis[0][kode_rekomendasi_id]" class="form-select">
+                            <select name="rekomendasis[0][kode_rekomendasi_id]" class="form-select select2">
                                 <option value="">-- Pilih Kode Rekomendasi --</option>
                                 @foreach ($kodeRekomendasis as $kr)
                                     <option value="{{ $kr->id }}">{{ $kr->kode }} |

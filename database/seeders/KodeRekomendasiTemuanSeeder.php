@@ -41,6 +41,6 @@ class KodeRekomendasiTemuanSeeder extends Seeder
             $d['created_at'] = $now;
             $d['updated_at'] = $now;
         }
-        DB::table('kode_rekomendasi_kode_temuan')->insert($data);
+        DB::table('kode_temuan_rekomendasi')->insert($data);
     }
 }

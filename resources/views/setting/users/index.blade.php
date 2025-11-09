@@ -28,6 +28,7 @@
                                     <th>Email</th>
                                     <th>Role</th>
                                     <th>Irbanwil</th>
+                                    <th>Auditi</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>

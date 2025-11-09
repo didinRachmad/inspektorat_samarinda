@@ -9,7 +9,7 @@ class TemuanFile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['temuan_id', 'file_path', 'file_name'];
+    protected $fillable = ['temuan_id', 'file_path', 'file_name', 'file_type', 'file_size'];
 
     public function temuan()
     {

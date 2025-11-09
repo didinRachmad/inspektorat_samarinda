@@ -103,7 +103,7 @@ class KodeRekomendasiPage {
             ],
             dom:
                 "<'row'<'col-md-3'l><'col-md-6 text-center'><'col-md-3'f>>" +
-                "<'row py-2'<'col-sm-12 table-responsive'tr>>" +
+                "<'row table-responsive py-2'<'col-sm-12'tr>>" +
                 "<'row'<'col-md-5'i><'col-md-7'p>>",
             paging: true,
             responsive: true,

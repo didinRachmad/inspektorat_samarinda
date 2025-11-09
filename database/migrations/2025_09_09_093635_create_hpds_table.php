@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('hpds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lha_id')->constrained('lhas')->cascadeOnDelete();
+            $table->foreignId('lhp_id')->constrained('lhps')->cascadeOnDelete();
 
             $table->year('tahun');
             $table->string('judul'); // hal-hal yang perlu diperhatikan

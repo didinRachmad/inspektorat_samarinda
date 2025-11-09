@@ -22,7 +22,7 @@ class StoreKkaRequest extends FormRequest
     public function rules()
     {
         return [
-            'lha_id' => 'required|exists:lhas,id',
+            'lhp_id' => 'required|exists:lhps,id',
             'judul' => ['required', 'string', 'max:255'],
             'uraian_prosedur' => 'nullable|string|max:1000',
             'hasil' => 'nullable|string',

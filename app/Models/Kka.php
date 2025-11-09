@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Kka extends Model
 {
     protected $fillable = [
-        'lha_id',
+        'lhp_id',
         'judul',
         'uraian_prosedur',
         'hasil',
@@ -16,9 +16,9 @@ class Kka extends Model
         'auditor_id'
     ];
 
-    public function lha()
+    public function lhp()
     {
-        return $this->belongsTo(Lha::class);
+        return $this->belongsTo(Lhp::class);
     }
 
     public function auditor()

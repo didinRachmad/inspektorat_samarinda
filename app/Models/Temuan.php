@@ -8,19 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Temuan extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'lha_id',
+        'lhp_id',
         'judul_temuan',
         'kode_temuan_id',
         'kondisi_temuan',
         'kriteria_temuan',
         'sebab_temuan',
-        'akibat_temuan',
+        'akibat_temuan'
     ];
 
-    public function lha()
+    public function lhp()
     {
-        return $this->belongsTo(Lha::class);
+        return $this->belongsTo(Lhp::class);
     }
 
     public function kodeTemuan()

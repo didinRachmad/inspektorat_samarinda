@@ -17,7 +17,7 @@
 
 <select name="{{ $name }}" id="{{ $name }}"
     {{ $attributes->merge([
-        'class' => 'form-select form-select-sm' . ($errors->has($name) ? ' is-invalid' : ''),
+        'class' => 'form-select form-select-sm select2' . ($errors->has($name) ? ' is-invalid' : ''),
     ]) }}>
     <option value="">-- Pilih {{ $label ?? $name }} --</option>
     @foreach ($options as $optionValue => $optionLabel)

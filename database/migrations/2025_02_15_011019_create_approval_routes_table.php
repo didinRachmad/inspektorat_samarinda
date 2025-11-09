@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('approval_routes', function (Blueprint $table) {
             $table->id();
             $table->string('module'); // misal: 'Item'
+            $table->unsignedBigInteger('module_id');
             $table->unsignedBigInteger('role_id');
             $table->integer('sequence'); // urutan approval
             $table->unsignedBigInteger('assigned_user_id')->nullable(); // jika ingin meng-assign user tertentu
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('module_id')->references('id')->on('menus')->onDelete('cascade');
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreign('assigned_user_id')->references('id')->on('users')->onDelete('set null');
         });

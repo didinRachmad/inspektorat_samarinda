@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('temuan_files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('temuan_id')->constrained('temuans')->onDelete('cascade');
-
-            $table->string('file_path'); // path file yang diupload
-            $table->string('file_name')->nullable(); // nama asli file
-
+            $table->foreignId('temuan_id')->constrained('temuans')->cascadeOnDelete();
+            $table->string('file_path');
+            $table->string('file_name')->nullable();
+            $table->string('file_type', 50)->nullable(); // misal: pdf, jpg, docx
+            $table->unsignedBigInteger('file_size')->nullable(); // ukuran file dalam bytes
             $table->timestamps();
         });
     }

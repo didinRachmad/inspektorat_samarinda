@@ -23,7 +23,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>ID</th>
-                                    <th>Nomor LHA</th>
+                                    <th>Nomor LHP</th>
                                     <th>Judul</th>
                                     <th>Kode</th>
                                     <th>Kondisi</th>

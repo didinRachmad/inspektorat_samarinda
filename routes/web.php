@@ -7,19 +7,23 @@ use App\Http\Controllers\Admin\Setting\MenuController;
 use App\Http\Controllers\Admin\Setting\ApprovalRouteController;
 use App\Http\Controllers\Admin\Master\AuditiController;
 use App\Http\Controllers\Admin\Master\IrbanwilController;
+use App\Http\Controllers\Admin\Master\JenisPengawasanController;
 use App\Http\Controllers\Admin\Master\KodeRekomendasiController;
 use App\Http\Controllers\Admin\Master\KodeTemuanController;
 use App\Http\Controllers\Admin\Master\MandatoryController;
 use App\Http\Controllers\Admin\OngkirController;
 use App\Http\Controllers\Admin\Pelaksanaan\KkaController;
-use App\Http\Controllers\Admin\Pelaksanaan\LhaController;
+use App\Http\Controllers\Admin\Pelaksanaan\LhpController;
 use App\Http\Controllers\Admin\Pelaksanaan\TemuanController;
+use App\Http\Controllers\Admin\Pelaksanaan\TindakLanjutTemuanController;
 use App\Http\Controllers\Admin\Perencanaan\NonPkptController;
 use App\Http\Controllers\Admin\Perencanaan\PkptController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\Setting\SettingAnggaranController;
 use App\Http\Controllers\Admin\Transaksi\DeliveryOrdersController;
 use App\Http\Controllers\Admin\Transaksi\SalesOrdersController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -46,8 +50,22 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/search', [SearchController::class, 'search'])->middleware('auth')->name('search');
-Route::get('/search/all', [SearchController::class, 'searchAll'])->middleware('auth')->name('search.all');
+Route::middleware('auth')->group(function () {
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
+    Route::get('/search/all', [SearchController::class, 'searchAll'])->name('search.all');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-as-read', function (\Illuminate\Http\Request $request) {
+        $notifId = $request->input('id');
+        if ($notifId) {
+            $notification = auth()->user()->unreadNotifications()->find($notifId);
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+        return response()->json(['status' => true]);
+    })->name('notifications.markAsRead');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -60,6 +78,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('menu.permission:update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy')->middleware('menu.permission:destroy');
 });
+
+// ============== SETTING ===============
 
 Route::prefix('users')
     ->middleware(['auth'])
@@ -210,6 +230,22 @@ Route::prefix('menus')
             ->middleware('menu.permission:destroy');
     });
 
+
+Route::prefix('setting_anggaran')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [SettingAnggaranController::class, 'index'])
+            ->name('setting_anggaran.index')
+            ->middleware('menu.permission:index');
+        Route::put('/update/{anggaran}', [SettingAnggaranController::class, 'update'])
+            ->name('setting_anggaran.update')
+            ->middleware('menu.permission:update');
+        Route::get('/anggaran', [SettingAnggaranController::class, 'getAnggaran'])->name('setting_anggaran.getAnggaran');
+    });
+
+
+// ============== Master ===============
+
 Route::prefix('auditi')
     ->middleware('auth')
     ->group(function () {
@@ -346,6 +382,32 @@ Route::prefix('mandatory')
             ->middleware('menu.permission:destroy');
     });
 
+Route::prefix('jenis_pengawasan')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [JenisPengawasanController::class, 'index'])
+            ->name('jenis_pengawasan.index')
+            ->middleware('menu.permission:index');
+        Route::get('/data', [JenisPengawasanController::class, 'data'])
+            ->name('jenis_pengawasan.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [JenisPengawasanController::class, 'create'])
+            ->name('jenis_pengawasan.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [JenisPengawasanController::class, 'store'])
+            ->name('jenis_pengawasan.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{jenis_pengawasan}', [JenisPengawasanController::class, 'edit'])
+            ->name('jenis_pengawasan.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{jenis_pengawasan}', [JenisPengawasanController::class, 'update'])
+            ->name('jenis_pengawasan.update')
+            ->middleware('menu.permission:update');
+        Route::delete('/destroy/{jenis_pengawasan}', [JenisPengawasanController::class, 'destroy'])
+            ->name('jenis_pengawasan.destroy')
+            ->middleware('menu.permission:destroy');
+    });
+
 // ============== PERENCANAAN ===============
 
 Route::prefix('pkpt')
@@ -400,32 +462,35 @@ Route::prefix('non_pkpt')
             ->middleware('menu.permission:destroy');
     });
 
-Route::prefix('lha')
+Route::prefix('lhp')
     ->middleware('auth')
     ->group(function () {
-        Route::get('/', [LhaController::class, 'index'])
-            ->name('lha.index')
+        Route::get('/', [LhpController::class, 'index'])
+            ->name('lhp.index')
             ->middleware('menu.permission:index');
-        Route::get('/lha/{lha}', [LhaController::class, 'show'])
-            ->name('lha.show')
+        Route::get('show/{lhp}', [LhpController::class, 'show'])
+            ->name('lhp.show')
             ->middleware('menu.permission:show');
-        Route::get('/data', [LhaController::class, 'data'])
-            ->name(name: 'lha.data')
+        Route::get('/data', [LhpController::class, 'data'])
+            ->name(name: 'lhp.data')
             ->middleware('menu.permission:index');
-        Route::get('/create', [LhaController::class, 'create'])
-            ->name('lha.create')
+        Route::get('/create', [LhpController::class, 'create'])
+            ->name('lhp.create')
             ->middleware('menu.permission:create');
-        Route::post('/store', [LhaController::class, 'store'])
-            ->name('lha.store')
+        Route::post('/store', [LhpController::class, 'store'])
+            ->name('lhp.store')
             ->middleware('menu.permission:store');
-        Route::get('/edit/{lha}', [LhaController::class, 'edit'])
-            ->name('lha.edit')
+        Route::get('/edit/{lhp}', [LhpController::class, 'edit'])
+            ->name('lhp.edit')
             ->middleware('menu.permission:edit');
-        Route::put('/update/{lha}', [LhaController::class, 'update'])
-            ->name('lha.update')
+        Route::put('/update/{lhp}', [LhpController::class, 'update'])
+            ->name('lhp.update')
             ->middleware('menu.permission:update');
-        Route::delete('/destroy/{lha}', [LhaController::class, 'destroy'])
-            ->name('lha.destroy')
+        Route::patch('/approve/{lhp}', [LhpController::class, 'approve'])
+            ->name('lhp.approve')
+            ->middleware('menu.permission:approve');
+        Route::delete('/destroy/{lhp}', [LhpController::class, 'destroy'])
+            ->name('lhp.destroy')
             ->middleware('menu.permission:destroy');
     });
 
@@ -446,35 +511,36 @@ Route::prefix('kka')
             ->middleware('menu.permission:destroy');
     });
 
-
-Route::prefix('temuan')
+Route::prefix('tindak_lanjut_temuan')
     ->middleware('auth')
     ->group(function () {
-        Route::get('/', [TemuanController::class, 'index'])
-            ->name('temuan.index')
+        Route::get('/', [TindakLanjutTemuanController::class, 'index'])
+            ->name('tindak_lanjut_temuan.index')
             ->middleware('menu.permission:index');
-        Route::get('/temuan/{temuan}', [TemuanController::class, 'show'])
-            ->name('temuan.show')
+        Route::get('show/{tindak_lanjut_temuan}', [TindakLanjutTemuanController::class, 'show'])
+            ->name('tindak_lanjut_temuan.show')
             ->middleware('menu.permission:show');
-        Route::get('/data', [TemuanController::class, 'data'])
-            ->name(name: 'temuan.data')
+        Route::get('/data', [TindakLanjutTemuanController::class, 'data'])
+            ->name(name: 'tindak_lanjut_temuan.data')
             ->middleware('menu.permission:index');
-        Route::get('/create', [TemuanController::class, 'create'])
-            ->name('temuan.create')
+        Route::get('/create', [TindakLanjutTemuanController::class, 'create'])
+            ->name('tindak_lanjut_temuan.create')
             ->middleware('menu.permission:create');
-        Route::post('/store', [TemuanController::class, 'store'])
-            ->name('temuan.store')
+        Route::post('/store', [TindakLanjutTemuanController::class, 'store'])
+            ->name('tindak_lanjut_temuan.store')
             ->middleware('menu.permission:store');
-        Route::get('/edit/{temuan}', [TemuanController::class, 'edit'])
-            ->name('temuan.edit')
+        Route::get('/edit/{tindak_lanjut_temuan}', [TindakLanjutTemuanController::class, 'edit'])
+            ->name('tindak_lanjut_temuan.edit')
             ->middleware('menu.permission:edit');
-        Route::put('/update/{temuan}', [TemuanController::class, 'update'])
-            ->name('temuan.update')
+        Route::put('/update/{tindak_lanjut_temuan}', [TindakLanjutTemuanController::class, 'update'])
+            ->name('tindak_lanjut_temuan.update')
             ->middleware('menu.permission:update');
-        Route::delete('/destroy/{temuan}', [TemuanController::class, 'destroy'])
-            ->name('temuan.destroy')
+        Route::patch('/approve/{tindak_lanjut_temuan}', [TindakLanjutTemuanController::class, 'approve'])
+            ->name('tindak_lanjut_temuan.approve')
+            ->middleware('menu.permission:approve');
+        Route::delete('/destroy/{tindak_lanjut_temuan}', [TindakLanjutTemuanController::class, 'destroy'])
+            ->name('tindak_lanjut_temuan.destroy')
             ->middleware('menu.permission:destroy');
     });
-
 
 require __DIR__ . '/auth.php';

@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Models\Pkpt;
 use App\Models\PkptJabatan;
 use App\Models\Auditi;
+use App\Models\Irbanwil;
 use App\Models\Mandatory;
+use App\Models\JenisPengawasan;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
@@ -16,13 +18,18 @@ class PkptSeeder extends Seeder
     protected $jabatanList = ['PJ', 'WPJ', 'PT', 'KT', 'AT'];
     protected $ruangLingkupList = ['PM', 'Administrasi', 'Teknis'];
     protected $sasaranList = ['Pendampingan LPPD', 'Evaluasi Kinerja', 'Audit Keuangan'];
-    protected $jenisPengawasanList = ['REVIU', 'AUDIT', 'PENGAWASAN', 'EVALUASI', 'MONITORING', 'KONSULTING'];
-    protected $irbanwilList = ['SEMUA IRBAN', 'IRBAN I', 'IRBAN II', 'IRBAN III', 'IRBAN IV', 'IRBAN KHUSUS'];
 
     public function run(): void
     {
         $faker = Faker::create();
         $bulanTahun = now()->format('m-Y');
+
+        // Ambil data Irbanwil
+        $irbanwilIds = Irbanwil::pluck('id')->toArray();
+        if (empty($irbanwilIds)) {
+            $this->command->warn('Seeder Pkpt dilewati karena belum ada data di tabel irbanwils.');
+            return;
+        }
 
         // Ambil data mandatory
         $mandatoryIds = Mandatory::pluck('id')->toArray();
@@ -38,6 +45,13 @@ class PkptSeeder extends Seeder
             return;
         }
 
+        // Ambil data jenis_pengawasan (sub)
+        $jenisPengawasanIds = JenisPengawasan::whereNotNull('parent_id')->pluck('id')->toArray();
+        if (empty($jenisPengawasanIds)) {
+            $this->command->warn('Seeder Pkpt dilewati karena belum ada data di tabel jenis_pengawasans.');
+            return;
+        }
+
         // Ambil nomor urut terakhir
         $lastPkpt = Pkpt::whereYear('created_at', now()->year)
             ->whereMonth('created_at', now()->month)
@@ -49,25 +63,29 @@ class PkptSeeder extends Seeder
         for ($i = $startUrut; $i < $startUrut + $this->jumlahData; $i++) {
             $noUrut = str_pad($i, 2, '0', STR_PAD_LEFT);
             $kodeUnik = "PKPT-{$bulanTahun}-{$noUrut}";
-
             $bulanSekarang = now()->month;
+
+            $jenisId = $faker->randomElement($jenisPengawasanIds);
 
             $pkpt = Pkpt::create([
                 'tahun' => now()->year,
                 'bulan' => $bulanSekarang,
                 'no_pkpt' => $kodeUnik,
                 'mandatory_id' => $faker->randomElement($mandatoryIds),
-                'auditi_id' => $faker->randomElement($auditiIds),
                 'ruang_lingkup' => $faker->randomElement($this->ruangLingkupList),
                 'sasaran' => $faker->randomElement($this->sasaranList),
-                'jenis_pengawasan' => $faker->randomElement($this->jenisPengawasanList),
+                'jenis_pengawasan_id' => $jenisId,
                 'jadwal_rmp_bulan' => $faker->numberBetween($bulanSekarang, 12),
                 'jadwal_rsp_bulan' => $faker->numberBetween($bulanSekarang, 12),
                 'jadwal_rpl_bulan' => $faker->numberBetween($bulanSekarang, 12),
                 'jadwal_hp_hari' => $faker->numberBetween(10, 20),
-                'irbanwil' => $faker->randomElement($this->irbanwilList),
+                'irbanwil_id' => $faker->randomElement($irbanwilIds),
                 'pkpt' => 1,
             ]);
+
+            // Assign multiple auditi secara random (1-3)
+            $randomAuditis = $faker->randomElements($auditiIds, $faker->numberBetween(1, 3));
+            $pkpt->auditis()->sync($randomAuditis);
 
             // Detail jabatan dinamis
             foreach ($this->jabatanList as $jabatan) {

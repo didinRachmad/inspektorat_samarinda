@@ -24,6 +24,11 @@ class Auditi extends Model
 
     public function pkpts()
     {
-        return $this->hasMany(Pkpt::class);
+        return $this->belongsToMany(Pkpt::class, 'auditi_pkpt');
+    }
+
+    public function lhps()
+    {
+        return $this->hasMany(Lhp::class);
     }
 }

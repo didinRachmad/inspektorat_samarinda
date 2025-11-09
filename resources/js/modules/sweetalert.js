@@ -96,10 +96,10 @@ export function showInputDialog(title, text, confirmCallback) {
            <textarea id="inputReason" class="swal2-textarea w-100 m-0" placeholder="Masukkan keterangan..."></textarea>`,
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Kirim",
+        cancelButtonColor: "#d33",
+        confirmButtonColor: "#3085d6",
         cancelButtonText: "Batal",
+        confirmButtonText: "Kirim",
         preConfirm: () => {
             const reason = Swal.getPopup().querySelector("#inputReason").value;
             if (!reason) {

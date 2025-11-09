@@ -5,6 +5,8 @@ import "datatables.net-buttons-bs5";
 import "datatables.net-buttons/js/buttons.html5.js";
 import "datatables.net-buttons/js/buttons.print.js";
 import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";
+import "bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js";
+import "bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js";
 import Pace from "pace-js/pace.min";
 import PerfectScrollbar from "perfect-scrollbar";
 import "simplebar";
@@ -53,11 +55,14 @@ class DashboardApp {
 
     // ——— 2) Fase Inisialisasi Ketika DOM Siap ———
     initPageScripts() {
+        this.loadPageModule();
         this.initTooltips();
         this.bindConfirmationHandler();
         this.initSearch();
+        this.initNotification();
         initAutoNumeric();
-        this.loadPageModule();
+        this.initSelect2();
+        this.initDatePicker();
         this.initSummernote();
     }
 
@@ -315,21 +320,160 @@ class DashboardApp {
         container.innerHTML = html;
     }
 
-    initSummernote() {
-        $(".summernote").each(function () {
-            const rows = $(this).attr("rows") || 3; // default 3
-            const lineHeight = 24; // kira-kira tinggi baris px
-            const dynamicHeight = rows * lineHeight + 40; // tambahan padding
-            $(this).summernote({
-                height: dynamicHeight,
-                toolbar: [
-                    ["style", ["bold", "italic", "underline", "clear"]],
-                    ["font", ["fontsize", "color"]],
-                    ["para", ["ul", "ol", "paragraph"]],
-                    ["view", ["fullscreen"]],
-                ],
+    initNotification() {
+        const token = document.querySelector('meta[name="csrf-token"]').content;
+
+        // Seleksi semua link notifikasi, baik dropdown maupun halaman show all
+        const notifLinks = document.querySelectorAll(
+            "#notifList .list-group-item-action, .notif-item"
+        );
+
+        notifLinks.forEach((link) => {
+            link.addEventListener("click", function (e) {
+                e.preventDefault(); // hentikan default dulu
+                const href = link.getAttribute("href");
+                const notifId = link.dataset.id;
+
+                if (!notifId) {
+                    // Jika link tidak punya data-id, langsung redirect
+                    window.location.href = href;
+                    return;
+                }
+
+                fetch("/notifications/mark-as-read", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": token,
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id: notifId }),
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        // Jika ada badge di navbar, update
+                        const badge = document.getElementById("notifBadge");
+                        if (badge) {
+                            const count = parseInt(badge.textContent) - 1;
+                            if (count > 0) {
+                                badge.textContent = count;
+                            } else {
+                                badge.remove();
+                            }
+                        }
+
+                        // Redirect ke halaman tujuan
+                        window.location.href = href;
+                    })
+                    .catch((err) => console.error("Notif error:", err));
             });
         });
+    }
+
+    initSummernote(context = document) {
+        $(context)
+            .find(".summernote")
+            .each(function () {
+                if (!$(this).next(".note-editor").length) {
+                    const rows = $(this).attr("rows") || 3;
+                    const lineHeight = 24;
+                    const dynamicHeight = rows * lineHeight + 40;
+                    $(this).summernote({
+                        height: dynamicHeight,
+                        toolbar: [
+                            ["style", ["bold", "italic", "underline", "clear"]],
+                            ["font", ["fontsize", "color"]],
+                            ["para", ["ul", "ol", "paragraph"]],
+                            ["view", ["fullscreen"]],
+                        ],
+                    });
+                }
+            });
+    }
+
+    initDatePicker() {
+        // === Filter Tanggal ===
+        $(".filterTanggal").datepicker({
+            format: "dd-mm-yyyy", // Format tampilan Indonesia
+            autoclose: true,
+            clearBtn: true,
+            language: "id",
+            startDate: new Date(),
+        });
+
+        // Jika tidak ada nilai (insert baru), set ke tanggal hari ini
+        $(".filterTanggal").each(function () {
+            if (!$(this).val()) {
+                $(this).datepicker("setDate", new Date());
+            }
+        });
+
+        // === Sebelum submit form ===
+        // Gunakan event delegated agar tidak bentrok jika form dimuat ulang dinamis (AJAX)
+        $(document).on("submit", "form", function () {
+            $(this)
+                .find(".filterTanggal")
+                .each(function () {
+                    let val = $(this).val(); // contoh: 12-10-2025
+                    if (val) {
+                        let [dd, mm, yyyy] = val.split("-");
+                        $(this).val(`${yyyy}-${mm}-${dd}`); // ubah jadi 2025-10-12
+                    }
+                });
+        });
+
+        // === Filter Bulan ===
+        $(".filterBulan")
+            .datepicker({
+                format: "MM", // Menampilkan nama bulan
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true,
+                clearBtn: true,
+                language: "id",
+            })
+            .on("changeDate", function (e) {
+                const month = (e.date.getMonth() + 1)
+                    .toString()
+                    .padStart(2, "0");
+                $("#filterBulan").val(month).trigger("change");
+            });
+
+        // === Filter Tahun ===
+        $(".filterTahun").datepicker({
+            format: "yyyy",
+            startView: "years",
+            minViewMode: "years",
+            autoclose: true,
+            clearBtn: true,
+            language: "id",
+        });
+    }
+
+    initSelect2(context = document) {
+        $(context)
+            .find(".select2")
+            .each(function () {
+                // jika sudah punya Select2, destroy dulu
+                if ($(this).hasClass("select2-hidden-accessible")) {
+                    $(this).select2("destroy");
+                }
+
+                let firstOption = $(this)
+                    .find("option[value='']")
+                    .first()
+                    .text()
+                    .trim();
+
+                $(this).select2({
+                    theme: "bootstrap-5",
+                    placeholder:
+                        firstOption || $(this).attr("placeholder") || "Pilih",
+                    allowClear: true,
+                    width: "100%",
+                    language: "id",
+                });
+            });
     }
 }
 
@@ -337,6 +481,10 @@ class DashboardApp {
 const app = new DashboardApp();
 app.setupGlobals();
 
+window.reinitPlugins = function (context) {
+    app.initSummernote(context);
+    app.initSelect2(context);
+};
 // ——— BOOTSTRAP: Inisialisasi sisanya setelah DOM siap ———
 document.addEventListener("DOMContentLoaded", () => {
     app.initPageScripts();

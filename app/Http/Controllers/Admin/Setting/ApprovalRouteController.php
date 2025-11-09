@@ -40,10 +40,10 @@ class ApprovalRouteController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             // ->addColumn('nama', fn ($row) => $row->nama)
-            ->addColumn('can_edit', fn ($row) => Auth::user()->hasMenuPermission($activeMenu->id, 'edit'))
-            ->addColumn('can_delete', fn ($row) => Auth::user()->hasMenuPermission($activeMenu->id, 'destroy'))
-            ->addColumn('edit_url', fn ($row) => route('approval_routes.edit', $row->id))
-            ->addColumn('delete_url', fn ($row) => route('approval_routes.destroy', $row->id))
+            ->addColumn('can_edit', fn($row) => Auth::user()->hasMenuPermission($activeMenu->id, 'edit'))
+            ->addColumn('can_delete', fn($row) => Auth::user()->hasMenuPermission($activeMenu->id, 'destroy'))
+            ->addColumn('edit_url', fn($row) => route('approval_routes.edit', $row->id))
+            ->addColumn('delete_url', fn($row) => route('approval_routes.destroy', $row->id))
             ->make(true);
     }
 
@@ -58,7 +58,7 @@ class ApprovalRouteController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'module' => 'required|string|max:255',
+            'module_id' => 'required|exists:menus,id',
             'role_id' => 'required|exists:roles,id',
             'sequence' => 'required|integer|min:1',
             'assigned_user_id' => 'nullable|exists:users,id',
@@ -66,6 +66,9 @@ class ApprovalRouteController extends Controller
 
         try {
             DB::beginTransaction();
+
+            $menu = Menu::findOrFail($validated['module_id']);
+            $validated['module'] = $menu->route;
 
             ApprovalRoute::create($validated);
 
@@ -93,14 +96,21 @@ class ApprovalRouteController extends Controller
     public function update(Request $request, ApprovalRoute $approval_route)
     {
         $validated = $request->validate([
-            'module' => 'required|string|max:255',
+            'module_id' => 'required|exists:menus,id',
             'role_id' => 'required|exists:roles,id',
             'sequence' => 'required|integer|min:1',
             'assigned_user_id' => 'nullable|exists:users,id',
         ]);
 
         try {
+            if (!$request->has('assigned_user_id')) {
+                $validated['assigned_user_id'] = null;
+            }
+
             DB::beginTransaction();
+
+            $menu = Menu::findOrFail($validated['module_id']);
+            $validated['module'] = $menu->route;
 
             $approval_route->update($validated);
 

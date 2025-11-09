@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Menu;
 use App\Models\Role;
 use DB;
 use Illuminate\Database\Seeder;
@@ -13,24 +14,40 @@ class RouteApprovalSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ambil role super_admin
-        $superAdmin = Role::where('name', 'super_admin')->firstOrFail();
+        // Ambil role approver dan auditor
+        $approver = Role::where('name', 'approver')->firstOrFail();
+        $auditor  = Role::where('name', 'auditor')->firstOrFail();
 
-        // Daftar module yang butuh approval route
-        $modules = ['temuan'];
+        // --- Tambahkan route approval untuk LHP ---
+        $menuLhp = Menu::where('route', 'lhp')->first();
+        if ($menuLhp) {
+            DB::table('approval_routes')->insertOrIgnore([
+                'module'           => $menuLhp->route,
+                'module_id'        => $menuLhp->id,
+                'role_id'          => $approver->id,
+                'sequence'         => 1,
+                'assigned_user_id' => null,
+                'created_at'       => now(),
+                'updated_at'       => now(),
+            ]);
+        } else {
+            $this->command->warn("Menu 'lhp' tidak ditemukan di tabel menus.");
+        }
 
-        foreach ($modules as $module) {
-            // Assign super_admin sebagai sequence 1 dan 2 (atau sesuai kebutuhan)
-            for ($sequence = 1; $sequence <= 2; $sequence++) {
-                DB::table('approval_routes')->insertOrIgnore([
-                    'module'            => $module,
-                    'role_id'           => $superAdmin->id,
-                    'sequence'          => $sequence,
-                    'assigned_user_id'  => null,
-                    'created_at'        => now(),
-                    'updated_at'        => now(),
-                ]);
-            }
+        // --- Tambahkan route approval untuk Tindak Lanjut Temuan ---
+        $menuTindakLanjut = Menu::where('route', 'tindak_lanjut_temuan')->first();
+        if ($menuTindakLanjut) {
+            DB::table('approval_routes')->insertOrIgnore([
+                'module'           => $menuTindakLanjut->route,
+                'module_id'        => $menuTindakLanjut->id,
+                'role_id'          => $auditor->id,
+                'sequence'         => 1,
+                'assigned_user_id' => null,
+                'created_at'       => now(),
+                'updated_at'       => now(),
+            ]);
+        } else {
+            $this->command->warn("Menu 'tindak_lanjut_temuan' tidak ditemukan di tabel menus.");
         }
     }
 }

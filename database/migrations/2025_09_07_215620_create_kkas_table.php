@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kkas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lha_id')->constrained('lhas')->cascadeOnDelete();
+            $table->foreignId('lhp_id')->constrained('lhps')->cascadeOnDelete();
             $table->string('judul');
             $table->string('uraian_prosedur')->nullable();
             $table->text('hasil')->nullable();
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('auditor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
-            $table->index('lha_id');
+            $table->index('lhp_id');
         });
     }
 
