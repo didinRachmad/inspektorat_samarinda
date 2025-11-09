@@ -66,8 +66,8 @@ class LhpController extends Controller
             ->editColumn('tanggal_lhp', fn($r) => $r->tanggal_lhp ? $r->tanggal_lhp->format('d-m-Y') : '-')
             ->editColumn('rekomendasi', fn($r) => $r->rekomendasi ? Str::limit($r->rekomendasi, 50) : '-')
             ->addColumn('next_approver', function ($r) {
-                if ($r->approval_status === 'draft') return 'Menunggu pengajuan oleh pembuat';
-                if ($r->approval_status === 'waiting') {
+                if ($r->approval_status == 'draft') return 'Menunggu pengajuan oleh pembuat';
+                if ($r->approval_status == 'waiting') {
                     $routes = ApprovalRoute::where('module', 'lhp')
                         ->where('sequence', $r->current_approval_sequence)
                         ->get();
@@ -85,15 +85,31 @@ class LhpController extends Controller
             ->addColumn('is_super_admin', fn() => $user->hasRole('super_admin'))
             ->addColumn('can_show', fn() => $user->hasMenuPermission($activeMenu->id, 'show'))
             ->addColumn('can_edit', function ($r) use ($user) {
-                return $user->hasMenuPermission(currentMenu()->id, 'edit')
-                    && $r->approval_status === 'draft'
-                    && $user->id === $r->created_by;
+                $menuPermission = $user->hasMenuPermission(currentMenu()->id, 'edit');
+                $isDraft = $r->approval_status == 'draft';
+                $isCreator = $user->id == $r->created_by;
+
+                $canEdit = $menuPermission && $isDraft && $isCreator;
+
+                // Log detail kenapa bisa false
+                if (!$canEdit) {
+                    Log::info("can_edit false", [
+                        'user_id' => $user->id,
+                        'tindak_lanjut_id' => $r->id,
+                        'has_menu_permission' => $menuPermission,
+                        'approval_status' => $r->approval_status,
+                        'is_creator' => $isCreator,
+                        'created_by' => $r->created_by
+                    ]);
+                }
+
+                return $canEdit;
             })
             ->addColumn('can_delete', fn() => $user->hasMenuPermission($activeMenu->id, 'destroy'))
             ->addColumn('can_approve', function ($r) use ($user) {
                 if ($user->hasMenuPermission(currentMenu()->id, 'approve') && in_array($r->approval_status, ['draft', 'waiting'])) {
-                    if ($r->approval_status === 'draft' && $user->id === $r->created_by) return true;
-                    if ($r->approval_status === 'waiting') {
+                    if ($r->approval_status == 'draft' && $user->id == $r->created_by) return true;
+                    if ($r->approval_status == 'waiting') {
                         $routes = ApprovalRoute::where('module', 'lhp')
                             ->where('sequence', $r->current_approval_sequence)
                             ->get();
@@ -251,10 +267,10 @@ class LhpController extends Controller
         $user = auth()->user();
         $canApprove = false;
 
-        if ($lhp->approval_status === 'draft') {
+        if ($lhp->approval_status == 'draft') {
             // Draft → hanya pembuat bisa kirim
-            $canApprove = $user->id === $lhp->created_by;
-        } elseif ($lhp->approval_status === 'waiting') {
+            $canApprove = $user->id == $lhp->created_by;
+        } elseif ($lhp->approval_status == 'waiting') {
             // Waiting → cek approval route
             $routes = ApprovalRoute::where('module', 'lhp')
                 ->where('sequence', $lhp->current_approval_sequence)
@@ -466,7 +482,7 @@ class LhpController extends Controller
             };
 
             // ===================== DRAFT =====================
-            if ($lhp->approval_status === 'draft') {
+            if ($lhp->approval_status == 'draft') {
                 if ($routes->isEmpty()) {
                     // Langsung final approved
                     $lhp->update([
@@ -496,7 +512,7 @@ class LhpController extends Controller
             }
 
             // ===================== WAITING =====================
-            if ($lhp->approval_status === 'waiting') {
+            if ($lhp->approval_status == 'waiting') {
                 $currentRoute = $routes->firstWhere('sequence', $lhp->current_approval_sequence);
 
                 if (!$currentRoute || !$canUserApproveRoute($currentRoute)) {
@@ -507,7 +523,7 @@ class LhpController extends Controller
                 }
 
                 // -------- APPROVE --------
-                if ($action === 'approve') {
+                if ($action == 'approve') {
                     $nextRoute = $routes->firstWhere('sequence', $lhp->current_approval_sequence + 1);
 
                     if ($nextRoute) {
@@ -547,7 +563,7 @@ class LhpController extends Controller
                 }
 
                 // -------- REJECT --------
-                if ($action === 'reject') {
+                if ($action == 'reject') {
                     $lhp->update([
                         'approval_status' => 'rejected',
                         'approval_note' => $note,
@@ -565,7 +581,7 @@ class LhpController extends Controller
                 }
 
                 // -------- REVISE --------
-                if ($action === 'revise') {
+                if ($action == 'revise') {
                     $prevRoute = $routes->where('sequence', '<', $lhp->current_approval_sequence)
                         ->sortByDesc('sequence')
                         ->first();
