@@ -139,7 +139,7 @@ class UserManagementController extends Controller
             session()->flash('success', 'Data user berhasil diperbarui.');
 
             // 👉 Cek apakah user yang sedang diupdate adalah user yang login
-            if (Auth::id() === $user->id) {
+            if (Auth::id() == $user->id) {
                 return redirect()->route('dashboard'); // arahkan ke dashboard
             }
 

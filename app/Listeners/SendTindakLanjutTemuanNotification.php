@@ -20,7 +20,7 @@ class SendTindakLanjutTemuanNotification
         $customMessage = null;
 
         // ===================== NEW_TINDAK_LANJUT (DARI LHP FINAL APPROVED) =====================
-        if ($action === 'new_tindak_lanjut') {
+        if ($action == 'new_tindak_lanjut') {
             if ($tindak_lanjut_temuan->lhp && $tindak_lanjut_temuan->lhp->auditiUsers->isNotEmpty()) {
                 $usersToNotify = $tindak_lanjut_temuan->lhp->auditiUsers;
                 $customMessage = "Terdapat temuan baru, mohon segera ditindaklanjuti | "
@@ -29,7 +29,7 @@ class SendTindakLanjutTemuanNotification
         }
 
         // ===================== APPROVE / WAITING =====================
-        elseif ($action === 'approve' || $action === 'waiting') {
+        elseif ($action == 'approve' || $action == 'waiting') {
             if ($tindak_lanjut_temuan->is_final_approved) {
                 // ✅ Jika sudah final approved → kirim ke pembuat & auditi
                 if ($tindak_lanjut_temuan->auditiUser) {
@@ -56,7 +56,7 @@ class SendTindakLanjutTemuanNotification
         }
 
         // ===================== REVISE =====================
-        elseif ($action === 'revise') {
+        elseif ($action == 'revise') {
             $prevRoute = $routes->where('sequence', '<', $tindak_lanjut_temuan->current_approval_sequence)
                 ->sortByDesc('sequence')
                 ->first();

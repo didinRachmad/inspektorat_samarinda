@@ -21,7 +21,7 @@ class SendLhpNotification
         $customMessage = null;
 
         // ===================== APPROVE / WAITING =====================
-        if ($action === 'approve' || $action === 'waiting') {
+        if ($action == 'approve' || $action == 'waiting') {
             if ($lhp->is_final_approved) {
                 // ✅ Sudah final approved → kirim ke pembuat
                 if ($lhp->creator) {
@@ -71,7 +71,7 @@ class SendLhpNotification
         }
 
         // ===================== REVISE =====================
-        if ($action === 'revise') {
+        if ($action == 'revise') {
             // Previous route
             $prevRoute = $routes->where('sequence', '<', $lhp->current_approval_sequence)
                 ->sortByDesc('sequence')
@@ -90,7 +90,7 @@ class SendLhpNotification
         }
 
         // ===================== REJECT =====================
-        if ($action === 'reject' && $lhp->creator) {
+        if ($action == 'reject' && $lhp->creator) {
             $usersToNotify->push($lhp->creator);
         }
 

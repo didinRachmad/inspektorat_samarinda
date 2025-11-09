@@ -169,7 +169,7 @@ class RoleController extends Controller
             $role->menus()->detach();
 
             // 🚫 Jika role super_admin → kunci menu terlarang (selalu set penuh)
-            if ($role->name === 'super_admin') {
+            if ($role->name == 'super_admin') {
                 foreach ($restrictedMenuIds as $restrictedId) {
                     // Ambil semua permission_id untuk menu tersebut (biar full akses)
                     $allPermissionIds = \DB::table('permissions')

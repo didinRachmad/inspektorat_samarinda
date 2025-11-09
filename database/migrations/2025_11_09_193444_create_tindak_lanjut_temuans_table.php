@@ -38,7 +38,7 @@ return new class extends Migration
             $table->date('tanggal_tindak_lanjut')->nullable()
                 ->comment('Tanggal pengisian tindak lanjut oleh auditi');
 
-            // === Kolom approval (disamakan seperti di tabel LHP) ===
+            //==Kolom approval (disamakan seperti di tabel LHP) ===
             $table->enum('approval_status', ['draft', 'waiting', 'approved'])
                 ->default('draft')
                 ->comment('Status approval tindak lanjut');

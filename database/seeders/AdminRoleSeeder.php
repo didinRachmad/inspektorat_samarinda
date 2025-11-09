@@ -46,7 +46,7 @@ class AdminRoleSeeder extends Seeder
         foreach ($menus as $menu) {
             foreach ($permissions as $permission) {
                 // Batasi permission hanya untuk menu 'kka'
-                if ($menu->route === 'kka' && !in_array($permission->name, ['create', 'store', 'destroy'])) {
+                if ($menu->route == 'kka' && !in_array($permission->name, ['create', 'store', 'destroy'])) {
                     continue;
                 }
 
@@ -67,7 +67,7 @@ class AdminRoleSeeder extends Seeder
             $menu = $menus[$menuName];
             foreach ($permissions as $permission) {
                 // Jika menu 'kka', maka filter permission hanya create, store, destroy
-                if ($menuName === 'kka' && !in_array($permission->name, ['create', 'store', 'destroy'])) {
+                if ($menuName == 'kka' && !in_array($permission->name, ['create', 'store', 'destroy'])) {
                     continue;
                 }
                 DB::table('role_has_permissions')->insertOrIgnore([

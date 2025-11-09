@@ -33,7 +33,7 @@
                             <button form="send-verification"
                                 class="btn btn-link p-0">{{ __('Click here to re-send the verification email.') }}</button>
                         </p>
-                        @if (session('status') === 'verification-link-sent')
+                        @if (session('status') == 'verification-link-sent')
                             <div class="small text-success">
                                 {{ __('A new verification link has been sent to your email address.') }}</div>
                         @endif
@@ -41,7 +41,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
-                @if (session('status') === 'profile-updated')
+                @if (session('status') == 'profile-updated')
                     <span class="small text-success ms-3">{{ __('Saved.') }}</span>
                 @endif
             </form>

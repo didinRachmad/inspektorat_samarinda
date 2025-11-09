@@ -166,12 +166,12 @@
             </a>
 
             @if ($canApprove ?? false)
-                @if ($lhp->approval_status === 'draft')
+                @if ($lhp->approval_status == 'draft')
                     <button type="button" class="btn btn-success btn-sm rounded-4 btn-approve" data-action="approve"
                         data-url="{{ route('lhp.approve', $lhp->id) }}" data-redirect="{{ route('lhp.index') }}">
                         <i class="bi bi-send"></i> Kirim untuk Approval
                     </button>
-                @elseif($lhp->approval_status === 'waiting')
+                @elseif($lhp->approval_status == 'waiting')
                     <button type="button" class="btn btn-success btn-sm rounded-4 btn-approve" data-action="approve"
                         data-url="{{ route('lhp.approve', $lhp->id) }}" data-redirect="{{ route('lhp.index') }}">
                         <i class="bi bi-check-circle"></i> Setujui

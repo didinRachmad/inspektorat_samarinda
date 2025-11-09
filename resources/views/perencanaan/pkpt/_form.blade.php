@@ -94,7 +94,7 @@
         <select name="irbanwil" class="form-select select2">
             <option value="">-- Pilih Irbanwil --</option>
             @foreach (['SEMUA IRBAN', 'IRBAN I', 'IRBAN II', 'IRBAN III', 'IRBAN IV', 'IRBAN KHUSUS'] as $item)
-                <option value="{{ $item }}" @selected(old('irbanwil', $pkpt->irbanwil ?? '') === $item)>{{ $item }}</option>
+                <option value="{{ $item }}" @selected(old('irbanwil', $pkpt->irbanwil ?? '') == $item)>{{ $item }}</option>
             @endforeach
         </select>
     </div>

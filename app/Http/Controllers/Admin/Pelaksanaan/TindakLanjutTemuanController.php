@@ -74,10 +74,10 @@ class TindakLanjutTemuanController extends Controller
             ->addIndexColumn()
             ->addColumn('can_show', fn($r) => $user->hasMenuPermission($activeMenu->id, 'show'))
             ->addColumn('can_approve', function ($r) use ($user) {
-                if (in_array($r->approval_status, ['draft', 'waiting'])) {
-                    if ($r->approval_status === 'draft' && $user->auditi_id === $r->auditi_id && $r->deskripsi_tindak_lanjut != null) return true;
+                if ($user->hasMenuPermission(currentMenu()->id, 'approve') && in_array($r->approval_status, ['draft', 'waiting'])) {
+                    if ($r->approval_status == 'draft' && $user->auditi_id == $r->auditi_id && $r->deskripsi_tindak_lanjut != null) return true;
 
-                    if ($r->approval_status === 'waiting') {
+                    if ($r->approval_status == 'waiting') {
                         $routes = ApprovalRoute::where('module', 'tindak_lanjut_temuan')
                             ->where('sequence', $r->current_approval_sequence)
                             ->get();
@@ -112,10 +112,10 @@ class TindakLanjutTemuanController extends Controller
         $canApprove = false;
         $canInputTindakLanjut = false;
 
-        // === Cek izin approve ===
-        if ($tindak_lanjut_temuan->approval_status === 'draft') {
-            $canApprove = $user->auditi_id === $tindak_lanjut_temuan->auditi_id;
-        } elseif ($tindak_lanjut_temuan->approval_status === 'waiting') {
+        //==Cek izin approve ===
+        if ($tindak_lanjut_temuan->approval_status == 'draft') {
+            $canApprove = $user->auditi_id == $tindak_lanjut_temuan->auditi_id;
+        } elseif ($tindak_lanjut_temuan->approval_status == 'waiting') {
             $routes = ApprovalRoute::where('module', 'tindak_lanjut_temuan')
                 ->where('sequence', $tindak_lanjut_temuan->current_approval_sequence)
                 ->get();
@@ -131,13 +131,13 @@ class TindakLanjutTemuanController extends Controller
             }
         }
 
-        // === Hitung apakah auditi masih boleh input tindak lanjut ===
+        //==Hitung apakah auditi masih boleh input tindak lanjut ===
         $batasWaktu = Carbon::parse($tindak_lanjut_temuan->created_at)->addDays(30);
         $masihDalamBatas = now()->lessThanOrEqualTo($batasWaktu);
 
         if (
             $user->hasRole('auditi') &&
-            $tindak_lanjut_temuan->approval_status === 'draft' &&
+            $tindak_lanjut_temuan->approval_status == 'draft' &&
             $masihDalamBatas
         ) {
             $canInputTindakLanjut = true;
@@ -246,7 +246,7 @@ class TindakLanjutTemuanController extends Controller
             };
 
             // ===================== DRAFT =====================
-            if ($tindak_lanjut_temuan->approval_status === 'draft') {
+            if ($tindak_lanjut_temuan->approval_status == 'draft') {
                 if ($routes->isEmpty()) {
                     // Langsung final approved
                     $tindak_lanjut_temuan->update([
@@ -276,7 +276,7 @@ class TindakLanjutTemuanController extends Controller
             }
 
             // ===================== WAITING =====================
-            if ($tindak_lanjut_temuan->approval_status === 'waiting') {
+            if ($tindak_lanjut_temuan->approval_status == 'waiting') {
                 $currentRoute = $routes->firstWhere('sequence', $tindak_lanjut_temuan->current_approval_sequence);
 
                 if (!$currentRoute || !$canUserApproveRoute($currentRoute)) {
@@ -287,7 +287,7 @@ class TindakLanjutTemuanController extends Controller
                 }
 
                 // -------- APPROVE --------
-                if ($action === 'approve') {
+                if ($action == 'approve') {
                     $nextRoute = $routes->firstWhere('sequence', $tindak_lanjut_temuan->current_approval_sequence + 1);
 
                     if ($nextRoute) {
@@ -327,7 +327,7 @@ class TindakLanjutTemuanController extends Controller
                 }
 
                 // -------- REJECT --------
-                if ($action === 'reject') {
+                if ($action == 'reject') {
                     $tindak_lanjut_temuan->update([
                         'approval_status' => 'rejected',
                         'approval_note' => $note,
@@ -345,7 +345,7 @@ class TindakLanjutTemuanController extends Controller
                 }
 
                 // -------- REVISE --------
-                if ($action === 'revise') {
+                if ($action == 'revise') {
                     $prevRoute = $routes->where('sequence', '<', $tindak_lanjut_temuan->current_approval_sequence)
                         ->sortByDesc('sequence')
                         ->first();

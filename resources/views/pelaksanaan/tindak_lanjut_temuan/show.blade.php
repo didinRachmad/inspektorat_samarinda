@@ -22,7 +22,7 @@
                 <div class="col-md-6">
                     <p class="mb-1"><strong>Status Approval:</strong></p>
                     <span
-                        class="badge bg-{{ $tindak_lanjut_temuan->approval_status === 'approved' ? 'success' : ($tindak_lanjut_temuan->approval_status === 'waiting' ? 'warning' : 'secondary') }}">
+                        class="badge bg-{{ $tindak_lanjut_temuan->approval_status == 'approved' ? 'success' : ($tindak_lanjut_temuan->approval_status == 'waiting' ? 'warning' : 'secondary') }}">
                         {{ ucfirst($tindak_lanjut_temuan->approval_status) }}
                     </span>
                 </div>
@@ -138,7 +138,7 @@
                     <p class="fw-bold mb-2 text-center">Tindak Lanjut</p>
 
                     {{-- Mode input: hanya auditi dan draft --}}
-                    @if (auth()->user()->hasRole('auditi') && $tindak_lanjut_temuan->approval_status === 'draft' && $canInputTindakLanjut)
+                    @if (auth()->user()->hasRole('auditi') && $tindak_lanjut_temuan->approval_status == 'draft' && $canInputTindakLanjut)
                         <form action="{{ route('tindak_lanjut_temuan.update', $tindak_lanjut_temuan->id) }}" method="POST"
                             enctype="multipart/form-data" class="mt-3">
                             @csrf
@@ -260,13 +260,13 @@
                 </a>
 
                 @if ($canApprove && auth()->user()->hasRole('auditor'))
-                    @if ($tindak_lanjut_temuan->approval_status === 'draft')
+                    @if ($tindak_lanjut_temuan->approval_status == 'draft')
                         <button type="button" class="btn btn-success btn-sm rounded-4 btn-approve" data-action="approve"
                             data-url="{{ route('tindak_lanjut_temuan.approve', $tindak_lanjut_temuan->id) }}"
                             data-redirect="{{ route('tindak_lanjut_temuan.index') }}">
                             <i class="bi bi-send"></i> Kirim untuk Approval
                         </button>
-                    @elseif($tindak_lanjut_temuan->approval_status === 'waiting')
+                    @elseif($tindak_lanjut_temuan->approval_status == 'waiting')
                         <button type="button" class="btn btn-success btn-sm rounded-4 btn-approve" data-action="approve"
                             data-url="{{ route('tindak_lanjut_temuan.approve', $tindak_lanjut_temuan->id) }}"
                             data-redirect="{{ route('tindak_lanjut_temuan.index') }}">
