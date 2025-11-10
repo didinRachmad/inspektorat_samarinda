@@ -59,7 +59,7 @@ class AdminRoleSeeder extends Seeder
         }
 
         // --- Auditor: hanya menu lhp, kka, tindak_lanjut_temuan ---
-        $auditorMenus = ['lhp', 'kka', 'tindak_lanjut_temuan'];
+        $auditorMenus = ['lhp', 'kka', 'tindak_lanjut_temuan', 'regulasi'];
         foreach ($auditorMenus as $menuName) {
             if (!isset($menus[$menuName])) {
                 continue; // lewati jika menu tidak ditemukan
@@ -68,6 +68,9 @@ class AdminRoleSeeder extends Seeder
             foreach ($permissions as $permission) {
                 // Jika menu 'kka', maka filter permission hanya create, store, destroy
                 if ($menuName == 'kka' && !in_array($permission->name, ['create', 'store', 'destroy'])) {
+                    continue;
+                }
+                if ($menuName == 'regulasi' && !in_array($permission->name, ['index', 'show'])) {
                     continue;
                 }
                 DB::table('role_has_permissions')->insertOrIgnore([
@@ -79,8 +82,11 @@ class AdminRoleSeeder extends Seeder
         }
 
         // --- Auditi: hanya menu tindak_lanjut_temuan ---
-        $auditiMenus = ['tindak_lanjut_temuan'];
+        $auditiMenus = ['tindak_lanjut_temuan', 'regulasi'];
         foreach ($auditiMenus as $menuName) {
+            if ($menuName == 'regulasi' && !in_array($permission->name, ['index', 'show'])) {
+                continue;
+            }
             if (isset($menus[$menuName])) {
                 $menu = $menus[$menuName];
                 foreach ($permissions as $permission) {
@@ -94,8 +100,11 @@ class AdminRoleSeeder extends Seeder
         }
 
         // --- Approver: hanya menu lhp ---
-        $approverMenus = ['lhp'];
+        $approverMenus = ['lhp', 'regulasi'];
         foreach ($approverMenus as $menuName) {
+            if ($menuName == 'regulasi' && !in_array($permission->name, ['index', 'show'])) {
+                continue;
+            }
             if (isset($menus[$menuName])) {
                 $menu = $menus[$menuName];
                 foreach ($permissions as $permission) {

@@ -31,6 +31,7 @@ class MenuSeeder extends Seeder
             ['title' => 'Menus', 'route' => 'menus', 'icon' => null, 'order' => 4, 'parent_title' => 'Setting'],
             ['title' => 'Approval Routes', 'route' => 'approval_routes', 'icon' => null, 'order' => 5, 'parent_title' => 'Setting'],
             ['title' => 'Anggaran', 'route' => 'setting_anggaran', 'icon' => null, 'order' => 6, 'parent_title' => 'Setting'],
+            ['title' => 'Regulasi', 'route' => 'regulasi', 'icon' => 'description', 'order' => 5, 'parent_title' => null],
             ['title' => 'Profile', 'route' => 'profile', 'icon' => 'manage_accounts', 'order' => 10, 'parent_title' => null],
         ];
 

@@ -71,26 +71,26 @@ class TindakLanjutTemuanPage {
                     name: "judul_temuan",
                     title: "Judul Temuan",
                 },
-                {
-                    data: "kondisi_temuan",
-                    name: "kondisi_temuan",
-                    title: "Kondisi Temuan",
-                },
-                {
-                    data: "kriteria_temuan",
-                    name: "kriteria_temuan",
-                    title: "Kriteria Temuan",
-                },
-                {
-                    data: "sebab_temuan",
-                    name: "sebab_temuan",
-                    title: "Sebab Temuan",
-                },
-                {
-                    data: "akibat_temuan",
-                    name: "akibat_temuan",
-                    title: "Akibat Temuan",
-                },
+                // {
+                //     data: "kondisi_temuan",
+                //     name: "kondisi_temuan",
+                //     title: "Kondisi Temuan",
+                // },
+                // {
+                //     data: "kriteria_temuan",
+                //     name: "kriteria_temuan",
+                //     title: "Kriteria Temuan",
+                // },
+                // {
+                //     data: "sebab_temuan",
+                //     name: "sebab_temuan",
+                //     title: "Sebab Temuan",
+                // },
+                // {
+                //     data: "akibat_temuan",
+                //     name: "akibat_temuan",
+                //     title: "Akibat Temuan",
+                // },
                 {
                     data: "approval_status",
                     name: "approval_status",

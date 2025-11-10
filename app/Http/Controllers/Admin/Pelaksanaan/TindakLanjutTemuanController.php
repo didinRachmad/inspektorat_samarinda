@@ -38,10 +38,10 @@ class TindakLanjutTemuanController extends Controller
             'tindak_lanjut_temuans.*',
             'lhps.nomor_lhp as nomor_lhp',
             'temuans.judul_temuan',
-            'temuans.kondisi_temuan',
-            'temuans.kriteria_temuan',
-            'temuans.sebab_temuan',
-            'temuans.akibat_temuan',
+            // 'temuans.kondisi_temuan',
+            // 'temuans.kriteria_temuan',
+            // 'temuans.sebab_temuan',
+            // 'temuans.akibat_temuan',
             DB::raw("CONCAT(kode_temuans.kode, ' | ', kode_temuans.nama_temuan) as kode_nama_temuan"),
             'auditis.nama_auditi'
         )

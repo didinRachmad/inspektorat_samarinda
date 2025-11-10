@@ -11,19 +11,17 @@ use App\Http\Controllers\Admin\Master\JenisPengawasanController;
 use App\Http\Controllers\Admin\Master\KodeRekomendasiController;
 use App\Http\Controllers\Admin\Master\KodeTemuanController;
 use App\Http\Controllers\Admin\Master\MandatoryController;
-use App\Http\Controllers\Admin\OngkirController;
 use App\Http\Controllers\Admin\Pelaksanaan\KkaController;
 use App\Http\Controllers\Admin\Pelaksanaan\LhpController;
-use App\Http\Controllers\Admin\Pelaksanaan\TemuanController;
 use App\Http\Controllers\Admin\Pelaksanaan\TindakLanjutTemuanController;
 use App\Http\Controllers\Admin\Perencanaan\NonPkptController;
 use App\Http\Controllers\Admin\Perencanaan\PkptController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\Setting\SettingAnggaranController;
-use App\Http\Controllers\Admin\Transaksi\DeliveryOrdersController;
-use App\Http\Controllers\Admin\Transaksi\SalesOrdersController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\RegulasiController;
+use App\Http\Controllers\FaqController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -540,6 +538,61 @@ Route::prefix('tindak_lanjut_temuan')
             ->middleware('menu.permission:approve');
         Route::delete('/destroy/{tindak_lanjut_temuan}', [TindakLanjutTemuanController::class, 'destroy'])
             ->name('tindak_lanjut_temuan.destroy')
+            ->middleware('menu.permission:destroy');
+    });
+
+Route::prefix('regulasi')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [RegulasiController::class, 'index'])
+            ->name('regulasi.index')
+            ->middleware('menu.permission:index');
+        Route::get('/data', [RegulasiController::class, 'data'])
+            ->name('regulasi.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [RegulasiController::class, 'create'])
+            ->name('regulasi.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [RegulasiController::class, 'store'])
+            ->name('regulasi.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{regulasi}', [RegulasiController::class, 'edit'])
+            ->name('regulasi.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{regulasi}', [RegulasiController::class, 'update'])
+            ->name('regulasi.update')
+            ->middleware('menu.permission:update');
+        Route::get('/download/{regulasi}', [RegulasiController::class, 'download'])
+            ->name('regulasi.download')
+            ->middleware('menu.permission:show');
+        Route::delete('/destroy/{regulasi}', [RegulasiController::class, 'destroy'])
+            ->name('regulasi.destroy')
+            ->middleware('menu.permission:destroy');
+    });
+
+Route::prefix('faq')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', [FaqController::class, 'index'])
+            ->name('faq.index')
+            ->middleware('menu.permission:index');
+        Route::get('/data', [FaqController::class, 'data'])
+            ->name('faq.data')
+            ->middleware('menu.permission:index');
+        Route::get('/create', [FaqController::class, 'create'])
+            ->name('faq.create')
+            ->middleware('menu.permission:create');
+        Route::post('/store', [FaqController::class, 'store'])
+            ->name('faq.store')
+            ->middleware('menu.permission:store');
+        Route::get('/edit/{faq}', [FaqController::class, 'edit'])
+            ->name('faq.edit')
+            ->middleware('menu.permission:edit');
+        Route::put('/update/{faq}', [FaqController::class, 'update'])
+            ->name('faq.update')
+            ->middleware('menu.permission:update');
+        Route::delete('/destroy/{faq}', [FaqController::class, 'destroy'])
+            ->name('faq.destroy')
             ->middleware('menu.permission:destroy');
     });
 
