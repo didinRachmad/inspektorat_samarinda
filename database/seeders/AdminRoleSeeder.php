@@ -59,11 +59,8 @@ class AdminRoleSeeder extends Seeder
         }
 
         // --- Auditor: hanya menu lhp, kka, tindak_lanjut_temuan ---
-        $auditorMenus = ['lhp', 'kka', 'tindak_lanjut_temuan', 'regulasi'];
+        $auditorMenus = ['lhp', 'kka', 'tindak_lanjut_temuan', 'regulasi', 'faq'];
         foreach ($auditorMenus as $menuName) {
-            if (!isset($menus[$menuName])) {
-                continue; // lewati jika menu tidak ditemukan
-            }
             $menu = $menus[$menuName];
             foreach ($permissions as $permission) {
                 // Jika menu 'kka', maka filter permission hanya create, store, destroy
@@ -71,6 +68,9 @@ class AdminRoleSeeder extends Seeder
                     continue;
                 }
                 if ($menuName == 'regulasi' && !in_array($permission->name, ['index', 'show'])) {
+                    continue;
+                }
+                if ($menuName == 'faq' && !in_array($permission->name, ['index', 'show'])) {
                     continue;
                 }
                 DB::table('role_has_permissions')->insertOrIgnore([
@@ -82,9 +82,12 @@ class AdminRoleSeeder extends Seeder
         }
 
         // --- Auditi: hanya menu tindak_lanjut_temuan ---
-        $auditiMenus = ['tindak_lanjut_temuan', 'regulasi'];
+        $auditiMenus = ['tindak_lanjut_temuan', 'regulasi', 'faq'];
         foreach ($auditiMenus as $menuName) {
             if ($menuName == 'regulasi' && !in_array($permission->name, ['index', 'show'])) {
+                continue;
+            }
+            if ($menuName == 'faq' && !in_array($permission->name, ['index', 'show'])) {
                 continue;
             }
             if (isset($menus[$menuName])) {
@@ -100,9 +103,12 @@ class AdminRoleSeeder extends Seeder
         }
 
         // --- Approver: hanya menu lhp ---
-        $approverMenus = ['lhp', 'regulasi'];
+        $approverMenus = ['lhp', 'regulasi', 'faq'];
         foreach ($approverMenus as $menuName) {
             if ($menuName == 'regulasi' && !in_array($permission->name, ['index', 'show'])) {
+                continue;
+            }
+            if ($menuName == 'faq' && !in_array($permission->name, ['index', 'show'])) {
                 continue;
             }
             if (isset($menus[$menuName])) {
