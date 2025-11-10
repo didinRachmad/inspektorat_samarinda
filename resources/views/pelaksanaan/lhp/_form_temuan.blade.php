@@ -9,7 +9,7 @@
             <div class="temuan-item border border-primary rounded p-3 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="mb-0">Temuan #{{ $i + 1 }}</h6>
-                    <button type="button" class="btn btn-outline-danger btn-sm rounded-4 remove-temuan">
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-temuan">
                         <i class="bi bi-trash"></i> Hapus Temuan
                     </button>
                 </div>
@@ -98,8 +98,7 @@
                                                 class="form-control numeric" value="{{ $rekom['nominal'] ?? 0 }}">
                                         </td>
                                         <td class="text-center align-middle">
-                                            <button type="button"
-                                                class="btn btn-danger rounded-4 remove-rekomendasi">-</button>
+                                            <button type="button" class="btn btn-danger remove-rekomendasi">-</button>
                                         </td>
                                     </tr>
                                 @empty
@@ -110,7 +109,7 @@
                             </tbody>
                         </table>
                         <div class="text-center mb-3">
-                            <button type="button" class="btn btn-success rounded-4 btn-sm btnAddRekomendasi">+</button>
+                            <button type="button" class="btn btn-success btn-sm btnAddRekomendasi">+</button>
                             <small class="d-block text-center text-muted">Klik + untuk menambah rekomendasi</small>
                         </div>
                     </div>
@@ -141,8 +140,7 @@
                                                 class="form-control" />
                                         </td>
                                         <td class="text-center">
-                                            <button type="button"
-                                                class="btn btn-danger rounded-4 remove-file">-</button>
+                                            <button type="button" class="btn btn-danger remove-file">-</button>
                                         </td>
                                     </tr>
                                 @empty
@@ -150,13 +148,13 @@
                                         <td><input type="file" name="temuans[{{ $i }}][files][0]"
                                                 class="form-control" /></td>
                                         <td class="text-center"><button type="button"
-                                                class="btn btn-danger rounded-4 remove-file">-</button></td>
+                                                class="btn btn-danger remove-file">-</button></td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                         <div class="text-center mb-3">
-                            <button type="button" class="btn btn-success rounded-4 btn-sm btnAddFile">+</button>
+                            <button type="button" class="btn btn-success btn-sm btnAddFile">+</button>
                             <small class="d-block text-center text-muted">Klik + untuk menambah file pendukung</small>
                         </div>
                     </div>
@@ -169,7 +167,7 @@
             <div class="temuan-item border border-primary rounded p-3 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="mb-0">Temuan #{{ $i + 1 }}</h6>
-                    <button type="button" class="btn btn-outline-danger btn-sm rounded-4 remove-temuan">
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-temuan">
                         <i class="bi bi-trash"></i> Hapus Temuan
                     </button>
                 </div>
@@ -261,15 +259,14 @@
                                         </td>
                                         <td class="text-center align-middle">
                                             <button type="button"
-                                                class="btn btn-danger rounded-4 remove-rekomendasi">-</button>
+                                                class="btn btn-danger remove-rekomendasi">-</button>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                         <div class="text-center mb-3">
-                            <button type="button"
-                                class="btn btn-success btn-sm rounded-4 btnAddRekomendasi">+</button>
+                            <button type="button" class="btn btn-success btn-sm btnAddRekomendasi">+</button>
                             <small class="d-block text-center text-muted">Klik + untuk menambah rekomendasi</small>
                         </div>
                     </div>
@@ -299,8 +296,7 @@
                                                 value="{{ $file['id'] }}">
                                         </td>
                                         <td class="text-center">
-                                            <button type="button"
-                                                class="btn btn-danger rounded-4 remove-file">-</button>
+                                            <button type="button" class="btn btn-danger remove-file">-</button>
                                         </td>
                                     </tr>
                                 @empty
@@ -308,13 +304,13 @@
                                         <td><input type="file" name="files[{{ $i }}][]"
                                                 class="form-control" /></td>
                                         <td class="text-center"><button type="button"
-                                                class="btn btn-danger rounded-4 remove-file">-</button></td>
+                                                class="btn btn-danger remove-file">-</button></td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                         <div class="text-center mb-3">
-                            <button type="button" class="btn btn-success btn-sm rounded-4 btnAddFile">+</button>
+                            <button type="button" class="btn btn-success btn-sm btnAddFile">+</button>
                         </div>
                         <small class="d-block text-center text-muted">Klik + untuk menambah file pendukung</small>
                     </div>
@@ -325,7 +321,7 @@
 </div>
 
 <div class="d-flex justify-content-center align-items-center mb-4">
-    <button type="button" class="btn btn-primary rounded-4 btn-sm" id="btnAddTemuan">
+    <button type="button" class="btn btn-primary btn-sm" id="btnAddTemuan">
         <i class="bi bi-plus-circle me-1"></i> Tambah Temuan
     </button>
 </div>
@@ -335,7 +331,7 @@
     <div class="temuan-item border border-primary rounded p-3 mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="mb-0">Temuan #[index]</h6>
-            <button type="button" class="btn btn-outline-danger btn-sm rounded-4 remove-temuan">
+            <button type="button" class="btn btn-outline-danger btn-sm remove-temuan">
                 <i class="bi bi-trash"></i> Hapus Temuan
             </button>
         </div>
@@ -410,13 +406,13 @@
                                     class="form-control numeric" value="0" />
                             </td>
                             <td class="text-center align-middle">
-                                <button type="button" class="btn btn-danger rounded-4 remove-rekomendasi">-</button>
+                                <button type="button" class="btn btn-danger remove-rekomendasi">-</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="text-center mb-3">
-                    <button type="button" class="btn btn-success btn-sm rounded-4 btnAddRekomendasi">+</button>
+                    <button type="button" class="btn btn-success btn-sm btnAddRekomendasi">+</button>
                 </div>
             </div>
         </div>
@@ -438,13 +434,13 @@
                         <tr>
                             <td><input type="file" name="temuans[[i]][files][0]" class="form-control"></td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-danger rounded-4 remove-file">-</button>
+                                <button type="button" class="btn btn-danger remove-file">-</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="text-center mb-3">
-                    <button type="button" class="btn btn-success btn-sm rounded-4 btnAddFile">+</button>
+                    <button type="button" class="btn btn-success btn-sm btnAddFile">+</button>
                 </div>
             </div>
         </div>
@@ -469,7 +465,7 @@
                 value="0" />
         </td>
         <td class="text-center align-middle">
-            <button type="button" class="btn btn-danger rounded-4 remove-rekomendasi">-</button>
+            <button type="button" class="btn btn-danger remove-rekomendasi">-</button>
         </td>
     </tr>
 </template>
@@ -478,7 +474,7 @@
     <tr>
         <td><input type="file" name="temuans[[i]][files][[j]]" class="form-control" /></td>
         <td class="text-center">
-            <button type="button" class="btn btn-danger rounded-4 remove-file">-</button>
+            <button type="button" class="btn btn-danger remove-file">-</button>
         </td>
     </tr>
 </template>

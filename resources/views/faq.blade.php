@@ -55,13 +55,14 @@
                                                         </button>
                                                     @endif
 
-                                                    @if (Auth::user()->hasMenuPermission($activeMenu->id, 'destroy'))
+                                                    @if (Auth::user()->hasMenuPermission($activeMenu->id, 'delete'))
                                                         <form action="{{ route('faq.destroy', $faq->id) }}" method="POST"
                                                             class="d-inline form-delete">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
-                                                                class="btn btn-sm btn-danger rounded-4 btn-delete">
+                                                                class="btn btn-sm btn-danger rounded-4 btn-delete"
+                                                                onclick="return confirm('Yakin ingin menghapus FAQ ini?')">
                                                                 <i class="bi bi-trash-fill"></i> Hapus
                                                             </button>
                                                         </form>
