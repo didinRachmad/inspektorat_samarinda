@@ -53,22 +53,22 @@ class TindakLanjutTemuanPage {
                 { data: "id", name: "id", visible: false, title: "ID" },
                 {
                     data: "nomor_lhp",
-                    name: "nomor_lhp",
+                    name: "lhps.nomor_lhp",
                     title: "Nomor LHP",
                 },
                 {
                     data: "nama_auditi",
-                    name: "nama_auditi",
+                    name: "auditis.nama_auditi",
                     title: "Auditi",
                 },
                 {
                     data: "kode_nama_temuan",
-                    name: "kode_nama_temuan",
+                    name: "kode_temuans.nama_temuan",
                     title: "Nama Temuan",
                 },
                 {
                     data: "judul_temuan",
-                    name: "judul_temuan",
+                    name: "temuans.judul_temuan",
                     title: "Judul Temuan",
                 },
                 // {
