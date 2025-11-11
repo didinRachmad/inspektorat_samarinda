@@ -26,7 +26,7 @@
                             </p>
                         </div>
                         <div class="text-end">
-                            <i class="bi bi-person-check fs-1 text-info opacity-75"></i>
+                            <i class="bi bi-person-check fs-1 text-info"></i>
                         </div>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
         @if ($tindakLanjut->isNotEmpty())
             <div class="col-12">
                 <div class="card rounded-4 border-0 shadow-sm">
-                    <div class="card-header bg-info bg-gradient text-white rounded-top-4 py-3">
+                    <div class="card-header text-white rounded-top-4 py-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <h5 class="mb-0 fw-semibold">
                                 <i class="bi bi-hourglass-split me-2"></i> Tindak Lanjut Dalam Tenggat Waktu
@@ -111,7 +111,7 @@
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-graph-up-arrow me-2"></i> Progres Tindak Lanjut Temuan
                             </h5>
-                            <span class="badge bg-light text-primary fs-6 px-3 py-2 shadow-sm">
+                            <span class="badge bg-light text-info fs-6 px-3 py-2 shadow-sm">
                                 {{ round($progressData['persen_progres'], 1) }}%
                             </span>
                         </div>
