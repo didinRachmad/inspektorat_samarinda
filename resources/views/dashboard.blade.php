@@ -102,6 +102,83 @@
                 </div>
             </div>
         @endif
+        {{-- === Card Progres Tindak Lanjut (Modern Style) === --}}
+        @if ($progressData)
+            <div class="col-12">
+                <div class="card rounded-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0">
+                                <i class="bi bi-graph-up-arrow me-2"></i> Progres Tindak Lanjut Temuan
+                            </h5>
+                            <span class="badge bg-light text-primary fs-6 px-3 py-2 shadow-sm">
+                                {{ round($progressData['persen_progres'], 1) }}%
+                            </span>
+                        </div>
 
+                        <div class="row g-4 text-center">
+                            {{-- Total Temuan --}}
+                            <div class="col-md-3 col-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3 shadow-sm h-100">
+                                    <i class="bi bi-folder-check display-6 text-warning mb-2"></i>
+                                    <h4 class="fw-bold mb-0">{{ $progressData['total_temuan'] }}</h4>
+                                    <small class="text-white-50">Total Temuan</small>
+                                </div>
+                            </div>
+
+                            {{-- Draft --}}
+                            <div class="col-md-3 col-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3 shadow-sm h-100">
+                                    <i class="bi bi-pencil-square display-6 text-warning mb-2"></i>
+                                    <h4 class="fw-bold text-warning mb-0">{{ $progressData['draft'] }}</h4>
+                                    <small class="text-white-50">Draft</small>
+                                </div>
+                            </div>
+
+                            {{-- Menunggu Approval --}}
+                            <div class="col-md-3 col-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3 shadow-sm h-100">
+                                    <i class="bi bi-hourglass-split display-6 text-info mb-2"></i>
+                                    <h4 class="fw-bold text-info mb-0">{{ $progressData['waiting'] }}</h4>
+                                    <small class="text-white-50">Menunggu Approval</small>
+                                </div>
+                            </div>
+
+                            {{-- Sudah Final --}}
+                            <div class="col-md-3 col-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3 shadow-sm h-100">
+                                    <i class="bi bi-check-circle display-6 text-success mb-2"></i>
+                                    <h4 class="fw-bold text-success mb-0">{{ $progressData['approved'] }}</h4>
+                                    <small class="text-white-50">Sudah Final</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Progress bar utama --}}
+                        @php
+                            $total = max($progressData['total_temuan'], 1);
+                            $percentDraft = ($progressData['draft'] / $total) * 100;
+                            $percentWaiting = ($progressData['waiting'] / $total) * 100;
+                            $percentApproved = ($progressData['approved'] / $total) * 100;
+                        @endphp
+
+                        <div class="mt-4">
+                            <div class="progress rounded-pill" style="height: 22px; background: rgba(255, 255, 255, 0.25)">
+                                <div class="progress-bar bg-warning" style="width: {{ $percentDraft }}%"
+                                    title="Draft: {{ $progressData['draft'] }}"></div>
+                                <div class="progress-bar bg-info" style="width: {{ $percentWaiting }}%"
+                                    title="Menunggu: {{ $progressData['waiting'] }}"></div>
+                                <div class="progress-bar bg-success" style="width: {{ $percentApproved }}%"
+                                    title="Final: {{ $progressData['approved'] }}"></div>
+                            </div>
+                            <div class="text-end mt-2 small text-white-50">
+                                <i class="bi bi-check2-circle me-1"></i>
+                                {{ round($percentApproved, 1) }}% temuan sudah final disetujui
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 @endsection
