@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Setting\RoleController;
 use App\Http\Controllers\Admin\Setting\PermissionController;
 use App\Http\Controllers\Admin\Setting\UserManagementController;
@@ -19,9 +20,9 @@ use App\Http\Controllers\Admin\Perencanaan\PkptController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\Setting\SettingAnggaranController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\RegulasiController;
-use App\Http\Controllers\FaqController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\RegulasiController;
+use App\Http\Controllers\Admin\FaqController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -65,11 +66,13 @@ Route::middleware('auth')->group(function () {
     })->name('notifications.markAsRead');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::prefix('dashboard')
+    ->middleware(['auth'])
+    ->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])
+            ->name('dashboard.index')
+            ->middleware('auth');
+    });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index')->middleware('menu.permission:index');

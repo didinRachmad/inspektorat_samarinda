@@ -10,7 +10,7 @@
 
     {{-- Informasi Umum --}}
     <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-light">
+        <div class="card-header bg-info bg-gradient ">
             <h5 class="mb-0">Detail Tindak Lanjut Temuan</h5>
         </div>
         <div class="card-body">
@@ -37,7 +37,7 @@
 
     @if ($temuan)
         <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-light">
+            <div class="card-header bg-info bg-gradient ">
                 <h6 class="mb-0 fw-bold">
                     Judul : {{ $temuan->judul_temuan ?? 'Temuan' }}
                 </h6>

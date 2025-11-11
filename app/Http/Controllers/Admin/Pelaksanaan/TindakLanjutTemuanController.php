@@ -53,17 +53,13 @@ class TindakLanjutTemuanController extends Controller
         // Filter role user
         if (!$user->hasRole('super_admin')) {
             $query->where(function ($q) use ($user) {
-                // Auditi hanya lihat tindak lanjut mereka sendiri
-                $q->where('tindak_lanjut_temuans.auditi_id', $user->id);
-
                 // Auditor lihat semua auditi di wilayahnya
                 if ($user->hasRole('auditor')) {
                     $q->orWhere(function ($q2) use ($user) {
                         $q2->where('auditis.irbanwil_id', $user->irbanwil_id);
                     });
                 }
-
-                // Auditi lain (misal supervisor/role lain yang punya relasi auditi_id)
+                // Auditi lihat semua data sesuai auditinya
                 if ($user->hasRole('auditi')) {
                     $q->orWhere('tindak_lanjut_temuans.auditi_id', $user->auditi_id);
                 }

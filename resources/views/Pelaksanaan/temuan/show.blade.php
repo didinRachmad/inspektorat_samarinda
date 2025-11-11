@@ -9,7 +9,7 @@
 
     {{-- Informasi Temuan --}}
     <div class="card mb-3 shadow-sm">
-        <div class="card-header">
+        <div class="card-header bg-info bg-gradient ">
             <h5 class="mb-0">Informasi Temuan</h5>
         </div>
         <div class="card-body">

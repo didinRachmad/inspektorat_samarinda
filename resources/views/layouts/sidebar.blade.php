@@ -17,7 +17,7 @@
     <div class="sidebar-nav">
         <ul class="metismenu" id="sidenav">
             <li>
-                <a href="{{ route('dashboard') }}">
+                <a href="{{ route('dashboard.index') }}">
                     <div class="parent-icon">
                         <i class="material-icons-outlined">home</i>
                     </div>
