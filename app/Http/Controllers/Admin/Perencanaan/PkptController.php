@@ -169,13 +169,14 @@ class PkptController extends Controller
         $auditis = Auditi::orderBy('nama_auditi')->get();
         $mandatories = Mandatory::orderBy('nama')->get();
 
-        // Load parent beserta children
         $jenisPengawasans = JenisPengawasan::with(['children' => fn($q) => $q->orderBy('urutan')])
             ->whereNull('parent_id')
             ->orderBy('urutan')
             ->get();
 
-        return view('perencanaan.pkpt.create', compact('auditis', 'mandatories', 'jenisPengawasans'));
+        $irbanwils = Irbanwil::orderBy('nama')->get();
+
+        return view('perencanaan.pkpt.create', compact('auditis', 'mandatories', 'jenisPengawasans', 'irbanwils'));
     }
 
     public function store(StorePkptRequest $request)
@@ -231,15 +232,22 @@ class PkptController extends Controller
 
         $auditis = Auditi::orderBy('nama_auditi')->get();
         $mandatories = Mandatory::orderBy('nama')->get();
-
         $jenisPengawasans = JenisPengawasan::with(['children' => fn($q) => $q->orderBy('urutan')])
             ->whereNull('parent_id')
             ->orderBy('urutan')
             ->get();
-
         $selectedAuditis = $pkpt->auditis->pluck('id')->toArray();
 
-        return view('perencanaan.pkpt.edit', compact('pkpt', 'auditis', 'mandatories', 'jenisPengawasans', 'selectedAuditis'));
+        $irbanwils = Irbanwil::orderBy('nama')->get(); // <- ambil data irbanwil
+
+        return view('perencanaan.pkpt.edit', compact(
+            'pkpt',
+            'auditis',
+            'mandatories',
+            'jenisPengawasans',
+            'selectedAuditis',
+            'irbanwils'
+        ));
     }
 
     public function update(UpdatePkptRequest $request, Pkpt $pkpt)

@@ -95,12 +95,10 @@ class PkptPage {
                 {
                     data: "parent_jenis",
                     name: "parent_jp.nama",
-                    className: "text-center",
                 },
                 {
                     data: "jenis_pengawasan",
                     name: "jenis_pengawasans.nama",
-                    className: "text-center",
                 },
                 { data: "jadwal_rmp_bulan", name: "jadwal_rmp_bulan" },
                 { data: "jadwal_rsp_bulan", name: "jadwal_rsp_bulan" },

@@ -91,10 +91,12 @@
     {{-- Irbanwil --}}
     <div class="col-md-6 mb-3">
         <label class="form-label">Irbanwil</label>
-        <select name="irbanwil" class="form-select select2">
+        <select name="irbanwil_id" class="form-select select2">
             <option value="">-- Pilih Irbanwil --</option>
-            @foreach (['SEMUA IRBAN', 'IRBAN I', 'IRBAN II', 'IRBAN III', 'IRBAN IV', 'IRBAN KHUSUS'] as $item)
-                <option value="{{ $item }}" @selected(old('irbanwil', $pkpt->irbanwil ?? '') == $item)>{{ $item }}</option>
+            @foreach ($irbanwils as $irban)
+                <option value="{{ $irban->id }}" @selected(old('irbanwil_id', $pkpt->irbanwil_id ?? '') == $irban->id)>
+                    {{ $irban->nama }}
+                </option>
             @endforeach
         </select>
     </div>

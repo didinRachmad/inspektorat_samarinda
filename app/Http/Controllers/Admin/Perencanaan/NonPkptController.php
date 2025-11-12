@@ -175,7 +175,9 @@ class NonPkptController extends Controller
             ->orderBy('urutan')
             ->get();
 
-        return view('perencanaan.non_pkpt.create', compact('auditis', 'mandatories', 'jenisPengawasans'));
+        $irbanwils = Irbanwil::orderBy('nama')->get();
+
+        return view('perencanaan.non_pkpt.create', compact('auditis', 'mandatories', 'jenisPengawasans', 'irbanwils'));
     }
 
     public function store(StorePkptRequest $request)
@@ -239,7 +241,9 @@ class NonPkptController extends Controller
 
         $selectedAuditis = $pkpt->auditis->pluck('id')->toArray();
 
-        return view('perencanaan.non_pkpt.edit', compact('pkpt', 'auditis', 'mandatories', 'jenisPengawasans', 'selectedAuditis'));
+        $irbanwils = Irbanwil::orderBy('nama')->get();
+
+        return view('perencanaan.non_pkpt.edit', compact('pkpt', 'auditis', 'mandatories', 'jenisPengawasans', 'selectedAuditis', 'irbanwils'));
     }
 
     public function update(UpdatePkptRequest $request, Pkpt $pkpt)
